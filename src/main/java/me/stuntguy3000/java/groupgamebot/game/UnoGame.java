@@ -5,6 +5,7 @@ import lombok.Setter;
 import me.stuntguy3000.java.groupgamebot.handler.TelegramGame;
 import me.stuntguy3000.java.groupgamebot.hook.TelegramHook;
 import me.stuntguy3000.java.groupgamebot.util.GameState;
+import me.stuntguy3000.java.groupgamebot.util.LogHandler;
 import me.stuntguy3000.java.groupgamebot.util.PlayerScore;
 import me.stuntguy3000.java.groupgamebot.util.StringUtil;
 import pro.zackpollard.telegrambot.api.TelegramBot;
@@ -183,16 +184,20 @@ public class UnoGame extends TelegramGame {
                         nextCardColour = clickedCard.getCardColour();
 
                         if (activeCard.getCardValue() == CardValue.DRAW2) {
+                            LogHandler.log("D2 1:" + getPlayerOrderIndex());
                             String punishedPlayer = nextPlayerIndex();
+                            LogHandler.log("D2 2:" + getPlayerOrderIndex());
                             nextPlayerIndex();
+                            LogHandler.log("D2 3:" + getPlayerOrderIndex());
+                            LogHandler.log("D2:" + getPlayerOrder().toString());
 
                             sendPlayersMessage(SendableTextMessage.builder()
-                                            .message("*" + punishedPlayer + " has been given four cards!*")
+                                            .message("*" + punishedPlayer + " has been given two cards!*")
                                             .parseMode(ParseMode.MARKDOWN)
                                             .build()
                             );
 
-                            giveCardsFromDeck(getPlayerScore(punishedPlayer), 4);
+                            giveCardsFromDeck(getPlayerScore(punishedPlayer), 2);
                         } else if (activeCard.getCardValue() == CardValue.REVERSE) {
                             sendPlayersMessage(SendableTextMessage.builder()
                                             .message("*Player order has been reversed!*")
@@ -448,14 +453,6 @@ public class UnoGame extends TelegramGame {
     }
 
     public void nextRound() {
-        if (playerOrderIndex >= playerOrder.size()) {
-            playerOrderIndex = 0;
-        }
-
-        if (playerOrderIndex < 0) {
-            playerOrderIndex = playerOrder.size() - 1;
-        }
-
         currentPlayer = playerOrder.get(playerOrderIndex);
 
         sendPlayersMessage(
