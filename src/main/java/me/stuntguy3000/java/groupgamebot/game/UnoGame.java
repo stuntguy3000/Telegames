@@ -16,10 +16,7 @@ import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardHide;
 import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardMarkup;
 import pro.zackpollard.telegrambot.api.user.User;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 enum CardColour {
@@ -60,7 +57,7 @@ public class UnoGame extends TelegramGame {
     private int round = 1;
     @Getter
     @Setter
-    private int minPlayers = 3;
+    private int minPlayers = 2;
     @Getter
     @Setter
     private List<String> playerOrder = new ArrayList<>();
@@ -81,7 +78,16 @@ public class UnoGame extends TelegramGame {
     private Card activeCard;
     @Getter
     @Setter
+    private CardColour nextCardColour;
+    @Getter
+    @Setter
     private HashMap<String, List<Card>> playerDecks = new HashMap<>();
+    @Getter
+    @Setter
+    private boolean choosingColour = false;
+    @Getter
+    @Setter
+    private boolean increasePlayerIndex = true;
 
     public UnoGame() {
         setInfo("Uno", "The classic card game Uno.");
@@ -131,37 +137,127 @@ public class UnoGame extends TelegramGame {
                     }
                 }
             } else {
-                if (event.getChat().getType() == ChatType.PRIVATE && isPlayer(sender)) {
-                    for (PlayerScore player : getActivePlayers()) {
-                        if (!player.getUsername().equals(sender.getUsername())) {
-                            sendMessage(TelegramBot.getChat(player.getId()),
-                                    SendableTextMessage.builder()
-                                            .message("*[Chat]* " + sender.getUsername() + ": " + message)
-                                            .parseMode(ParseMode.MARKDOWN)
-                                            .build()
-                            );
-                        }
+                for (CardColour cardColour : CardColour.values()) {
+                    if (message.equals(cardColour.getText())) {
+                        chooseColour(sender, cardColour);
+                        return;
                     }
+                }
+
+                if (event.getChat().getType() == ChatType.PRIVATE && isPlayer(sender)) {
+                    getActivePlayers().stream().filter(player -> !player.getUsername().equals(sender.getUsername())).forEach(player -> {
+                        sendMessage(TelegramBot.getChat(player.getId()),
+                                SendableTextMessage.builder()
+                                        .message("*[Chat]* " + sender.getUsername() + ": " + message)
+                                        .parseMode(ParseMode.MARKDOWN)
+                                        .build()
+                        );
+                    });
                 }
             }
         }
     }
 
+    private void chooseColour(User sender, CardColour cardColour) {
+        if (currentPlayer.equalsIgnoreCase(sender.getUsername()) && choosingColour) {
+            choosingColour = false;
+        }
+    }
+
     private void playCard(Card clickedCard, User sender) {
         if (currentPlayer.equalsIgnoreCase(sender.getUsername())) {
-            sendPlayersMessage(sender.getUsername() + " played: " + clickedCard.getText());
-            activeCard = clickedCard;
+            if (choosingColour) {
+                sendMessage(TelegramBot.getChat(getPlayerScore(sender).getId()), "Please choose a colour.");
+                return;
+            }
 
-            if (!removeCard(playerDecks.get(sender.getUsername()), activeCard)) {
-                sendPlayersMessage("Card was not removed from deck, contact @stuntguy3000");
-                stopGame();
-            } else {
-                giveCardFromDeck(sender);
-                nextRound();
+            switch (clickedCard.getCardValue()) {
+                default: {
+                    if (nextCardColour.equals(clickedCard.getCardColour()) ||
+                            activeCard.getCardValue().equals(clickedCard.getCardValue())) {
+                        sendPlayersMessage(sender.getUsername() + " played: " + clickedCard.getText());
+                        activeCard = clickedCard;
+                        nextCardColour = clickedCard.getCardColour();
+
+                        if (activeCard.getCardValue() == CardValue.DRAW2) {
+                            String punishedPlayer = nextPlayerIndex();
+                            nextPlayerIndex();
+
+                            sendPlayersMessage(SendableTextMessage.builder()
+                                            .message("*" + punishedPlayer + " has been given four cards!*")
+                                            .parseMode(ParseMode.MARKDOWN)
+                                            .build()
+                            );
+
+                            giveCardsFromDeck(getPlayerScore(punishedPlayer), 4);
+                        } else if (activeCard.getCardValue() == CardValue.REVERSE) {
+                            sendPlayersMessage(SendableTextMessage.builder()
+                                            .message("*Player order has been reversed!*")
+                                            .parseMode(ParseMode.MARKDOWN)
+                                            .build()
+                            );
+                            increasePlayerIndex = !increasePlayerIndex;
+                        } else if (activeCard.getCardValue() == CardValue.SKIP) {
+                            String punishedPlayer = nextPlayerIndex();
+
+                            sendPlayersMessage(SendableTextMessage.builder()
+                                            .message("*" + punishedPlayer + " has been given four cards!*")
+                                            .parseMode(ParseMode.MARKDOWN)
+                                            .build()
+                            );
+
+                            nextPlayerIndex();
+                        }
+
+                        if (!removeCard(playerDecks.get(sender.getUsername()), activeCard)) {
+                            sendPlayersMessage("Card was not removed from deck, contact @stuntguy3000");
+                            stopGame();
+                        } else {
+                            giveCardsFromDeck(getPlayerScore(sender.getUsername()), 1);
+                            nextRound();
+                        }
+                    } else {
+                        sendMessage(TelegramBot.getChat(getPlayerScore(sender).getId()), "You have chosen an invalid card!");
+                    }
+                    return;
+                }
+                case DRAW4:
+                case WILD: {
+                    sendPlayersMessage(sender.getUsername() + " played: " + clickedCard.getText());
+                    activeCard = clickedCard;
+                    nextCardColour = clickedCard.getCardColour();
+
+                    String punishedPlayer = playerOrder.get(playerOrderIndex);
+                    nextPlayerIndex();
+
+                    sendPlayersMessage(SendableTextMessage.builder()
+                                    .message("*" + punishedPlayer + " has been given four cards!*")
+                                    .parseMode(ParseMode.MARKDOWN)
+                                    .build()
+                    );
+
+                    giveCardsFromDeck(getPlayerScore(punishedPlayer), 4);
+                    sendColourPicker(sender);
+                    choosingColour = true;
+                }
             }
         } else {
-            sendPlayersMessage("It is not your turn " + sender.getUsername() + "!");
+            sendMessage(TelegramBot.getChat(getPlayerScore(sender).getId()), "It's not your turn.");
         }
+    }
+
+    private void sendColourPicker(User sender) {
+        List<List<String>> buttonList = new ArrayList<>();
+
+        buttonList.add(Arrays.asList(
+                CardColour.RED.getText(), CardColour.BLUE.getText(), CardColour.GREEN.getText(), CardColour.YELLOW.getText()));
+
+        TelegramBot.getChat(getPlayerScore(sender).getId()).sendMessage(SendableTextMessage
+                        .builder()
+                        .message("Please choose a colour: " + getActiveCard().getText())
+                        .replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false))
+                        .build(),
+                TelegramHook.getBot());
     }
 
     private boolean removeCard(List<Card> cards, Card activeCard) {
@@ -177,18 +273,26 @@ public class UnoGame extends TelegramGame {
         return false;
     }
 
-    private void giveCardFromDeck(User sender) {
-        if (entireDeck.size() == 0) {
-            sendPlayersMessage("Shuffling deck...");
-            entireDeck.addAll(playedCards.stream().collect(Collectors.toList()));
-            playedCards.clear();
-            Collections.shuffle(entireDeck);
+    private void giveCardsFromDeck(PlayerScore playerScore, int amount) {
+        List<Card> givenCards = new ArrayList<>();
+        for (int i = 1; i <= amount; i++) {
+            if (entireDeck.size() == 0) {
+                sendPlayersMessage("Shuffling deck...");
+                entireDeck.addAll(playedCards.stream().collect(Collectors.toList()));
+                playedCards.clear();
+                Collections.shuffle(entireDeck);
+            }
+
+            givenCards.add(entireDeck.remove(0));
         }
 
-        Card newCard = entireDeck.remove(0);
-        sendMessage(TelegramBot.getChat(getPlayerScore(sender).getId()),
-                "Picked up card: %s", newCard.getText());
-        playerDecks.get(sender.getUsername()).add(newCard);
+        StringBuilder givenCardsMessage = new StringBuilder();
+        for (Card card : givenCards) {
+            givenCardsMessage.append(card.getText()).append(" ");
+            playerDecks.get(playerScore.getUsername()).add(card);
+        }
+
+        sendMessage(TelegramBot.getChat(playerScore.getId()), "Picked up cards: %s", givenCardsMessage.toString());
     }
 
     private void printScores() {
@@ -286,12 +390,12 @@ public class UnoGame extends TelegramGame {
         List<Card> deck = playerDecks.get(playerScore.getUsername());
 
         row.addAll(deck.stream().map(Card::getText).collect(Collectors.toList()));
-
         buttonList.add(row);
+        buttonList.add(Collections.singletonList("Draw from deck"));
 
         TelegramBot.getChat(playerScore.getId()).sendMessage(SendableTextMessage
                         .builder()
-                        .message("Please play a card. Current card: " + getActiveCard().getText())
+                        .message("Here are your cards.\nCurrent card: " + getActiveCard().getText())
                         .replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false))
                         .build(),
                 TelegramHook.getBot());
@@ -338,6 +442,14 @@ public class UnoGame extends TelegramGame {
     }
 
     public void nextRound() {
+        if (playerOrderIndex >= playerOrder.size()) {
+            playerOrderIndex = 0;
+        }
+
+        if (playerOrderIndex < 0) {
+            playerOrderIndex = playerOrder.size() - 1;
+        }
+
         currentPlayer = playerOrder.get(playerOrderIndex);
 
         sendPlayersMessage(
@@ -349,14 +461,28 @@ public class UnoGame extends TelegramGame {
                         .build()
         );
 
-        playerOrderIndex++;
+        nextPlayerIndex();
         round++;
+
+        sendDeck(getPlayerScore(currentPlayer));
+    }
+
+    public String nextPlayerIndex() {
+        if (increasePlayerIndex) {
+            playerOrderIndex++;
+        } else {
+            playerOrderIndex--;
+        }
 
         if (playerOrderIndex >= playerOrder.size()) {
             playerOrderIndex = 0;
         }
 
-        sendDeck(getPlayerScore(currentPlayer));
+        if (playerOrderIndex < 0) {
+            playerOrderIndex = playerOrder.size() - 1;
+        }
+
+        return playerOrder.get(playerOrderIndex);
     }
 }
 
