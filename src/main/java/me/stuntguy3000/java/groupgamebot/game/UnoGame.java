@@ -182,6 +182,9 @@ public class UnoGame extends TelegramGame {
     }
 
     private void playCard(Card clickedCard, User sender) {
+        LogHandler.log(sender.getUsername() + " Playing " + clickedCard.getCardColour() + " " + clickedCard.getCardValue()
+                + " currentIndex " + getPlayerOrderIndex() + " player " + playerOrder.get(getPlayerOrderIndex()));
+
         if (currentPlayer.equalsIgnoreCase(sender.getUsername())) {
             if (choosingColour) {
                 sendMessage(TelegramBot.getChat(getPlayerScore(sender).getId()), "Please choose a colour.");
@@ -197,7 +200,7 @@ public class UnoGame extends TelegramGame {
                         nextCardColour = clickedCard.getCardColour();
 
                         if (activeCard.getCardValue() == CardValue.DRAW2) {
-                            String punishedPlayer = getCurrentPlayer();
+                            String punishedPlayer = nextPlayerIndex();
                             nextPlayerIndex();
 
                             sendPlayersMessage(SendableTextMessage.builder()
@@ -215,7 +218,7 @@ public class UnoGame extends TelegramGame {
                             );
                             increasePlayerIndex = !increasePlayerIndex;
                         } else if (activeCard.getCardValue() == CardValue.SKIP) {
-                            String punishedPlayer = getCurrentPlayer();
+                            String punishedPlayer = nextPlayerIndex();
 
                             sendPlayersMessage(SendableTextMessage.builder()
                                             .message("*" + punishedPlayer + " has been skipped!*")
