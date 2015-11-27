@@ -182,6 +182,7 @@ public class UnoGame extends TelegramGame {
     }
 
     private void playCard(Card clickedCard, User sender) {
+        LogHandler.log("Play: " + getPlayerOrderIndex() + " | " + sender.getUsername());
         if (currentPlayer.equalsIgnoreCase(sender.getUsername())) {
             if (choosingColour) {
                 sendMessage(TelegramBot.getChat(getPlayerScore(sender).getId()), "Please choose a colour.");
