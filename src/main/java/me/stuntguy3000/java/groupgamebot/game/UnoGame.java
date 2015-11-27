@@ -5,6 +5,7 @@ import lombok.Setter;
 import me.stuntguy3000.java.groupgamebot.handler.TelegramGame;
 import me.stuntguy3000.java.groupgamebot.hook.TelegramHook;
 import me.stuntguy3000.java.groupgamebot.util.GameState;
+import me.stuntguy3000.java.groupgamebot.util.LogHandler;
 import me.stuntguy3000.java.groupgamebot.util.PlayerScore;
 import me.stuntguy3000.java.groupgamebot.util.StringUtil;
 import pro.zackpollard.telegrambot.api.TelegramBot;
@@ -138,6 +139,7 @@ public class UnoGame extends TelegramGame {
                 }
             } else {
                 for (CardColour cardColour : CardColour.values()) {
+                    LogHandler.log(cardColour.text + ": " + String.valueOf(message.equals(cardColour.getText())));
                     if (message.equals(cardColour.getText())) {
                         chooseColour(sender, cardColour);
                         return;
@@ -159,7 +161,9 @@ public class UnoGame extends TelegramGame {
     }
 
     private void chooseColour(User sender, CardColour cardColour) {
+        LogHandler.log("Choose Colour Fired - " + choosingColour);
         if (currentPlayer.equalsIgnoreCase(sender.getUsername()) && choosingColour) {
+            LogHandler.log("Choose Colour Success");
             choosingColour = false;
             nextCardColour = cardColour;
         }
@@ -219,6 +223,7 @@ public class UnoGame extends TelegramGame {
                         }
                     } else {
                         sendMessage(TelegramBot.getChat(getPlayerScore(sender).getId()), "You have chosen an invalid card!");
+                        sendDeck(getPlayerScore(sender));
                     }
                     return;
                 }
@@ -255,7 +260,7 @@ public class UnoGame extends TelegramGame {
 
         TelegramBot.getChat(getPlayerScore(sender).getId()).sendMessage(SendableTextMessage
                         .builder()
-                        .message("Please choose a colour: " + getActiveCard().getText())
+                        .message("Please choose a colour.")
                         .replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false))
                         .build(),
                 TelegramHook.getBot());
@@ -289,11 +294,12 @@ public class UnoGame extends TelegramGame {
 
         StringBuilder givenCardsMessage = new StringBuilder();
         for (Card card : givenCards) {
-            givenCardsMessage.append(card.getText()).append(" ");
+            givenCardsMessage.append(card.getText()).append(" | ");
             playerDecks.get(playerScore.getUsername()).add(card);
         }
 
-        sendMessage(TelegramBot.getChat(playerScore.getId()), "Picked up cards: %s", givenCardsMessage.toString());
+        sendMessage(TelegramBot.getChat(playerScore.getId()), "Picked up cards: %s",
+                givenCardsMessage.toString().substring(0, givenCardsMessage.length() - 3));
     }
 
     private void printScores() {
