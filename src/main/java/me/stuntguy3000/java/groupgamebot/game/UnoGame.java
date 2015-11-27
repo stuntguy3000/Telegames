@@ -272,7 +272,7 @@ public class UnoGame extends TelegramGame {
 
                         if (!removeCard(playerDecks.get(sender.getUsername()), activeCard)) {
                             sendPlayersMessage("Card was not removed from deck, contact @stuntguy3000");
-                            stopGame();
+                            stopGame(false);
                         } else {
                             nextRound();
                         }
@@ -303,7 +303,7 @@ public class UnoGame extends TelegramGame {
 
                     if (!removeCard(playerDecks.get(sender.getUsername()), activeCard)) {
                         sendPlayersMessage("Card was not removed from deck, contact @stuntguy3000");
-                        stopGame();
+                        stopGame(false);
                     } else {
                         sendColourPicker(sender);
                         choosingColour = true;
@@ -386,17 +386,20 @@ public class UnoGame extends TelegramGame {
     }
 
     @Override
-    public void stopGame() {
-        SendableTextMessage.SendableTextMessageBuilder messageBuilder = SendableTextMessage.builder()
-                .message("The game of Uno has ended!")
-                .replyMarkup(ReplyKeyboardHide.builder().build());
+    public void stopGame(boolean silent) {
+        if (!silent) {
+            SendableTextMessage.SendableTextMessageBuilder messageBuilder = SendableTextMessage.builder()
+                    .message("The game of Uno has ended!")
+                    .replyMarkup(ReplyKeyboardHide.builder().build());
 
-        for (PlayerData playerData : getActivePlayers()) {
-            sendMessage(TelegramBot.getChat(playerData.getId()), messageBuilder.build());
+            for (PlayerData playerData : getActivePlayers()) {
+                sendMessage(TelegramBot.getChat(playerData.getId()), messageBuilder.build());
+            }
+
+            getChat().sendMessage(messageBuilder.build(), TelegramHook.getBot());
+            printScores();
         }
 
-        getChat().sendMessage(messageBuilder.build(), TelegramHook.getBot());
-        printScores();
         setGameState(GameState.INGAME);
     }
 
@@ -426,14 +429,14 @@ public class UnoGame extends TelegramGame {
                     startIngame();
                 } else {
                     sendMessage(getChat(), "There are not enough players to continue!");
-                    GroupGameBot.getInstance().getGameHandler().stopGame(getChat());
+                    GroupGameBot.getInstance().getGameHandler().stopGame(getChat(), true);
                 }
                 return;
             }
             case INGAME: {
                 if (getMinPlayers() > getActivePlayers().size()) {
                     sendMessage(getChat(), "There are not enough players to continue!");
-                    GroupGameBot.getInstance().getGameHandler().stopGame(getChat());
+                    GroupGameBot.getInstance().getGameHandler().stopGame(getChat(), false);
                 }
             }
         }

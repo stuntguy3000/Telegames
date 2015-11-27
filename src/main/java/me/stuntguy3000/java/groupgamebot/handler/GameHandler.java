@@ -59,12 +59,12 @@ public class GameHandler {
         }
     }
 
-    public void stopGame(Chat chat) {
+    public void stopGame(Chat chat, boolean silent) {
         TelegramGame game = activeGames.remove(chat.getId());
         for (PlayerData playerData : game.getActivePlayers()) {
             userGames.remove(playerData.getId());
         }
-        game.stopGame();
+        game.stopGame(silent);
     }
 
     public void joinGame(Chat chat, User user) {

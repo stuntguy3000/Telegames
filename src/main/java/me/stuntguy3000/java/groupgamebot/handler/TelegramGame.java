@@ -40,7 +40,8 @@ public abstract class TelegramGame {
 
     public abstract void onTextMessageReceived(TextMessageReceivedEvent event);
     public abstract void startGame();
-    public abstract void stopGame();
+
+    public abstract void stopGame(boolean silent);
     public abstract void playerJoin(User user);
     public abstract void playerLeave(User user);
     public abstract String getHelp();

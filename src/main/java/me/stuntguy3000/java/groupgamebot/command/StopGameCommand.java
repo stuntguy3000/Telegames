@@ -17,7 +17,7 @@ public class StopGameCommand extends TelegramCommand {
         TelegramGame game = getInstance().getGameHandler().getGame(event.getChat());
 
         if (game != null) {
-            getInstance().getGameHandler().stopGame(chat);
+            getInstance().getGameHandler().stopGame(chat, true);
         } else {
             respond(chat, "No game is running!\nUse /startgame for start one.");
         }
