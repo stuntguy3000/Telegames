@@ -138,25 +138,38 @@ public class UnoGame extends TelegramGame {
                     }
                 }
             } else {
-                for (CardColour cardColour : CardColour.values()) {
-                    if (message.equals(cardColour.getText())) {
-                        chooseColour(sender, cardColour);
-                        return;
-                    }
-                }
+                if (event.getChat().getType() == ChatType.PRIVATE) {
+                    if (isPlayer(sender)) {
+                        for (CardColour cardColour : CardColour.values()) {
+                            if (message.equals(cardColour.getText())) {
+                                chooseColour(sender, cardColour);
+                                return;
+                            }
+                        }
 
-                if (event.getChat().getType() == ChatType.PRIVATE && isPlayer(sender)) {
-                    getActivePlayers().stream().filter(player -> !player.getUsername().equals(sender.getUsername())).forEach(player -> {
-                        sendMessage(TelegramBot.getChat(player.getId()),
-                                SendableTextMessage.builder()
-                                        .message("*[Chat]* " + sender.getUsername() + ": " + message)
-                                        .parseMode(ParseMode.MARKDOWN)
-                                        .build()
-                        );
-                    });
+                        if (message.equals("Draw from deck")) {
+                            tryDraw(sender);
+                            return;
+                        }
+
+                        getActivePlayers().stream().filter(player -> !player.getUsername().equals(sender.getUsername())).forEach(player -> {
+                            sendMessage(TelegramBot.getChat(player.getId()),
+                                    SendableTextMessage.builder()
+                                            .message("*[Chat]* " + sender.getUsername() + ": " + message)
+                                            .parseMode(ParseMode.MARKDOWN)
+                                            .build()
+                            );
+                        });
+                    }
                 }
             }
         }
+    }
+
+    private void tryDraw(User sender) {
+        giveCardsFromDeck(getPlayerScore(sender), 1);
+        // TODO: Validation against rules, allow play if possible
+        nextRound();
     }
 
     private void chooseColour(User sender, CardColour cardColour) {
@@ -217,7 +230,6 @@ public class UnoGame extends TelegramGame {
                             sendPlayersMessage("Card was not removed from deck, contact @stuntguy3000");
                             stopGame();
                         } else {
-                            giveCardsFromDeck(getPlayerScore(sender.getUsername()), 1);
                             nextRound();
                         }
                     } else {
