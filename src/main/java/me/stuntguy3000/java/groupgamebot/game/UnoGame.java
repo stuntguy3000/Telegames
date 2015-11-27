@@ -476,7 +476,6 @@ public class UnoGame extends TelegramGame {
                         .build()
         );
 
-        nextPlayerIndex();
         round++;
 
         sendDeck(getPlayerScore(currentPlayer));
