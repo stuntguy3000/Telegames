@@ -61,6 +61,7 @@ class LobbyTimer extends TimerTask {
     @Override
     public void run() {
         int timeToStart = instance.getTimeToStart();
+
         switch (timeToStart) {
             case 60:
             case 45:
@@ -69,16 +70,17 @@ class LobbyTimer extends TimerTask {
             case 5: {
                 SendableTextMessage message = SendableTextMessage
                         .builder()
-                        .message("*Starting game in " + timeToStart + " seconds...(")
+                        .message("*Starting game in " + timeToStart + " seconds...")
                         .parseMode(ParseMode.MARKDOWN)
                         .build();
-                instance.sendPlayersMessage(message);
+                instance.sendMessage(instance.getChat(), message);
                 return;
             }
         }
-        instance.setTimeToStart(instance.getTimeToStart() - 1);
+        instance.setTimeToStart(timeToStart - 1);
 
         if (timeToStart == 0) {
+            instance.checkPlayers();
             this.cancel();
         }
     }
@@ -424,11 +426,14 @@ public class UnoGame extends TelegramGame {
         }
     }
 
-    private void checkPlayers() {
+    public void checkPlayers() {
         switch (getGameState()) {
             case WAITING_FOR_PLAYERS: {
                 if (getMinPlayers() <= getActivePlayers().size()) {
                     startIngame();
+                } else {
+                    sendMessage(getChat(), "There are not enough players to continue!");
+                    stopGame();
                 }
                 return;
             }
