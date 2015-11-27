@@ -22,6 +22,36 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+enum CardColour {
+    RED("\uD83D\uDCD5"), YELLOW("\uD83D\uDCD2"), BLUE("\uD83D\uDCD8"), GREEN("\uD83D\uDCD7"), WILD("\uD83C\uDF08");
+
+    String text;
+
+    CardColour(String text) {
+        this.text = text;
+    }
+
+    String getText() {
+        return text;
+    }
+}
+
+enum CardValue {
+    ZERO("0⃣"), ONE("1⃣"), TWO("2⃣"), THREE("3⃣"), FOUR("4⃣"),
+    FIVE("5⃣"), SIX("6⃣"), SEVEN("7⃣"), EIGHT("8⃣"), NINE("9⃣"),
+    SKIP("\uD83D\uDEAB"), REVERSE("↩️"), DRAW2("Draw2"), DRAW4("Draw4"), WILD("Wild");
+
+    String text;
+
+    CardValue(String text) {
+        this.text = text;
+    }
+
+    String getText() {
+        return text;
+    }
+}
+
 // @author Luke Anderson | stuntguy3000
 public class UnoGame extends TelegramGame {
 
@@ -106,9 +136,9 @@ public class UnoGame extends TelegramGame {
                         if (!player.getUsername().equals(sender.getUsername())) {
                             sendMessage(TelegramBot.getChat(player.getId()),
                                     SendableTextMessage.builder()
-                                    .message("*[Chat]* " + sender.getUsername() + ": " + message)
-                                    .parseMode(ParseMode.MARKDOWN)
-                                    .build()
+                                            .message("*[Chat]* " + sender.getUsername() + ": " + message)
+                                            .parseMode(ParseMode.MARKDOWN)
+                                            .build()
                             );
                         }
                     }
@@ -141,7 +171,7 @@ public class UnoGame extends TelegramGame {
                 cards.remove(index);
                 return true;
             }
-            index ++;
+            index++;
         }
 
         return false;
@@ -200,7 +230,8 @@ public class UnoGame extends TelegramGame {
                 sendMessagePlayer(getChat(), user, "You have already joined the game!");
             } else {
                 addPlayer(user);
-                sendMessagePlayer(getChat(), user, "You have joined the game! (Waiting for %d player%s)", minPlayers - getActivePlayers().size(), StringUtil.isPlural(getActivePlayers().size() - minPlayers));
+                int playersNeeded = minPlayers - getActivePlayers().size();
+                sendMessagePlayer(getChat(), user, "You have joined the game! (Waiting for %d player%s)", playersNeeded, StringUtil.isPlural(playersNeeded));
                 checkPlayers();
             }
         } else {
@@ -340,15 +371,6 @@ class Card {
         this.cardValue = cardValue;
     }
 
-    public String getText() {
-        return getCardColour().getText() + " " + getCardValue().getText();
-    }
-
-    @Override
-    public String toString() {
-        return String.format("[Colour: %S Value: %s]", cardColour.toString(), cardValue.toString());
-    }
-
     public static Card getFromString(String message) {
         CardColour cardColour = null;
         CardValue cardValue = null;
@@ -382,34 +404,13 @@ class Card {
     public static boolean isSame(Card card1, Card card2) {
         return card1.getCardColour().equals(card2.getCardColour()) && card1.getCardValue().equals(card2.getCardValue());
     }
-}
 
-enum CardColour {
-    RED("\uD83D\uDCD5"), YELLOW("\uD83D\uDCD2"), BLUE("\uD83D\uDCD8"), GREEN("\uD83D\uDCD7"), WILD("\uD83C\uDF08");
-
-    String text;
-
-    CardColour(String text) {
-        this.text = text;
+    public String getText() {
+        return getCardColour().getText() + " " + getCardValue().getText();
     }
 
-    String getText() {
-        return text;
-    }
-}
-
-enum CardValue {
-    ZERO("0⃣"), ONE("1⃣"), TWO("2⃣"), THREE("3⃣"), FOUR("4⃣"),
-    FIVE("5⃣"), SIX("6⃣"), SEVEN("7⃣"), EIGHT("8⃣"), NINE("9⃣"),
-    SKIP("\uD83D\uDEAB"), REVERSE("↩️"), DRAW2("Draw2"), DRAW4("Draw4"), WILD("Wild");
-
-    String text;
-
-    CardValue(String text) {
-        this.text = text;
-    }
-
-    String getText() {
-        return text;
+    @Override
+    public String toString() {
+        return String.format("[Colour: %S Value: %s]", cardColour.toString(), cardValue.toString());
     }
 }
