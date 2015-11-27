@@ -586,7 +586,7 @@ public class UnoGame extends TelegramGame {
     }
 
     public void announceTime(SendableTextMessage message) {
-        sendMessage(getChat(), message);
+        sendMessage(getChat(), "A");
     }
 }
 
