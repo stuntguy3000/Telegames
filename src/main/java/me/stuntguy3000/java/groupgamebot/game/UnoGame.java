@@ -273,7 +273,6 @@ public class UnoGame extends TelegramGame {
                         sendPlayersMessage("Card was not removed from deck, contact @stuntguy3000");
                         stopGame();
                     } else {
-                        nextPlayerIndex();
                         sendColourPicker(sender);
                         choosingColour = true;
                     }
@@ -444,7 +443,7 @@ public class UnoGame extends TelegramGame {
         if (row.size() > 0) {
             buttonList.add(new ArrayList<>(row));
         }
-        
+
         buttonList.add(Arrays.asList("Draw from deck", "Your Score: " + playerData.getScore()));
 
         TelegramBot.getChat(playerData.getId()).sendMessage(SendableTextMessage
