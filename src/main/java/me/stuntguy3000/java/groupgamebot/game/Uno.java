@@ -9,6 +9,7 @@ import me.stuntguy3000.java.groupgamebot.util.GameState;
 import me.stuntguy3000.java.groupgamebot.util.PlayerData;
 import me.stuntguy3000.java.groupgamebot.util.StringUtil;
 import pro.zackpollard.telegrambot.api.TelegramBot;
+import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
@@ -49,9 +50,9 @@ enum CardValue {
 
 class LobbyTimer extends TimerTask {
 
-    private UnoGame instance;
+    private Uno instance;
 
-    public LobbyTimer(UnoGame instance) {
+    public LobbyTimer(Uno instance) {
         this.instance = instance;
     }
 
@@ -78,7 +79,7 @@ class LobbyTimer extends TimerTask {
 }
 
 // @author Luke Anderson | stuntguy3000
-public class UnoGame extends TelegramGame {
+public class Uno extends TelegramGame {
 
     public int timeToStart = 30;
     @Getter
@@ -118,62 +119,63 @@ public class UnoGame extends TelegramGame {
     @Setter
     private boolean increasePlayerIndex = true;
 
-    public UnoGame() {
+    public Uno() {
         setInfo("Uno", "The classic card game Uno.");
     }
 
     @Override
     public String getHelp() {
-        return "Totally have a game help string";
+        return "The classic card game Uno brought to Telegram.\n\nMessage @GroupGameBot +help while ingame for a list of commands.";
     }
 
     @Override
     public void onTextMessageReceived(TextMessageReceivedEvent event) {
-        User sender = event.getMessage().getSender();
-        String message = event.getContent().getContent();
+        if (event.getChat().getType() == ChatType.PRIVATE) {
+            User sender = event.getMessage().getSender();
+            String message = event.getContent().getContent();
+            Chat senderChat = TelegramBot.getChat(sender.getId());
 
-        if (message.startsWith("+")) {
-            String[] allArgs = message.substring(1).split(" ");
-            String command = allArgs[0];
+            if (message.startsWith("+")) {
+                String[] allArgs = message.substring(1).split(" ");
+                String command = allArgs[0];
 
-            if (isPlayer(sender)) {
-                if (command.equalsIgnoreCase("help")) {
-                    sendMessagePlayer(getChat(), sender, "Uno Command Menu:\n" +
-                            "+help - View the help menu\n" +
-                            "+deck - View your deck\n" +
-                            "+scores - View the scores\n" +
-                            "+colour - View the colour picker");
-                } else if (command.equalsIgnoreCase("deck")) {
-                    if (getGameState() == GameState.INGAME) {
-                        sendDeck(getPlayerData(sender));
-                    } else {
-                        sendMessagePlayer(getChat(), sender, "The game has not started!");
-                    }
-                } else if (command.equalsIgnoreCase("scores")) {
-                    if (getGameState() == GameState.INGAME) {
-                        printScores();
-                    } else {
-                        sendMessagePlayer(getChat(), sender, "The game has not started!");
-                    }
-                } else if (command.equalsIgnoreCase("colour") || command.equalsIgnoreCase("color")) {
-                    if (getGameState() == GameState.INGAME) {
-                        sendColourPicker(sender);
-                    } else {
-                        sendMessagePlayer(getChat(), sender, "The game has not started!");
-                    }
-                }
-            }
-        } else {
-            Card clickedCard = Card.getFromString(message);
-            if (clickedCard != null) {
-                for (Card card : new ArrayList<>(playerDecks.get(sender.getUsername()))) {
-                    if (Card.isSame(card, clickedCard)) {
-                        playCard(clickedCard, sender);
-                        return;
+                if (isPlayer(sender)) {
+                    if (command.equalsIgnoreCase("help")) {
+                        sendMessage(senderChat, "Uno Command Menu:\n" +
+                                "+help - View the help menu\n" +
+                                "+deck - View your deck\n" +
+                                "+scores - View the scores\n" +
+                                "+colour - View the colour picker");
+                    } else if (command.equalsIgnoreCase("deck")) {
+                        if (getGameState() == GameState.INGAME) {
+                            sendDeck(getPlayerData(sender));
+                        } else {
+                            sendMessage(senderChat, "The game has not started!");
+                        }
+                    } else if (command.equalsIgnoreCase("scores")) {
+                        if (getGameState() == GameState.INGAME) {
+                            printScores();
+                        } else {
+                            sendMessage(senderChat, "The game has not started!");
+                        }
+                    } else if (command.equalsIgnoreCase("colour") || command.equalsIgnoreCase("color")) {
+                        if (getGameState() == GameState.INGAME) {
+                            sendColourPicker(sender);
+                        } else {
+                            sendMessage(senderChat, "The game has not started!");
+                        }
                     }
                 }
             } else {
-                if (event.getChat().getType() == ChatType.PRIVATE) {
+                Card clickedCard = Card.getFromString(message);
+                if (clickedCard != null) {
+                    for (Card card : new ArrayList<>(playerDecks.get(sender.getUsername()))) {
+                        if (Card.isSame(card, clickedCard)) {
+                            playCard(clickedCard, sender);
+                            return;
+                        }
+                    }
+                } else {
                     if (isPlayer(sender)) {
                         for (CardColour cardColour : CardColour.values()) {
                             if (message.equals(cardColour.getText())) {
@@ -224,7 +226,7 @@ public class UnoGame extends TelegramGame {
     private void playCard(Card clickedCard, User sender) {
         if (currentPlayer.equalsIgnoreCase(sender.getUsername())) {
             if (choosingColour) {
-                sendMessage(TelegramBot.getChat(getPlayerData(sender).getId()), "Please choose a colour.");
+                sendMessage(TelegramBot.getChat(sender.getId()), "Please choose a colour.");
                 return;
             }
 
@@ -283,7 +285,7 @@ public class UnoGame extends TelegramGame {
                             nextRound();
                         }
                     } else {
-                        sendMessage(TelegramBot.getChat(getPlayerData(sender).getId()), "You have chosen an invalid card!");
+                        sendMessage(TelegramBot.getChat(sender.getId()), "You have chosen an invalid card!");
                         sendDeck(getPlayerData(sender));
                     }
                     return;
@@ -318,7 +320,7 @@ public class UnoGame extends TelegramGame {
                 }
             }
         } else {
-            sendMessage(TelegramBot.getChat(getPlayerData(sender).getId()), "It's not your turn.");
+            sendMessage(TelegramBot.getChat(sender.getId()), "It's not your turn.");
         }
     }
 
@@ -356,7 +358,7 @@ public class UnoGame extends TelegramGame {
         buttonList.add(Arrays.asList(
                 CardColour.RED.getText(), CardColour.BLUE.getText(), CardColour.GREEN.getText(), CardColour.YELLOW.getText()));
 
-        TelegramBot.getChat(getPlayerData(sender).getId()).sendMessage(SendableTextMessage
+        TelegramBot.getChat(sender.getId()).sendMessage(SendableTextMessage
                         .builder()
                         .message("Please choose a colour.")
                         .replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false))
@@ -416,7 +418,6 @@ public class UnoGame extends TelegramGame {
     public void startGame() {
         sendMessage(getChat(), "A game of Uno has been started!\nType /joingame to participate.");
         setGameState(GameState.WAITING_FOR_PLAYERS);
-
         LobbyTimer lobbyTimer = new LobbyTimer(this);
         new Timer().schedule(lobbyTimer, 0, 1000);
     }
@@ -435,8 +436,6 @@ public class UnoGame extends TelegramGame {
             getChat().sendMessage(messageBuilder.build(), TelegramHook.getBot());
             printScores();
         }
-
-        setGameState(GameState.INGAME);
     }
 
     @Override
@@ -449,6 +448,7 @@ public class UnoGame extends TelegramGame {
                 int playersNeeded = minPlayers - getActivePlayers().size();
                 if (playersNeeded > 0) {
                     sendMessagePlayer(getChat(), user, "You have joined the game! (Waiting for %d player%s)", playersNeeded, StringUtil.isPlural(playersNeeded));
+                    Chat userChat = TelegramBot.getChat(user.getId());
                 } else {
                     sendMessagePlayer(getChat(), user, "You have joined the game!");
                 }

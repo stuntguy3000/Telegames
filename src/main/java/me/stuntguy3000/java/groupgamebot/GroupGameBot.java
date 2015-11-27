@@ -30,6 +30,14 @@ public class GroupGameBot {
         new GroupGameBot().main();
     }
 
+    // TODO: Remove dependency of channels all together
+
+    /**
+     * Crazy ideas:
+     * - Matchmaking
+     * - Private/Public Matches (Joinable via IDs, or passwords)
+     * - Computer AI
+     */
     public void main() {
         instance = this;
         config = new Config();
