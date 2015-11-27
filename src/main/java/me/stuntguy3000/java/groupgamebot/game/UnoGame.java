@@ -60,28 +60,34 @@ class LobbyTimer extends TimerTask {
 
     @Override
     public void run() {
-        int timeToStart = instance.getTimeToStart();
+        LogHandler.log("Loop");
+        try {
+            int timeToStart = instance.getTimeToStart();
 
-        switch (timeToStart) {
-            case 60:
-            case 45:
-            case 30:
-            case 15:
-            case 5: {
-                SendableTextMessage message = SendableTextMessage
-                        .builder()
-                        .message("*Starting game in " + timeToStart + " seconds...")
-                        .parseMode(ParseMode.MARKDOWN)
-                        .build();
-                instance.sendMessage(instance.getChat(), message);
-                return;
+            switch (timeToStart) {
+                case 60:
+                case 45:
+                case 30:
+                case 15:
+                case 5: {
+                    SendableTextMessage message = SendableTextMessage
+                            .builder()
+                            .message("*Starting game in " + timeToStart + " seconds...")
+                            .parseMode(ParseMode.MARKDOWN)
+                            .build();
+                    instance.sendMessage(instance.getChat(), message);
+                    return;
+                }
             }
-        }
-        instance.setTimeToStart(timeToStart - 1);
+            instance.setTimeToStart(timeToStart - 1);
 
-        if (timeToStart == 0) {
-            instance.checkPlayers();
-            this.cancel();
+            if (timeToStart == 0) {
+                instance.checkPlayers();
+                this.cancel();
+            }
+        } catch (Exception ex) {
+            LogHandler.log("LoopError ");
+            ex.printStackTrace();
         }
     }
 }
