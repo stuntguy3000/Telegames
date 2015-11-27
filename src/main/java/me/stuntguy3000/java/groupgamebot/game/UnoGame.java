@@ -63,7 +63,7 @@ class LobbyTimer extends TimerTask {
     public void run() {
         int timeToStart = instance.timeToStart;
 
-        if (timeToStart == 30 || timeToStart == 20 || timeToStart == 10 || timeToStart == 5) {
+        if (timeToStart == 30 || timeToStart == 15 || timeToStart == 5) {
             SendableTextMessage message = SendableTextMessage
                     .builder()
                     .message("*Starting game in " + timeToStart + " seconds...*")
