@@ -5,6 +5,7 @@ import lombok.Setter;
 import me.stuntguy3000.java.groupgamebot.handler.TelegramGame;
 import me.stuntguy3000.java.groupgamebot.hook.TelegramHook;
 import me.stuntguy3000.java.groupgamebot.util.GameState;
+import me.stuntguy3000.java.groupgamebot.util.LogHandler;
 import me.stuntguy3000.java.groupgamebot.util.PlayerScore;
 import me.stuntguy3000.java.groupgamebot.util.StringUtil;
 import pro.zackpollard.telegrambot.api.TelegramBot;
@@ -466,6 +467,8 @@ public class UnoGame extends TelegramGame {
     }
 
     public String nextPlayerIndex() {
+        LogHandler.log("Index Before " + playerOrderIndex);
+        LogHandler.log("Index Before " + playerOrder.get(playerOrderIndex));
         if (increasePlayerIndex) {
             playerOrderIndex++;
         } else {
@@ -479,6 +482,9 @@ public class UnoGame extends TelegramGame {
         if (playerOrderIndex < 0) {
             playerOrderIndex = playerOrder.size() - 1;
         }
+
+        LogHandler.log("Index After " + playerOrderIndex);
+        LogHandler.log("Index After " + playerOrder.get(playerOrderIndex));
 
         return playerOrder.get(playerOrderIndex);
     }
