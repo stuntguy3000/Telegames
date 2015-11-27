@@ -177,7 +177,7 @@ public class UnoGame extends TelegramGame {
                         }
 
                         if (message.equals("Draw from deck")) {
-                            tryDraw(sender);
+                            drawCard(sender);
                             return;
                         }
 
@@ -195,8 +195,7 @@ public class UnoGame extends TelegramGame {
         }
     }
 
-    private void tryDraw(User sender) {
-        // TODO: Validation against rules, allow play if possible
+    private void drawCard(User sender) {
         sendPlayersMessage(SendableTextMessage.builder()
                         .message("*" + sender.getUsername() + " drew from the deck!*")
                         .parseMode(ParseMode.MARKDOWN)
@@ -217,10 +216,6 @@ public class UnoGame extends TelegramGame {
     }
 
     private void playCard(Card clickedCard, User sender) {
-        LogHandler.log(sender.getUsername() + " Playing " + clickedCard.getCardColour() + " " + clickedCard.getCardValue()
-                + " currentIndex " + getPlayerOrderIndex() + " player " + playerOrder.get(getPlayerOrderIndex()) +
-                " current " + currentPlayer);
-
         if (currentPlayer.equalsIgnoreCase(sender.getUsername())) {
             if (choosingColour) {
                 sendMessage(TelegramBot.getChat(getPlayerData(sender).getId()), "Please choose a colour.");
@@ -272,6 +267,13 @@ public class UnoGame extends TelegramGame {
                             stopGame(false);
                         } else {
                             updateScore(getPlayerData(sender));
+
+                            if (playerDecks.get(sender.getUsername()).size() == 0) {
+                                // WINNER WINNER CHICKEN DINNER
+                                winner(sender.getUsername());
+                                return;
+                            }
+
                             nextRound();
                         }
                     } else {
@@ -312,6 +314,24 @@ public class UnoGame extends TelegramGame {
         } else {
             sendMessage(TelegramBot.getChat(getPlayerData(sender).getId()), "It's not your turn.");
         }
+    }
+
+    private void winner(String username) {
+        getActivePlayers().forEach(this::updateScore);
+
+        SendableTextMessage.SendableTextMessageBuilder message = SendableTextMessage.builder()
+                .message("*===== GAME OVER =====*")
+                .message("*" + username + "* is the winner!")
+                .parseMode(ParseMode.MARKDOWN);
+
+        sendPlayersMessage(message
+                        .replyMarkup(new ReplyKeyboardHide())
+                        .build()
+        );
+        sendMessage(getChat(), message.build());
+        printScores();
+
+        GroupGameBot.getInstance().getGameHandler().stopGame(getChat(), true);
     }
 
     private void updateScore(PlayerData playerData) {
@@ -483,6 +503,7 @@ public class UnoGame extends TelegramGame {
                 deck.add(entireDeck.remove(0));
             }
             getPlayerDecks().put(playerData.getUsername(), deck);
+            updateScore(playerData);
         }
     }
 
