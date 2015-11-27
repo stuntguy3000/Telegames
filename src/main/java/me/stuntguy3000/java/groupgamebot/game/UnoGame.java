@@ -403,9 +403,10 @@ public class UnoGame extends TelegramGame {
     private void printScores() {
         sortScores();
         StringBuilder wholeMessage = new StringBuilder();
+        int playerPos = 1;
         for (int i = getActivePlayers().size() - 1; i >= 0; --i) {
             PlayerData playerData = getActivePlayers().get(i);
-            wholeMessage.append(String.format("#%d - %s (Score: %d)\n", i + 1, playerData.getUsername(), playerData.getScore()));
+            wholeMessage.append(String.format("#%d - %s (Score: %d)\n", playerPos++, playerData.getUsername(), playerData.getScore()));
         }
         sendMessage(getChat(), wholeMessage.toString());
         sendPlayersMessage(wholeMessage.toString());
