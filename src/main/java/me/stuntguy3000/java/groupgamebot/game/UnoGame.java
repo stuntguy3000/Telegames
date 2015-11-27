@@ -60,7 +60,7 @@ class LobbyTimer extends TimerTask {
 
     @Override
     public void run() {
-        int timeToStart = instance.getTimeToStart();
+        final int timeToStart = instance.getTimeToStart();
 
         switch (timeToStart) {
             case 60:
@@ -70,7 +70,7 @@ class LobbyTimer extends TimerTask {
             case 5: {
                 SendableTextMessage message = SendableTextMessage
                         .builder()
-                        .message("*Starting game in " + timeToStart + " seconds...")
+                        .message("*Starting game in " + timeToStart + " seconds...*")
                         .parseMode(ParseMode.MARKDOWN)
                         .build();
                 instance.announceTime(message);
@@ -586,7 +586,7 @@ public class UnoGame extends TelegramGame {
     }
 
     public void announceTime(SendableTextMessage message) {
-        sendMessage(getChat(), "A");
+        sendMessage(getChat(), message);
     }
 }
 
