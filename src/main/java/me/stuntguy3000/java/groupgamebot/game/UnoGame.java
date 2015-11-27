@@ -6,7 +6,6 @@ import me.stuntguy3000.java.groupgamebot.GroupGameBot;
 import me.stuntguy3000.java.groupgamebot.handler.TelegramGame;
 import me.stuntguy3000.java.groupgamebot.hook.TelegramHook;
 import me.stuntguy3000.java.groupgamebot.util.GameState;
-import me.stuntguy3000.java.groupgamebot.util.LogHandler;
 import me.stuntguy3000.java.groupgamebot.util.PlayerData;
 import me.stuntguy3000.java.groupgamebot.util.StringUtil;
 import pro.zackpollard.telegrambot.api.TelegramBot;
@@ -142,7 +141,8 @@ public class UnoGame extends TelegramGame {
                     sendMessagePlayer(getChat(), sender, "Uno Command Menu:\n" +
                             "+help - View the help menu\n" +
                             "+deck - View your deck\n" +
-                            "+scores - View the scores");
+                            "+scores - View the scores\n" +
+                            "+colour - View the colour picker");
                 } else if (command.equalsIgnoreCase("deck")) {
                     if (getGameState() == GameState.INGAME) {
                         sendDeck(getPlayerData(sender));
@@ -152,6 +152,12 @@ public class UnoGame extends TelegramGame {
                 } else if (command.equalsIgnoreCase("scores")) {
                     if (getGameState() == GameState.INGAME) {
                         printScores();
+                    } else {
+                        sendMessagePlayer(getChat(), sender, "The game has not started!");
+                    }
+                } else if (command.equalsIgnoreCase("colour") || command.equalsIgnoreCase("color")) {
+                    if (getGameState() == GameState.INGAME) {
+                        sendColourPicker(sender);
                     } else {
                         sendMessagePlayer(getChat(), sender, "The game has not started!");
                     }
@@ -532,7 +538,7 @@ public class UnoGame extends TelegramGame {
 
         TelegramBot.getChat(playerData.getId()).sendMessage(SendableTextMessage
                         .builder()
-                        .message("Here are your cards.\nCurrent card: " + getActiveCard().getText())
+                        .message("Here are your cards.")
                         .replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false))
                         .build(),
                 TelegramHook.getBot());
@@ -603,7 +609,6 @@ public class UnoGame extends TelegramGame {
     }
 
     public String nextPlayerIndex() {
-        LogHandler.log("Index Changed");
         if (increasePlayerIndex) {
             playerOrderIndex++;
         } else {
