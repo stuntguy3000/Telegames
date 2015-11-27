@@ -80,7 +80,7 @@ public abstract class TelegramGame {
         return -1;
     }
 
-    public PlayerData getPlayerScore(User user) {
+    public PlayerData getPlayerData(User user) {
         for (PlayerData playerData : activePlayers) {
             if (playerData.getUsername().equalsIgnoreCase(user.getUsername())) {
                 return playerData;
@@ -89,7 +89,7 @@ public abstract class TelegramGame {
         return null;
     }
 
-    public PlayerData getPlayerScore(String username) {
+    public PlayerData getPlayerData(String username) {
         for (PlayerData playerData : activePlayers) {
             if (username.equalsIgnoreCase(playerData.getUsername())) {
                 return playerData;
@@ -99,8 +99,8 @@ public abstract class TelegramGame {
     }
 
     public void setScore(User user, int score) {
-        activePlayers.stream().filter(playerScore -> playerScore.getUsername().equalsIgnoreCase(user.getUsername())).forEach(playerScore -> {
-            playerScore.setScore(score);
+        activePlayers.stream().filter(playerData -> playerData.getUsername().equalsIgnoreCase(user.getUsername())).forEach(playerData -> {
+            playerData.setScore(score);
         });
     }
 

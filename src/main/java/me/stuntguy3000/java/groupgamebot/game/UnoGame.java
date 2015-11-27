@@ -24,30 +24,27 @@ import java.util.stream.Collectors;
 enum CardColour {
     RED("\uD83D\uDCD5"), YELLOW("\uD83D\uDCD2"), BLUE("\uD83D\uDCD8"), GREEN("\uD83D\uDCD7"), WILD("\uD83C\uDF08");
 
+    @Getter
     String text;
 
     CardColour(String text) {
         this.text = text;
     }
-
-    String getText() {
-        return text;
-    }
 }
 
 enum CardValue {
-    ZERO("0⃣"), ONE("1⃣"), TWO("2⃣"), THREE("3⃣"), FOUR("4⃣"),
-    FIVE("5⃣"), SIX("6⃣"), SEVEN("7⃣"), EIGHT("8⃣"), NINE("9⃣"),
-    SKIP("\uD83D\uDEAB"), REVERSE("↩️"), DRAW2("Draw2"), DRAW4("Draw4"), WILD("Wild");
+    ZERO("0⃣", 0), ONE("1⃣", 1), TWO("2⃣", 2), THREE("3⃣", 3), FOUR("4⃣", 4),
+    FIVE("5⃣", 5), SIX("6⃣", 6), SEVEN("7⃣", 7), EIGHT("8⃣", 8), NINE("9⃣", 9),
+    SKIP("\uD83D\uDEAB", 20), REVERSE("↩️", 20), DRAW2("Draw2", 20), DRAW4("Draw4", 50), WILD("Wild", 50);
 
+    @Getter
     String text;
+    @Getter
+    int scoreValue;
 
-    CardValue(String text) {
+    CardValue(String text, int scoreValue) {
         this.text = text;
-    }
-
-    String getText() {
-        return text;
+        this.scoreValue = scoreValue;
     }
 }
 
@@ -148,7 +145,7 @@ public class UnoGame extends TelegramGame {
                             "+scores - View the scores");
                 } else if (command.equalsIgnoreCase("deck")) {
                     if (getGameState() == GameState.INGAME) {
-                        sendDeck(getPlayerScore(sender));
+                        sendDeck(getPlayerData(sender));
                     } else {
                         sendMessagePlayer(getChat(), sender, "The game has not started!");
                     }
@@ -205,7 +202,7 @@ public class UnoGame extends TelegramGame {
                         .parseMode(ParseMode.MARKDOWN)
                         .build()
         );
-        giveCardsFromDeck(getPlayerScore(sender), 1);
+        giveCardsFromDeck(getPlayerData(sender), 1);
         nextPlayerIndex();
         nextRound();
     }
@@ -226,7 +223,7 @@ public class UnoGame extends TelegramGame {
 
         if (currentPlayer.equalsIgnoreCase(sender.getUsername())) {
             if (choosingColour) {
-                sendMessage(TelegramBot.getChat(getPlayerScore(sender).getId()), "Please choose a colour.");
+                sendMessage(TelegramBot.getChat(getPlayerData(sender).getId()), "Please choose a colour.");
                 return;
             }
 
@@ -248,7 +245,7 @@ public class UnoGame extends TelegramGame {
                                             .build()
                             );
 
-                            giveCardsFromDeck(getPlayerScore(punishedPlayer), 2);
+                            giveCardsFromDeck(getPlayerData(punishedPlayer), 2);
                         } else if (activeCard.getCardValue() == CardValue.REVERSE) {
                             sendPlayersMessage(SendableTextMessage.builder()
                                             .message("*Player order has been reversed!*")
@@ -274,11 +271,12 @@ public class UnoGame extends TelegramGame {
                             sendPlayersMessage("Card was not removed from deck, contact @stuntguy3000");
                             stopGame(false);
                         } else {
+                            updateScore(getPlayerData(sender));
                             nextRound();
                         }
                     } else {
-                        sendMessage(TelegramBot.getChat(getPlayerScore(sender).getId()), "You have chosen an invalid card!");
-                        sendDeck(getPlayerScore(sender));
+                        sendMessage(TelegramBot.getChat(getPlayerData(sender).getId()), "You have chosen an invalid card!");
+                        sendDeck(getPlayerData(sender));
                     }
                     return;
                 }
@@ -298,21 +296,32 @@ public class UnoGame extends TelegramGame {
                                         .parseMode(ParseMode.MARKDOWN)
                                         .build()
                         );
-                        giveCardsFromDeck(getPlayerScore(punishedPlayer), 4);
+                        giveCardsFromDeck(getPlayerData(punishedPlayer), 4);
                     }
 
                     if (!removeCard(playerDecks.get(sender.getUsername()), activeCard)) {
                         sendPlayersMessage("Card was not removed from deck, contact @stuntguy3000");
                         stopGame(false);
                     } else {
+                        updateScore(getPlayerData(sender));
                         sendColourPicker(sender);
                         choosingColour = true;
                     }
                 }
             }
         } else {
-            sendMessage(TelegramBot.getChat(getPlayerScore(sender).getId()), "It's not your turn.");
+            sendMessage(TelegramBot.getChat(getPlayerData(sender).getId()), "It's not your turn.");
         }
+    }
+
+    private void updateScore(PlayerData playerData) {
+        int score = 0;
+
+        for (Card card : getPlayerDecks().get(playerData.getUsername())) {
+            score += card.getCardValue().getScoreValue();
+        }
+
+        playerData.setScore(score);
     }
 
     private void sendColourPicker(User sender) {
@@ -321,7 +330,7 @@ public class UnoGame extends TelegramGame {
         buttonList.add(Arrays.asList(
                 CardColour.RED.getText(), CardColour.BLUE.getText(), CardColour.GREEN.getText(), CardColour.YELLOW.getText()));
 
-        TelegramBot.getChat(getPlayerScore(sender).getId()).sendMessage(SendableTextMessage
+        TelegramBot.getChat(getPlayerData(sender).getId()).sendMessage(SendableTextMessage
                         .builder()
                         .message("Please choose a colour.")
                         .replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false))
@@ -368,7 +377,7 @@ public class UnoGame extends TelegramGame {
     private void printScores() {
         sortScores();
         StringBuilder wholeMessage = new StringBuilder();
-        for (int i = 0; i < getActivePlayers().size(); i++) {
+        for (int i = getActivePlayers().size() - 1; i >= 0; i++) {
             PlayerData playerData = getActivePlayers().get(i);
             wholeMessage.append(String.format("#%d - %s (Score: %d)\n", i + 1, playerData.getUsername(), playerData.getScore()));
         }
@@ -569,7 +578,7 @@ public class UnoGame extends TelegramGame {
 
         round++;
 
-        sendDeck(getPlayerScore(currentPlayer));
+        sendDeck(getPlayerData(currentPlayer));
     }
 
     public String nextPlayerIndex() {
