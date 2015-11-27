@@ -183,7 +183,8 @@ public class UnoGame extends TelegramGame {
 
     private void playCard(Card clickedCard, User sender) {
         LogHandler.log(sender.getUsername() + " Playing " + clickedCard.getCardColour() + " " + clickedCard.getCardValue()
-                + " currentIndex " + getPlayerOrderIndex() + " player " + playerOrder.get(getPlayerOrderIndex()));
+                + " currentIndex " + getPlayerOrderIndex() + " player " + playerOrder.get(getPlayerOrderIndex()) +
+                " current " + currentPlayer);
 
         if (currentPlayer.equalsIgnoreCase(sender.getUsername())) {
             if (choosingColour) {
@@ -482,8 +483,7 @@ public class UnoGame extends TelegramGame {
     }
 
     public String nextPlayerIndex() {
-        LogHandler.log("Index Before " + playerOrderIndex);
-        LogHandler.log("Index Before " + playerOrder.get(playerOrderIndex));
+        LogHandler.log("Index Changed");
         if (increasePlayerIndex) {
             playerOrderIndex++;
         } else {
@@ -497,9 +497,6 @@ public class UnoGame extends TelegramGame {
         if (playerOrderIndex < 0) {
             playerOrderIndex = playerOrder.size() - 1;
         }
-
-        LogHandler.log("Index After " + playerOrderIndex);
-        LogHandler.log("Index After " + playerOrder.get(playerOrderIndex));
 
         return playerOrder.get(playerOrderIndex);
     }
