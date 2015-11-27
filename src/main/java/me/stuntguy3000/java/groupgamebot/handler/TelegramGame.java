@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import me.stuntguy3000.java.groupgamebot.hook.TelegramHook;
 import me.stuntguy3000.java.groupgamebot.util.GameState;
-import me.stuntguy3000.java.groupgamebot.util.PlayerScore;
+import me.stuntguy3000.java.groupgamebot.util.PlayerData;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
@@ -27,7 +27,7 @@ public abstract class TelegramGame {
     private Chat chat;
     @Getter
     @Setter
-    private List<PlayerScore> activePlayers;
+    private List<PlayerData> activePlayers;
     @Getter
     @Setter
     private GameState gameState;
@@ -58,40 +58,40 @@ public abstract class TelegramGame {
     }
 
     public void addPlayer(User user) {
-        activePlayers.add(new PlayerScore(user, 0));
+        activePlayers.add(new PlayerData(user, 0));
     }
 
     public void removePlayer(User user) {
-        for (PlayerScore playerScore : new ArrayList<>(activePlayers)) {
-            if (playerScore.getUsername().equalsIgnoreCase(user.getUsername())) {
-                activePlayers.remove(playerScore);
+        for (PlayerData playerData : new ArrayList<>(activePlayers)) {
+            if (playerData.getUsername().equalsIgnoreCase(user.getUsername())) {
+                activePlayers.remove(playerData);
                 return;
             }
         }
     }
 
     public int getScore(User user) {
-        for (PlayerScore playerScore : activePlayers) {
-            if (playerScore.getUsername().equalsIgnoreCase(user.getUsername())) {
-                return playerScore.getScore();
+        for (PlayerData playerData : activePlayers) {
+            if (playerData.getUsername().equalsIgnoreCase(user.getUsername())) {
+                return playerData.getScore();
             }
         }
         return -1;
     }
 
-    public PlayerScore getPlayerScore(User user) {
-        for (PlayerScore playerScore : activePlayers) {
-            if (playerScore.getUsername().equalsIgnoreCase(user.getUsername())) {
-                return playerScore;
+    public PlayerData getPlayerScore(User user) {
+        for (PlayerData playerData : activePlayers) {
+            if (playerData.getUsername().equalsIgnoreCase(user.getUsername())) {
+                return playerData;
             }
         }
         return null;
     }
 
-    public PlayerScore getPlayerScore(String username) {
-        for (PlayerScore playerScore : activePlayers) {
-            if (username.equalsIgnoreCase(playerScore.getUsername())) {
-                return playerScore;
+    public PlayerData getPlayerScore(String username) {
+        for (PlayerData playerData : activePlayers) {
+            if (username.equalsIgnoreCase(playerData.getUsername())) {
+                return playerData;
             }
         }
         return null;
@@ -104,8 +104,8 @@ public abstract class TelegramGame {
     }
 
     public Boolean isPlayer(User user) {
-        for (PlayerScore playerScore : activePlayers) {
-            if (playerScore.getUsername().equalsIgnoreCase(user.getUsername())) {
+        for (PlayerData playerData : activePlayers) {
+            if (playerData.getUsername().equalsIgnoreCase(user.getUsername())) {
                 return true;
             }
         }
@@ -117,14 +117,14 @@ public abstract class TelegramGame {
     }
 
     public void sendPlayersMessage(String message) {
-        for (PlayerScore playerScore : activePlayers) {
-            TelegramBot.getChat(playerScore.getId()).sendMessage(message, TelegramHook.getBot());
+        for (PlayerData playerData : activePlayers) {
+            TelegramBot.getChat(playerData.getId()).sendMessage(message, TelegramHook.getBot());
         }
     }
 
     public void sendPlayersMessage(SendableTextMessage message) {
-        for (PlayerScore playerScore : activePlayers) {
-            TelegramBot.getChat(playerScore.getId()).sendMessage(message, TelegramHook.getBot());
+        for (PlayerData playerData : activePlayers) {
+            TelegramBot.getChat(playerData.getId()).sendMessage(message, TelegramHook.getBot());
         }
     }
 }

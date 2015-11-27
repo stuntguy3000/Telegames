@@ -5,7 +5,7 @@ import lombok.Setter;
 import pro.zackpollard.telegrambot.api.user.User;
 
 // @author Luke Anderson | stuntguy3000
-public class PlayerScore implements Comparable {
+public class PlayerData implements Comparable {
     @Getter
     @Setter
     private String username;
@@ -16,7 +16,7 @@ public class PlayerScore implements Comparable {
     @Setter
     private int score;
 
-    public PlayerScore(User user, int score) {
+    public PlayerData(User user, int score) {
         this.username = user.getUsername();
         this.id = user.getId();
         this.score = score;
@@ -24,22 +24,22 @@ public class PlayerScore implements Comparable {
 
     @Override
     public int compareTo(Object o) {
-        if (o instanceof PlayerScore) {
-            PlayerScore playerScore = (PlayerScore) o;
+        if (o instanceof PlayerData) {
+            PlayerData playerData = (PlayerData) o;
 
-            if (playerScore.getScore() == getScore()) {
+            if (playerData.getScore() == getScore()) {
                 return 0;
             }
 
-            if (playerScore.getScore() > getScore()) {
+            if (playerData.getScore() > getScore()) {
                 return 1;
             }
 
-            if (playerScore.getScore() < getScore()) {
+            if (playerData.getScore() < getScore()) {
                 return -1;
             }
         } else {
-            throw new IllegalArgumentException("Comparable object is not PlayerScore");
+            throw new IllegalArgumentException("Comparable object is not PlayerData");
         }
 
         return 0;

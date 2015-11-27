@@ -1,7 +1,7 @@
 package me.stuntguy3000.java.groupgamebot.handler;
 
 import me.stuntguy3000.java.groupgamebot.util.LogHandler;
-import me.stuntguy3000.java.groupgamebot.util.PlayerScore;
+import me.stuntguy3000.java.groupgamebot.util.PlayerData;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.user.User;
 
@@ -61,8 +61,8 @@ public class GameHandler {
 
     public void stopGame(Chat chat) {
         TelegramGame game = activeGames.remove(chat.getId());
-        for (PlayerScore playerScore : game.getActivePlayers()) {
-            userGames.remove(playerScore.getId());
+        for (PlayerData playerData : game.getActivePlayers()) {
+            userGames.remove(playerData.getId());
         }
         game.stopGame();
     }
