@@ -161,6 +161,7 @@ public class UnoGame extends TelegramGame {
     private void chooseColour(User sender, CardColour cardColour) {
         if (currentPlayer.equalsIgnoreCase(sender.getUsername()) && choosingColour) {
             choosingColour = false;
+            nextCardColour = cardColour;
         }
     }
 
@@ -371,6 +372,7 @@ public class UnoGame extends TelegramGame {
         fillDeck();
         fillHands();
         setActiveCard(entireDeck.remove(0));
+        setNextCardColour(getActiveCard().getCardColour());
         nextRound();
     }
 
