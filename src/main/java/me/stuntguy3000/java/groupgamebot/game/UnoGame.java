@@ -5,7 +5,6 @@ import lombok.Setter;
 import me.stuntguy3000.java.groupgamebot.handler.TelegramGame;
 import me.stuntguy3000.java.groupgamebot.hook.TelegramHook;
 import me.stuntguy3000.java.groupgamebot.util.GameState;
-import me.stuntguy3000.java.groupgamebot.util.LogHandler;
 import me.stuntguy3000.java.groupgamebot.util.PlayerScore;
 import me.stuntguy3000.java.groupgamebot.util.StringUtil;
 import pro.zackpollard.telegrambot.api.TelegramBot;
@@ -139,7 +138,6 @@ public class UnoGame extends TelegramGame {
                 }
             } else {
                 for (CardColour cardColour : CardColour.values()) {
-                    LogHandler.log(cardColour.text + ": " + String.valueOf(message.equals(cardColour.getText())));
                     if (message.equals(cardColour.getText())) {
                         chooseColour(sender, cardColour);
                         return;
@@ -161,11 +159,11 @@ public class UnoGame extends TelegramGame {
     }
 
     private void chooseColour(User sender, CardColour cardColour) {
-        LogHandler.log("Choose Colour Fired - " + choosingColour);
         if (currentPlayer.equalsIgnoreCase(sender.getUsername()) && choosingColour) {
-            LogHandler.log("Choose Colour Success");
             choosingColour = false;
             nextCardColour = cardColour;
+            nextPlayerIndex();
+            nextRound();
         }
     }
 
