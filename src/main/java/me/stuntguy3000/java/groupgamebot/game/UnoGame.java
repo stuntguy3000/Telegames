@@ -2,6 +2,7 @@ package me.stuntguy3000.java.groupgamebot.game;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.stuntguy3000.java.groupgamebot.GroupGameBot;
 import me.stuntguy3000.java.groupgamebot.handler.TelegramGame;
 import me.stuntguy3000.java.groupgamebot.hook.TelegramHook;
 import me.stuntguy3000.java.groupgamebot.util.GameState;
@@ -62,7 +63,7 @@ class LobbyTimer extends TimerTask {
     public void run() {
         int timeToStart = instance.timeToStart;
 
-        if (timeToStart == 60 || timeToStart == 45 || timeToStart == 30 || timeToStart == 15 || timeToStart == 5) {
+        if (timeToStart == 30 || timeToStart == 20 || timeToStart == 10 || timeToStart == 5) {
             SendableTextMessage message = SendableTextMessage
                     .builder()
                     .message("*Starting game in " + timeToStart + " seconds...*")
@@ -83,7 +84,7 @@ class LobbyTimer extends TimerTask {
 // @author Luke Anderson | stuntguy3000
 public class UnoGame extends TelegramGame {
 
-    public int timeToStart = 60;
+    public int timeToStart = 30;
     @Getter
     @Setter
     private int round = 1;
@@ -425,14 +426,14 @@ public class UnoGame extends TelegramGame {
                     startIngame();
                 } else {
                     sendMessage(getChat(), "There are not enough players to continue!");
-                    stopGame();
+                    GroupGameBot.getInstance().getGameHandler().stopGame(getChat());
                 }
                 return;
             }
             case INGAME: {
                 if (getMinPlayers() > getActivePlayers().size()) {
                     sendMessage(getChat(), "There are not enough players to continue!");
-                    stopGame();
+                    GroupGameBot.getInstance().getGameHandler().stopGame(getChat());
                 }
             }
         }
