@@ -428,14 +428,24 @@ public class UnoGame extends TelegramGame {
                 if (getMinPlayers() <= getActivePlayers().size()) {
                     startIngame();
                 } else {
-                    sendMessage(getChat(), "There are not enough players to continue!");
+                    SendableTextMessage message = SendableTextMessage
+                            .builder()
+                            .message("*There are not enough players to continue!*")
+                            .parseMode(ParseMode.MARKDOWN)
+                            .build();
+                    sendMessage(getChat(), (message));
                     GroupGameBot.getInstance().getGameHandler().stopGame(getChat(), true);
                 }
                 return;
             }
             case INGAME: {
                 if (getMinPlayers() > getActivePlayers().size()) {
-                    sendMessage(getChat(), "There are not enough players to continue!");
+                    SendableTextMessage message = SendableTextMessage
+                            .builder()
+                            .message("*There are not enough players to continue!*")
+                            .parseMode(ParseMode.MARKDOWN)
+                            .build();
+                    sendMessage(getChat(), (message));
                     GroupGameBot.getInstance().getGameHandler().stopGame(getChat(), false);
                 }
             }
