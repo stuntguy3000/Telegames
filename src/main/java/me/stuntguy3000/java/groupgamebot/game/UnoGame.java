@@ -228,6 +228,8 @@ public class UnoGame extends TelegramGame {
                             );
 
                             nextPlayerIndex();
+                        } else {
+                            nextPlayerIndex();
                         }
 
                         if (!removeCard(playerDecks.get(sender.getUsername()), activeCard)) {
@@ -248,6 +250,7 @@ public class UnoGame extends TelegramGame {
                     activeCard = clickedCard;
                     nextCardColour = clickedCard.getCardColour();
 
+                    nextPlayerIndex();
                     String punishedPlayer = playerOrder.get(playerOrderIndex);
                     nextPlayerIndex();
 
