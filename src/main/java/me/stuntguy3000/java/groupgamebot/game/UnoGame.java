@@ -50,6 +50,40 @@ enum CardValue {
     }
 }
 
+class LobbyTimer extends TimerTask {
+
+    private UnoGame instance;
+
+    public LobbyTimer(UnoGame instance) {
+        this.instance = instance;
+    }
+
+    @Override
+    public void run() {
+        int timeToStart = instance.getTimeToStart();
+        switch (timeToStart) {
+            case 60:
+            case 45:
+            case 30:
+            case 15:
+            case 5: {
+                SendableTextMessage message = SendableTextMessage
+                        .builder()
+                        .message("*Starting game in " + timeToStart + " seconds...(")
+                        .parseMode(ParseMode.MARKDOWN)
+                        .build();
+                instance.sendPlayersMessage(message);
+                return;
+            }
+        }
+        instance.setTimeToStart(instance.getTimeToStart() - 1);
+
+        if (timeToStart == 0) {
+            this.cancel();
+        }
+    }
+}
+
 // @author Luke Anderson | stuntguy3000
 public class UnoGame extends TelegramGame {
 
@@ -89,6 +123,9 @@ public class UnoGame extends TelegramGame {
     @Getter
     @Setter
     private boolean increasePlayerIndex = true;
+    @Getter
+    @Setter
+    private int timeToStart = 60;
 
     public UnoGame() {
         setInfo("Uno", "The classic card game Uno.");
@@ -348,6 +385,9 @@ public class UnoGame extends TelegramGame {
     public void startGame() {
         sendMessage(getChat(), "A game of Uno has been started!\nType /joingame to participate.");
         setGameState(GameState.WAITING_FOR_PLAYERS);
+
+        LobbyTimer lobbyTimer = new LobbyTimer(this);
+        new Timer().schedule(lobbyTimer, 0, 1000);
     }
 
     @Override
@@ -373,8 +413,11 @@ public class UnoGame extends TelegramGame {
             } else {
                 addPlayer(user);
                 int playersNeeded = minPlayers - getActivePlayers().size();
-                sendMessagePlayer(getChat(), user, "You have joined the game! (Waiting for %d player%s)", playersNeeded, StringUtil.isPlural(playersNeeded));
-                checkPlayers();
+                if (playersNeeded > 0) {
+                    sendMessagePlayer(getChat(), user, "You have joined the game! (Waiting for %d player%s)", playersNeeded, StringUtil.isPlural(playersNeeded));
+                } else {
+                    sendMessagePlayer(getChat(), user, "You have joined the game!");
+                }
             }
         } else {
             sendMessagePlayer(getChat(), user, "You cannot join mid-game!");
@@ -492,6 +535,7 @@ public class UnoGame extends TelegramGame {
     public void playerLeave(User user) {
         removePlayer(user);
         sendMessagePlayer(getChat(), user, "You have left the game. (Score %d)" + getScore(user));
+        checkPlayers();
     }
 
     public void nextRound() {
