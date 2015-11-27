@@ -60,24 +60,18 @@ class LobbyTimer extends TimerTask {
 
     @Override
     public void run() {
-        final int timeToStart = instance.getTimeToStart();
+        int timeToStart = instance.timeToStart;
 
-        switch (timeToStart) {
-            case 60:
-            case 45:
-            case 30:
-            case 15:
-            case 5: {
-                SendableTextMessage message = SendableTextMessage
-                        .builder()
-                        .message("*Starting game in " + timeToStart + " seconds...*")
-                        .parseMode(ParseMode.MARKDOWN)
-                        .build();
-                instance.announceTime(message);
-                return;
-            }
+        if (timeToStart == 60 || timeToStart == 45 || timeToStart == 30 || timeToStart == 15 || timeToStart == 5) {
+            SendableTextMessage message = SendableTextMessage
+                    .builder()
+                    .message("*Starting game in " + timeToStart + " seconds...*")
+                    .parseMode(ParseMode.MARKDOWN)
+                    .build();
+            instance.announceTime(message);
         }
-        instance.setTimeToStart(timeToStart - 1);
+
+        instance.timeToStart--;
 
         if (timeToStart == 0) {
             instance.checkPlayers();
@@ -89,6 +83,7 @@ class LobbyTimer extends TimerTask {
 // @author Luke Anderson | stuntguy3000
 public class UnoGame extends TelegramGame {
 
+    public int timeToStart = 60;
     @Getter
     @Setter
     private int round = 1;
@@ -125,9 +120,6 @@ public class UnoGame extends TelegramGame {
     @Getter
     @Setter
     private boolean increasePlayerIndex = true;
-    @Getter
-    @Setter
-    private int timeToStart = 60;
 
     public UnoGame() {
         setInfo("Uno", "The classic card game Uno.");
