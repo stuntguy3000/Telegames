@@ -204,7 +204,7 @@ public class UnoGame extends TelegramGame {
                             String punishedPlayer = nextPlayerIndex();
 
                             sendPlayersMessage(SendableTextMessage.builder()
-                                            .message("*" + punishedPlayer + " has been given four cards!*")
+                                            .message("*" + punishedPlayer + " has been skipped!*")
                                             .parseMode(ParseMode.MARKDOWN)
                                             .build()
                             );
