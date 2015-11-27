@@ -167,13 +167,13 @@ public class UnoGame extends TelegramGame {
     }
 
     private void tryDraw(User sender) {
-        giveCardsFromDeck(getPlayerScore(sender), 1);
         // TODO: Validation against rules, allow play if possible
         sendPlayersMessage(SendableTextMessage.builder()
                         .message("*" + sender.getUsername() + " drew from the deck!*")
                         .parseMode(ParseMode.MARKDOWN)
                         .build()
         );
+        giveCardsFromDeck(getPlayerScore(sender), 1);
         nextPlayerIndex();
         nextRound();
     }
@@ -441,6 +441,10 @@ public class UnoGame extends TelegramGame {
             index++;
         }
 
+        if (row.size() > 0) {
+            buttonList.add(new ArrayList<>(row));
+        }
+        
         buttonList.add(Arrays.asList("Draw from deck", "Your Score: " + playerData.getScore()));
 
         TelegramBot.getChat(playerData.getId()).sendMessage(SendableTextMessage
