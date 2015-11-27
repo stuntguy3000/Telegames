@@ -200,6 +200,7 @@ public class UnoGame extends TelegramGame {
                             String punishedPlayer = nextPlayerIndex();
                             nextPlayerIndex();
 
+                            LogHandler.log("D2: " + punishedPlayer + " | " + sender.getUsername());
                             sendPlayersMessage(SendableTextMessage.builder()
                                             .message("*" + punishedPlayer + " has been given two cards!*")
                                             .parseMode(ParseMode.MARKDOWN)
@@ -216,6 +217,8 @@ public class UnoGame extends TelegramGame {
                             increasePlayerIndex = !increasePlayerIndex;
                         } else if (activeCard.getCardValue() == CardValue.SKIP) {
                             String punishedPlayer = nextPlayerIndex();
+
+                            LogHandler.log("S: " + punishedPlayer + " | " + sender.getUsername());
 
                             sendPlayersMessage(SendableTextMessage.builder()
                                             .message("*" + punishedPlayer + " has been skipped!*")
