@@ -1,11 +1,11 @@
-package me.stuntguy3000.java.groupgamebot.hook;
+package me.stuntguy3000.java.telegames.hook;
 
 import lombok.Getter;
-import me.stuntguy3000.java.groupgamebot.GroupGameBot;
-import me.stuntguy3000.java.groupgamebot.command.*;
-import me.stuntguy3000.java.groupgamebot.handler.TelegramGame;
-import me.stuntguy3000.java.groupgamebot.util.ClassGetter;
-import me.stuntguy3000.java.groupgamebot.util.LogHandler;
+import me.stuntguy3000.java.telegames.Telegames;
+import me.stuntguy3000.java.telegames.command.*;
+import me.stuntguy3000.java.telegames.handler.TelegramGame;
+import me.stuntguy3000.java.telegames.util.ClassGetter;
+import me.stuntguy3000.java.telegames.util.LogHandler;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.event.Listener;
 import pro.zackpollard.telegrambot.api.event.chat.ParticipantJoinGroupChatEvent;
@@ -20,9 +20,9 @@ public class TelegramHook implements Listener {
     @Getter
     private static TelegramBot bot;
     @Getter
-    private final GroupGameBot instance;
+    private final Telegames instance;
 
-    public TelegramHook(String authKey, GroupGameBot instance) {
+    public TelegramHook(String authKey, Telegames instance) {
         this.instance = instance;
 
         bot = TelegramBot.login(authKey);
@@ -30,14 +30,14 @@ public class TelegramHook implements Listener {
         bot.getEventsManager().register(this);
         LogHandler.log("Connected to Telegram.");
 
-        instance.sendToAdmins("Bot has connected, running build #" + GroupGameBot.BUILD);
+        instance.sendToAdmins("Bot has connected, running build #" + Telegames.BUILD);
 
         this.initializeCommands();
         this.initializeGames();
     }
 
     private void initializeGames() {
-        List<Class<?>> allGames = ClassGetter.getClassesForPackage("me.stuntguy3000.java.groupgamebot.game.");
+        List<Class<?>> allGames = ClassGetter.getClassesForPackage("me.stuntguy3000.java.telegames.game.");
         for (Class<?> clazz : allGames) {
             if (TelegramGame.class.isAssignableFrom(clazz)) {
                 try {
@@ -80,8 +80,8 @@ public class TelegramHook implements Listener {
 
     @Override
     public void onParticipantJoinGroupChat(ParticipantJoinGroupChatEvent event) {
-        if (event.getParticipant().getUsername().equals("GroupGameBot")) {
-            event.getChat().sendMessage("Thank you for using GroupGameBot by @stuntguy3000.\n\n" +
+        if (event.getParticipant().getUsername().equals("Telegames")) {
+            event.getChat().sendMessage("Thank you for using Telegames by @stuntguy3000.\n\n" +
                     "Please be advised, This bot will read all messages sent to the group. " +
                     "This is required as games use custom command prefixes not recognised by Telegram. No messages are recorded.",
                     getBot());

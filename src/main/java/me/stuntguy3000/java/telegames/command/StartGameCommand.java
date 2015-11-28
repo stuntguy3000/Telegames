@@ -1,13 +1,13 @@
-package me.stuntguy3000.java.groupgamebot.command;
+package me.stuntguy3000.java.telegames.command;
 
-import me.stuntguy3000.java.groupgamebot.GroupGameBot;
-import me.stuntguy3000.java.groupgamebot.handler.TelegramGame;
+import me.stuntguy3000.java.telegames.Telegames;
+import me.stuntguy3000.java.telegames.handler.TelegramGame;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
 
 // @author Luke Anderson | stuntguy3000
 public class StartGameCommand extends TelegramCommand {
-    public StartGameCommand(GroupGameBot instance) {
+    public StartGameCommand(Telegames instance) {
         super(instance, "startgame", "/startgame <game> Start a game");
     }
 

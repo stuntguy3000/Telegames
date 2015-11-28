@@ -1,12 +1,12 @@
-package me.stuntguy3000.java.groupgamebot.command;
+package me.stuntguy3000.java.telegames.command;
 
-import me.stuntguy3000.java.groupgamebot.GroupGameBot;
+import me.stuntguy3000.java.telegames.Telegames;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
 
 // @author Luke Anderson | stuntguy3000
 public class GameListCommand extends TelegramCommand {
-    public GameListCommand(GroupGameBot instance) {
+    public GameListCommand(Telegames instance) {
         super(instance, "gamelist", "/gamelist List all available games.");
     }
 

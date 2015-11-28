@@ -1,7 +1,7 @@
-package me.stuntguy3000.java.groupgamebot.handler;
+package me.stuntguy3000.java.telegames.handler;
 
-import me.stuntguy3000.java.groupgamebot.util.LogHandler;
-import me.stuntguy3000.java.groupgamebot.util.PlayerData;
+import me.stuntguy3000.java.telegames.util.LogHandler;
+import me.stuntguy3000.java.telegames.util.PlayerData;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.user.User;
 

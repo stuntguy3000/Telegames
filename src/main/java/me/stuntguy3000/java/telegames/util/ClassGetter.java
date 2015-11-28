@@ -1,6 +1,6 @@
-package me.stuntguy3000.java.groupgamebot.util;
+package me.stuntguy3000.java.telegames.util;
 
-import me.stuntguy3000.java.groupgamebot.GroupGameBot;
+import me.stuntguy3000.java.telegames.Telegames;
 
 import java.io.IOException;
 import java.net.URL;
@@ -24,7 +24,7 @@ public class ClassGetter {
         // String relPath = pkgname.replace('.', '/');
 
         // Get a File object for the package
-        CodeSource src = GroupGameBot.getInstance().getClass().getProtectionDomain().getCodeSource();
+        CodeSource src = Telegames.getInstance().getClass().getProtectionDomain().getCodeSource();
         if (src != null) {
             URL resource = src.getLocation();
             resource.getPath();

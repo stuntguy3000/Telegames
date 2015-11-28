@@ -1,13 +1,13 @@
-package me.stuntguy3000.java.groupgamebot.command;
+package me.stuntguy3000.java.telegames.command;
 
-import me.stuntguy3000.java.groupgamebot.GroupGameBot;
-import me.stuntguy3000.java.groupgamebot.handler.TelegramGame;
+import me.stuntguy3000.java.telegames.Telegames;
+import me.stuntguy3000.java.telegames.handler.TelegramGame;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
 
 // @author Luke Anderson | stuntguy3000
 public class StatusCommand extends TelegramCommand {
-    public StatusCommand(GroupGameBot instance) {
+    public StatusCommand(Telegames instance) {
         super(instance, "status", "/status Get the status of the channel");
     }
 

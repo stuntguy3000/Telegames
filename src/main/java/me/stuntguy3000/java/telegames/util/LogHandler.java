@@ -1,4 +1,4 @@
-package me.stuntguy3000.java.groupgamebot.util;
+package me.stuntguy3000.java.telegames.util;
 
 /**
  * Created by amir on 2015-11-25.

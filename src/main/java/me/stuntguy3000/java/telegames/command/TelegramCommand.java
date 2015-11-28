@@ -1,21 +1,21 @@
-package me.stuntguy3000.java.groupgamebot.command;
+package me.stuntguy3000.java.telegames.command;
 
 import lombok.Getter;
-import me.stuntguy3000.java.groupgamebot.GroupGameBot;
-import me.stuntguy3000.java.groupgamebot.hook.TelegramHook;
+import me.stuntguy3000.java.telegames.Telegames;
+import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableMessage;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
 
 public abstract class TelegramCommand {
     @Getter
-    private final GroupGameBot instance;
+    private final Telegames instance;
     @Getter
     private final String name;
     @Getter
     private final String description;
 
-    public TelegramCommand(GroupGameBot instance, String name, String description) {
+    public TelegramCommand(Telegames instance, String name, String description) {
         this.instance = instance;
         this.name = name;
         this.description = description;

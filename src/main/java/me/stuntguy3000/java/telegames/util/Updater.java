@@ -1,8 +1,8 @@
-package me.stuntguy3000.java.groupgamebot.util;
+package me.stuntguy3000.java.telegames.util;
 
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import me.stuntguy3000.java.groupgamebot.GroupGameBot;
+import me.stuntguy3000.java.telegames.Telegames;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -14,22 +14,22 @@ import java.net.URL;
  */
 public class Updater implements Runnable {
 
-    GroupGameBot instance;
+    Telegames instance;
 
-    public Updater(GroupGameBot instance) {
+    public Updater(Telegames instance) {
         this.instance = instance;
     }
 
     @Override
     public void run() {
         File build = new File("build");
-        File jar = new File("GroupGameBot.new");
-        int currentBuild = GroupGameBot.BUILD;
+        File jar = new File("Telegames.new");
+        int currentBuild = Telegames.BUILD;
         int newBuild = 0;
 
         while (true) {
             try {
-                newBuild = Integer.parseInt(Unirest.get("http://ci.zackpollard.pro/job/GroupGameBot/lastSuccessfulBuild/buildNumber").asString().getBody());
+                newBuild = Integer.parseInt(Unirest.get("http://ci.zackpollard.pro/job/Telegames/lastSuccessfulBuild/buildNumber").asString().getBody());
             } catch (UnirestException e) {
                 e.printStackTrace();
             }
@@ -38,7 +38,7 @@ public class Updater implements Runnable {
                 instance.sendToAdmins("Downloading build #" + newBuild);
                 try {
                     FileUtils.writeStringToFile(build, String.valueOf(newBuild));
-                    FileUtils.copyURLToFile(new URL("http://ci.zackpollard.pro/job/GroupGameBot/lastSuccessfulBuild/artifact/target/GroupGameBot.jar"), jar);
+                    FileUtils.copyURLToFile(new URL("http://ci.zackpollard.pro/job/Telegames/lastSuccessfulBuild/artifact/target/Telegames.jar"), jar);
                     LogHandler.log("Build #" + newBuild + " downloaded. Restarting...");
                     instance.sendToAdmins("Build #" + newBuild + " downloaded. Restarting...");
                 } catch (IOException e) {

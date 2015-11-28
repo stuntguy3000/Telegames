@@ -1,12 +1,12 @@
-package me.stuntguy3000.java.groupgamebot;
+package me.stuntguy3000.java.telegames;
 
 import lombok.Getter;
-import me.stuntguy3000.java.groupgamebot.handler.CommandHandler;
-import me.stuntguy3000.java.groupgamebot.handler.GameHandler;
-import me.stuntguy3000.java.groupgamebot.hook.TelegramHook;
-import me.stuntguy3000.java.groupgamebot.util.Config;
-import me.stuntguy3000.java.groupgamebot.util.LogHandler;
-import me.stuntguy3000.java.groupgamebot.util.Updater;
+import me.stuntguy3000.java.telegames.handler.CommandHandler;
+import me.stuntguy3000.java.telegames.handler.GameHandler;
+import me.stuntguy3000.java.telegames.hook.TelegramHook;
+import me.stuntguy3000.java.telegames.util.Config;
+import me.stuntguy3000.java.telegames.util.LogHandler;
+import me.stuntguy3000.java.telegames.util.Updater;
 import org.apache.commons.io.FileUtils;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 
@@ -15,10 +15,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 // @author Luke Anderson | stuntguy3000
-public class GroupGameBot {
+public class Telegames {
     public static Integer BUILD = 0;
     @Getter
-    public static GroupGameBot instance;
+    public static Telegames instance;
     @Getter
     private Config config;
     @Getter
@@ -27,7 +27,7 @@ public class GroupGameBot {
     private GameHandler gameHandler = new GameHandler();
 
     public static void main(String[] args) {
-        new GroupGameBot().main();
+        new Telegames().main();
     }
 
     // TODO: Remove dependency of channels all together

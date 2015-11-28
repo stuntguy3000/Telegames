@@ -1,13 +1,13 @@
-package me.stuntguy3000.java.groupgamebot.command;
+package me.stuntguy3000.java.telegames.command;
 
-import me.stuntguy3000.java.groupgamebot.GroupGameBot;
-import me.stuntguy3000.java.groupgamebot.handler.TelegramGame;
+import me.stuntguy3000.java.telegames.Telegames;
+import me.stuntguy3000.java.telegames.handler.TelegramGame;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
 
 // @author Luke Anderson | stuntguy3000
 public class StopGameCommand extends TelegramCommand {
-    public StopGameCommand(GroupGameBot instance) {
+    public StopGameCommand(Telegames instance) {
         super(instance, "stopgame", "/stopgame Stop the current game");
     }
 

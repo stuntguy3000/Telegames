@@ -1,15 +1,15 @@
-package me.stuntguy3000.java.groupgamebot.command;
+package me.stuntguy3000.java.telegames.command;
 
-import me.stuntguy3000.java.groupgamebot.GroupGameBot;
-import me.stuntguy3000.java.groupgamebot.hook.TelegramHook;
-import me.stuntguy3000.java.groupgamebot.util.BotSettings;
+import me.stuntguy3000.java.telegames.Telegames;
+import me.stuntguy3000.java.telegames.hook.TelegramHook;
+import me.stuntguy3000.java.telegames.util.BotSettings;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
 import pro.zackpollard.telegrambot.api.user.User;
 
 // @author Luke Anderson | stuntguy3000
 public class AdminCommand extends TelegramCommand {
-    public AdminCommand(GroupGameBot instance) {
+    public AdminCommand(Telegames instance) {
         super(instance, "admin", "");
     }
 

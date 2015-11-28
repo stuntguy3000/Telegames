@@ -1,4 +1,4 @@
-package me.stuntguy3000.java.groupgamebot.util;
+package me.stuntguy3000.java.telegames.util;
 
 public enum GameState {
     /*

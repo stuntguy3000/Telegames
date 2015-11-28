@@ -1,6 +1,6 @@
-package me.stuntguy3000.java.groupgamebot.game;
+package me.stuntguy3000.java.telegames.game;
 
-import me.stuntguy3000.java.groupgamebot.handler.TelegramGame;
+import me.stuntguy3000.java.telegames.handler.TelegramGame;
 import pro.zackpollard.telegrambot.api.event.chat.message.TextMessageReceivedEvent;
 import pro.zackpollard.telegrambot.api.user.User;
 
@@ -38,7 +38,7 @@ public class TicTacToe extends TelegramGame {
 
     @Override
     public String getHelp() {
-        return "The objective is simple, make your symbol in a row of 3 to win.\n\nMessage @GroupGameBot +help while ingame for a list of commands.";
+        return "The objective is simple, make your symbol in a row of 3 to win.\n\nMessage @Telegames +help while ingame for a list of commands.";
     }
 }
     

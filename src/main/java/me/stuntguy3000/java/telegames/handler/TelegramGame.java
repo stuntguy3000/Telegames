@@ -1,10 +1,10 @@
-package me.stuntguy3000.java.groupgamebot.handler;
+package me.stuntguy3000.java.telegames.handler;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.stuntguy3000.java.groupgamebot.hook.TelegramHook;
-import me.stuntguy3000.java.groupgamebot.util.GameState;
-import me.stuntguy3000.java.groupgamebot.util.PlayerData;
+import me.stuntguy3000.java.telegames.hook.TelegramHook;
+import me.stuntguy3000.java.telegames.util.GameState;
+import me.stuntguy3000.java.telegames.util.PlayerData;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;

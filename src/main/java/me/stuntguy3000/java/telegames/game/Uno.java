@@ -1,13 +1,13 @@
-package me.stuntguy3000.java.groupgamebot.game;
+package me.stuntguy3000.java.telegames.game;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.stuntguy3000.java.groupgamebot.GroupGameBot;
-import me.stuntguy3000.java.groupgamebot.handler.TelegramGame;
-import me.stuntguy3000.java.groupgamebot.hook.TelegramHook;
-import me.stuntguy3000.java.groupgamebot.util.GameState;
-import me.stuntguy3000.java.groupgamebot.util.PlayerData;
-import me.stuntguy3000.java.groupgamebot.util.StringUtil;
+import me.stuntguy3000.java.telegames.Telegames;
+import me.stuntguy3000.java.telegames.handler.TelegramGame;
+import me.stuntguy3000.java.telegames.hook.TelegramHook;
+import me.stuntguy3000.java.telegames.util.GameState;
+import me.stuntguy3000.java.telegames.util.PlayerData;
+import me.stuntguy3000.java.telegames.util.StringUtil;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
@@ -125,7 +125,7 @@ public class Uno extends TelegramGame {
 
     @Override
     public String getHelp() {
-        return "The classic card game Uno brought to Telegram.\n\nMessage @GroupGameBot +help while ingame for a list of commands.";
+        return "The classic card game Uno brought to Telegram.\n\nMessage @Telegames +help while ingame for a list of commands.";
     }
 
     @Override
@@ -339,7 +339,7 @@ public class Uno extends TelegramGame {
         sendMessage(getChat(), message.build());
         printScores();
 
-        GroupGameBot.getInstance().getGameHandler().stopGame(getChat(), true);
+        Telegames.getInstance().getGameHandler().stopGame(getChat(), true);
     }
 
     private void updateScore(PlayerData playerData) {
@@ -470,7 +470,7 @@ public class Uno extends TelegramGame {
                             .parseMode(ParseMode.MARKDOWN)
                             .build();
                     sendMessage(getChat(), (message));
-                    GroupGameBot.getInstance().getGameHandler().stopGame(getChat(), true);
+                    Telegames.getInstance().getGameHandler().stopGame(getChat(), true);
                 }
                 return;
             }
@@ -482,7 +482,7 @@ public class Uno extends TelegramGame {
                             .parseMode(ParseMode.MARKDOWN)
                             .build();
                     sendMessage(getChat(), (message));
-                    GroupGameBot.getInstance().getGameHandler().stopGame(getChat(), false);
+                    Telegames.getInstance().getGameHandler().stopGame(getChat(), false);
                 }
             }
         }

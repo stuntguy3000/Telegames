@@ -1,4 +1,4 @@
-package me.stuntguy3000.java.groupgamebot.util;
+package me.stuntguy3000.java.telegames.util;
 
 // @author Luke Anderson | stuntguy3000
 public class StringUtil {
