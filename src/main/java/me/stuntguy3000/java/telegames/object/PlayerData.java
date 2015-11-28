@@ -1,8 +1,7 @@
-package me.stuntguy3000.java.telegames.util;
+package me.stuntguy3000.java.telegames.object;
 
 import lombok.Getter;
 import lombok.Setter;
-import pro.zackpollard.telegrambot.api.user.User;
 
 // @author Luke Anderson | stuntguy3000
 public class PlayerData implements Comparable {
@@ -16,9 +15,9 @@ public class PlayerData implements Comparable {
     @Setter
     private int score;
 
-    public PlayerData(User user, int score) {
-        this.username = user.getUsername();
-        this.id = user.getId();
+    public PlayerData(Player player, int score) {
+        this.username = player.getUsername();
+        this.id = player.getUserID();
         this.score = score;
     }
 

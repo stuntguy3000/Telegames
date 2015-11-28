@@ -1,6 +1,6 @@
 package me.stuntguy3000.java.telegames.handler;
 
-import me.stuntguy3000.java.telegames.command.TelegramCommand;
+import me.stuntguy3000.java.telegames.object.Command;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
 
 import java.util.HashMap;
@@ -9,25 +9,25 @@ import java.util.HashMap;
  * Created by amir on 2015-11-25.
  */
 public class CommandHandler {
-    public HashMap<String, TelegramCommand> commands;
+    public HashMap<String, Command> commands;
 
     public CommandHandler() {
         commands = new HashMap<>();
     }
 
-    public void registerCommand(TelegramCommand cmd) {
+    public void registerCommand(Command cmd) {
         commands.put(cmd.getName().toLowerCase(), cmd);
     }
 
     public void executeCommand(String s, CommandMessageReceivedEvent event) {
-        TelegramCommand cmd = commands.get(s.toLowerCase());
+        Command cmd = commands.get(s.toLowerCase());
         if (cmd == null) return;
         cmd.processCommand(event);
     }
 
     public String getBotFatherString() {
         StringBuilder sb = new StringBuilder();
-        for (TelegramCommand cmd : commands.values()) {
+        for (Command cmd : commands.values()) {
             sb
                     .append(cmd.createBotFatherString())
                     .append("\n");

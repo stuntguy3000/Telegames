@@ -1,18 +1,19 @@
-package me.stuntguy3000.java.telegames.util;
+package me.stuntguy3000.java.telegames.handler;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.Getter;
+import me.stuntguy3000.java.telegames.object.BotSettings;
 
 import java.io.*;
 
 // @author Luke Anderson | stuntguy3000
-public class Config {
+public class ConfigHandler {
 
     @Getter
     private final BotSettings botSettings;
 
-    public Config() {
+    public ConfigHandler() {
         Gson gson = new Gson();
         File configFile = new File("config.json");
 
@@ -31,9 +32,9 @@ public class Config {
             GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
             gson = builder.create();
             String json = gson.toJson(botSettings);
-    
+
             FileOutputStream outputStream;
-    
+
             try {
                 configFile.createNewFile();
                 outputStream = new FileOutputStream(configFile);

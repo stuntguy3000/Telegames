@@ -1,4 +1,4 @@
-package me.stuntguy3000.java.telegames.util;
+package me.stuntguy3000.java.telegames.handler;
 
 /**
  * Created by amir on 2015-11-25.

@@ -1,4 +1,4 @@
-package me.stuntguy3000.java.telegames.command;
+package me.stuntguy3000.java.telegames.object;
 
 import lombok.Getter;
 import me.stuntguy3000.java.telegames.Telegames;
@@ -7,7 +7,7 @@ import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableMessage;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
 
-public abstract class TelegramCommand {
+public abstract class Command {
     @Getter
     private final Telegames instance;
     @Getter
@@ -15,7 +15,7 @@ public abstract class TelegramCommand {
     @Getter
     private final String description;
 
-    public TelegramCommand(Telegames instance, String name, String description) {
+    public Command(Telegames instance, String name, String description) {
         this.instance = instance;
         this.name = name;
         this.description = description;

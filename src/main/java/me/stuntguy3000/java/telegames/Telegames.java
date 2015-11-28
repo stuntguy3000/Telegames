@@ -1,12 +1,10 @@
 package me.stuntguy3000.java.telegames;
 
 import lombok.Getter;
-import me.stuntguy3000.java.telegames.handler.CommandHandler;
-import me.stuntguy3000.java.telegames.handler.GameHandler;
+import me.stuntguy3000.java.telegames.handler.*;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
-import me.stuntguy3000.java.telegames.util.Config;
-import me.stuntguy3000.java.telegames.util.LogHandler;
-import me.stuntguy3000.java.telegames.util.Updater;
+import me.stuntguy3000.java.telegames.object.Lobby;
+import me.stuntguy3000.java.telegames.util.RandomString;
 import org.apache.commons.io.FileUtils;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 
@@ -16,15 +14,19 @@ import java.io.PrintWriter;
 
 // @author Luke Anderson | stuntguy3000
 public class Telegames {
-    public static Integer BUILD = 0;
+    public static int BUILD = 0;
     @Getter
     public static Telegames instance;
     @Getter
-    private Config config;
+    private ConfigHandler configHandler;
     @Getter
     private CommandHandler commandHandler = new CommandHandler();
     @Getter
     private GameHandler gameHandler = new GameHandler();
+    @Getter
+    private LobbyHandler lobbyHandler = new LobbyHandler();
+    @Getter
+    private RandomString randomString = new RandomString(5);
 
     public static void main(String[] args) {
         new Telegames().main();
@@ -40,7 +42,7 @@ public class Telegames {
      */
     public void main() {
         instance = this;
-        config = new Config();
+        configHandler = new ConfigHandler();
 
         File build = new File("build");
 
@@ -61,11 +63,16 @@ public class Telegames {
             e.printStackTrace();
         }
 
+
+        LogHandler.log("======================================");
+        LogHandler.log(" Telegames build " + BUILD + " by @stuntguy3000");
+        LogHandler.log("======================================");
+
         connectTelegram();
 
-        if (getConfig().getBotSettings().getAutoUpdater()) {
+        if (this.getConfigHandler().getBotSettings().getAutoUpdater()) {
             LogHandler.log("Starting auto updater...");
-            new Thread(new Updater(this)).start();
+            new Thread(new UpdateHandler(this)).start();
         } else {
             LogHandler.log("** Auto Updater is set to false **");
         }
@@ -73,9 +80,22 @@ public class Telegames {
         while (true) {
             String in = System.console().readLine();
             switch (in.toLowerCase()) {
-                default: {
-                    // TODO: Add Console Commands
-                    LogHandler.log("");
+                case "list": {
+                    LogHandler.log("Lobby List:");
+
+                    for (Lobby lobby : lobbyHandler.getActiveLobbies().values()) {
+                        LogHandler.log(String.format("ID: %s Owner: %s", lobby.getLobbyID(), lobby.getLobbyOwner().getUsername()));
+                    }
+                    continue;
+                }
+                case "botfather": {
+                    LogHandler.log(getCommandHandler().getBotFatherString());
+                    continue;
+                }
+                case "quit":
+                case "stop":
+                case "exit": {
+                    System.exit(0);
                 }
             }
         }
@@ -83,11 +103,11 @@ public class Telegames {
 
     private void connectTelegram() {
         LogHandler.log("Connecting to Telegram...");
-        new TelegramHook(config.getBotSettings().getTelegramKey(), this);
+        new TelegramHook(configHandler.getBotSettings().getTelegramKey(), this);
     }
 
     public void sendToAdmins(String message) {
-        for (int admin : config.getBotSettings().getTelegramAdmins()) {
+        for (int admin : configHandler.getBotSettings().getTelegramAdmins()) {
             TelegramBot.getChat(admin).sendMessage(message, TelegramHook.getBot());
         }
     }

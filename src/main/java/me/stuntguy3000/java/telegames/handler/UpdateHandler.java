@@ -1,4 +1,4 @@
-package me.stuntguy3000.java.telegames.util;
+package me.stuntguy3000.java.telegames.handler;
 
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -12,11 +12,11 @@ import java.net.URL;
 /**
  * Created by bo0tzz
  */
-public class Updater implements Runnable {
+public class UpdateHandler implements Runnable {
 
     Telegames instance;
 
-    public Updater(Telegames instance) {
+    public UpdateHandler(Telegames instance) {
         this.instance = instance;
     }
 

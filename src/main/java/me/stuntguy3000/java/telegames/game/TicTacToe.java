@@ -1,11 +1,11 @@
 package me.stuntguy3000.java.telegames.game;
 
-import me.stuntguy3000.java.telegames.handler.TelegramGame;
+import me.stuntguy3000.java.telegames.object.Game;
+import me.stuntguy3000.java.telegames.object.Player;
 import pro.zackpollard.telegrambot.api.event.chat.message.TextMessageReceivedEvent;
-import pro.zackpollard.telegrambot.api.user.User;
 
 // @author Luke Anderson | stuntguy3000
-public class TicTacToe extends TelegramGame {
+public class TicTacToe extends Game {
 
     public TicTacToe() {
         setInfo("TicTacToe", "TicTacToe, exactly as you love it.");
@@ -17,8 +17,8 @@ public class TicTacToe extends TelegramGame {
     }
 
     @Override
-    public void startGame() {
-
+    public boolean startGame() {
+        return false;
     }
 
     @Override
@@ -27,17 +27,17 @@ public class TicTacToe extends TelegramGame {
     }
 
     @Override
-    public void playerJoin(User user) {
+    public boolean playerJoin(Player player, boolean silent) {
+        return false;
+    }
+
+    @Override
+    public void playerLeave(Player player, boolean silent) {
 
     }
 
     @Override
-    public void playerLeave(User user) {
-
-    }
-
-    @Override
-    public String getHelp() {
+    public String getGameHelp() {
         return "The objective is simple, make your symbol in a row of 3 to win.\n\nMessage @Telegames +help while ingame for a list of commands.";
     }
 }
