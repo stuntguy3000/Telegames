@@ -601,8 +601,7 @@ public class Uno extends Game {
         if (secondsSincePlay == 20) {
             getLobby().sendMessage(
                     SendableTextMessage.builder()
-                            .message("*Please play a card @" + currentPlayer + "!*")
-                            .parseMode(ParseMode.MARKDOWN)
+                            .message("Please play a card @" + currentPlayer)
                             .build()
             );
         } else if (secondsSincePlay == 30) {
