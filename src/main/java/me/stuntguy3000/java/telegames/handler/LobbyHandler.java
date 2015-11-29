@@ -109,7 +109,7 @@ public class LobbyHandler {
                 }
 
                 getUserLobbies().remove(user.getId());
-                lobby.userLeave(user, true);
+                lobby.userLeave(user, false);
             } else {
                 throw new NullPointerException("User " + user.getUsername() + " is not in a lobby!");
             }
