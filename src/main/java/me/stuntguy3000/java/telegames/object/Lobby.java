@@ -108,16 +108,8 @@ public class Lobby {
      *
      * @param user User the user who joined the Lobby
      */
-    public void userJoin(User user, boolean silent) {
+    public void userJoin(User user) {
         getLobbyPlayers().add(new Player(user));
-
-        if (!silent) {
-            SendableTextMessage sendableTextMessage = SendableTextMessage.builder()
-                    .message("*[Lobby]* User @" + user.getUsername() + " joined this lobby!")
-                    .parseMode(ParseMode.NONE)
-                    .build();
-            sendMessage(sendableTextMessage);
-        }
     }
 
     /**
@@ -242,6 +234,16 @@ public class Lobby {
         }
 
         return null;
+    }
+
+    /**
+     * Stops the current game
+     *
+     * @param silent Boolean true to display messages
+     */
+    public void stopGame(boolean silent) {
+        getCurrentGame().stopGame(silent);
+        setCurrentGame(null);
     }
 }
     

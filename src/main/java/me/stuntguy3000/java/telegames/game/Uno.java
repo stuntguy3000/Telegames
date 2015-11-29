@@ -1,7 +1,6 @@
 package me.stuntguy3000.java.telegames.game;
 
 import lombok.Getter;
-import lombok.Setter;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Game;
 import me.stuntguy3000.java.telegames.object.Player;
@@ -47,45 +46,38 @@ enum CardValue {
     }
 }
 
+class GameTimer extends TimerTask {
+
+    private Uno instance;
+
+    public GameTimer(Uno instance) {
+        this.instance = instance;
+        new Timer().schedule(this, 0, 1000);
+    }
+
+    @Override
+    public void run() {
+        instance.onSecond();
+    }
+}
+
 // @author Luke Anderson | stuntguy3000
 public class Uno extends Game {
 
-    @Getter
-    @Setter
     private int round = 1;
-    @Getter
-    @Setter
     private int minPlayers = 2;
-    @Getter
-    @Setter
+    private int secondsSincePlay = 0;
     private List<String> playerOrder = new ArrayList<>();
-    @Getter
-    @Setter
     private int playerOrderIndex = 0;
-    @Getter
-    @Setter
     private String currentPlayer;
-    @Getter
-    @Setter
-    private List<Card> entireDeck = new ArrayList<>();
-    @Getter
-    @Setter
-    private List<Card> playedCards = new ArrayList<>();
-    @Getter
-    @Setter
-    private Card activeCard;
-    @Getter
-    @Setter
+    private List<UnoCard> entireDeck = new ArrayList<>();
+    private List<UnoCard> playedUnoCards = new ArrayList<>();
+    private UnoCard activeUnoCard;
     private CardColour nextCardColour;
-    @Getter
-    @Setter
-    private HashMap<String, List<Card>> playerDecks = new HashMap<>();
-    @Getter
-    @Setter
+    private HashMap<String, List<UnoCard>> playerDecks = new HashMap<>();
     private boolean choosingColour = false;
-    @Getter
-    @Setter
     private boolean increasePlayerIndex = true;
+    private GameTimer gameTimer;
 
     public Uno() {
         setInfo("Uno", "The classic card game Uno.");
@@ -107,78 +99,77 @@ public class Uno extends Game {
                 String[] allArgs = message.substring(1).split(" ");
                 String command = allArgs[0];
 
-                if (getLobby().isInLobby(sender.getUsername())) {
-                    if (command.equalsIgnoreCase("help")) {
-                        getLobby().sendMessage("Uno Command Menu:\n" +
-                                "+help - View the help menu\n" +
-                                "+deck - View your deck\n" +
-                                "+scores - View the scores\n" +
-                                "+colour - View the colour picker");
-                    } else if (command.equalsIgnoreCase("deck")) {
-                        if (getGameState() == GameState.INGAME) {
-                            sendDeck(getPlayerData(sender));
-                        } else {
-                            getLobby().sendMessage("The game has not started!");
-                        }
-                    } else if (command.equalsIgnoreCase("scores")) {
-                        if (getGameState() == GameState.INGAME) {
-                            printScores();
-                        } else {
-                            getLobby().sendMessage("The game has not started!");
-                        }
-                    } else if (command.equalsIgnoreCase("colour") || command.equalsIgnoreCase("color")) {
-                        if (getGameState() == GameState.INGAME) {
-                            sendColourPicker(sender);
-                        } else {
-                            getLobby().sendMessage("The game has not started!");
-                        }
+                if (command.equalsIgnoreCase("help")) {
+                    getLobby().sendMessage("Uno Command Menu:\n" +
+                            "+help - View the help menu\n" +
+                            "+deck - View your deck\n" +
+                            "+scores - View the scores\n" +
+                            "+colour - View the colour picker");
+                } else if (command.equalsIgnoreCase("deck")) {
+                    if (getGameState() == GameState.INGAME) {
+                        sendDeck(getPlayerData(sender));
+                    } else {
+                        getLobby().sendMessage("The game has not started!");
+                    }
+                } else if (command.equalsIgnoreCase("scores")) {
+                    if (getGameState() == GameState.INGAME) {
+                        printScores();
+                    } else {
+                        getLobby().sendMessage("The game has not started!");
+                    }
+                } else if (command.equalsIgnoreCase("colour") || command.equalsIgnoreCase("color")) {
+                    if (getGameState() == GameState.INGAME) {
+                        sendColourPicker(sender);
+                    } else {
+                        getLobby().sendMessage("The game has not started!");
                     }
                 }
             } else {
-                Card clickedCard = Card.getFromString(message);
-                if (clickedCard != null) {
-                    for (Card card : new ArrayList<>(playerDecks.get(sender.getUsername()))) {
-                        if (Card.isSame(card, clickedCard)) {
-                            playCard(clickedCard, sender);
+                UnoCard clickedUnoCard = UnoCard.getFromString(message);
+                if (clickedUnoCard != null) {
+                    for (UnoCard unoCard : new ArrayList<>(playerDecks.get(sender.getUsername()))) {
+                        if (UnoCard.isSame(unoCard, clickedUnoCard)) {
+                            playCard(clickedUnoCard, sender);
                             return;
                         }
                     }
                 } else {
-                    if (getLobby().isInLobby(sender.getUsername())) {
-                        for (CardColour cardColour : CardColour.values()) {
-                            if (message.equals(cardColour.getText())) {
-                                chooseColour(sender, cardColour);
-                                return;
-                            }
-                        }
-
-                        if (message.equals("Draw from deck")) {
-                            drawCard(sender);
+                    for (CardColour cardColour : CardColour.values()) {
+                        if (message.equals(cardColour.getText())) {
+                            chooseColour(sender, cardColour);
                             return;
                         }
-
-                        if (message.startsWith("Your Score:")) {
-                            getLobby().sendMessage(sender.getId(), "Please choose a card.");
-                            sendDeck(getPlayerData(sender));
-                            return;
-                        }
-
-                        getLobby().userChat(sender, message);
                     }
+
+                    if (message.equals("Draw from deck")) {
+                        drawCard(sender.getUsername());
+                        return;
+                    }
+
+                    if (message.startsWith("Your Score:")) {
+                        getLobby().sendMessage(sender.getId(), "Please choose a card.");
+                        sendDeck(getPlayerData(sender));
+                        return;
+                    }
+
+                    getLobby().userChat(sender, message);
                 }
             }
         }
     }
 
-    private void drawCard(User sender) {
-        getLobby().sendMessage(SendableTextMessage.builder()
-                        .message("*" + sender.getUsername() + " drew from the deck!*")
-                        .parseMode(ParseMode.MARKDOWN)
-                        .build()
-        );
-        giveCardsFromDeck(getPlayerData(sender), 1);
-        nextPlayerIndex();
-        nextRound();
+    private void drawCard(String username) {
+        if (currentPlayer.equalsIgnoreCase(username)) {
+            getLobby().sendMessage(SendableTextMessage.builder()
+                            .message("*" + username + " drew from the deck!*")
+                            .parseMode(ParseMode.MARKDOWN)
+                            .replyMarkup(new ReplyKeyboardHide())
+                            .build()
+            );
+            giveCardsFromDeck(getPlayerData(username), 1);
+            nextPlayerIndex();
+            nextRound();
+        }
     }
 
     private void chooseColour(User sender, CardColour cardColour) {
@@ -190,25 +181,26 @@ public class Uno extends Game {
         }
     }
 
-    private void playCard(Card clickedCard, User sender) {
+    private void playCard(UnoCard clickedUnoCard, User sender) {
         if (currentPlayer.equalsIgnoreCase(sender.getUsername())) {
             if (choosingColour) {
                 getLobby().sendMessage(sender.getId(), "Please choose a colour.");
                 return;
             }
 
-            switch (clickedCard.getCardValue()) {
+            switch (clickedUnoCard.getCardValue()) {
                 default: {
-                    if (clickedCard.getCardColour() == CardColour.WILD) {
-                        getLobby().sendMessage(sender.getUsername() + " played: " + clickedCard.getText());
-                        activeCard = clickedCard;
-                        nextCardColour = clickedCard.getCardColour();
+                    if (clickedUnoCard.getCardColour() == CardColour.WILD) {
+                        getLobby().sendMessage(sender.getUsername() + " played: " + clickedUnoCard.getText());
+                        activeUnoCard = clickedUnoCard;
+                        nextCardColour = clickedUnoCard.getCardColour();
                         nextPlayerIndex();
 
-                        if (!removeCard(playerDecks.get(sender.getUsername()), activeCard)) {
+                        if (!removeCard(playerDecks.get(sender.getUsername()), activeUnoCard)) {
                             getLobby().sendMessage("Card was not removed from deck, contact @stuntguy3000");
-                            stopGame(false);
+                            getLobby().stopGame(false);
                         } else {
+                            playedUnoCards.add(activeUnoCard);
                             updateScore(getPlayerData(sender));
 
                             if (playerDecks.get(sender.getUsername()).size() == 0) {
@@ -219,13 +211,13 @@ public class Uno extends Game {
 
                             nextRound();
                         }
-                    } else if (nextCardColour.equals(clickedCard.getCardColour()) ||
-                            activeCard.getCardValue().equals(clickedCard.getCardValue())) {
-                        getLobby().sendMessage(sender.getUsername() + " played: " + clickedCard.getText());
-                        activeCard = clickedCard;
-                        nextCardColour = clickedCard.getCardColour();
+                    } else if (nextCardColour.equals(clickedUnoCard.getCardColour()) ||
+                            activeUnoCard.getCardValue().equals(clickedUnoCard.getCardValue())) {
+                        getLobby().sendMessage(sender.getUsername() + " played: " + clickedUnoCard.getText());
+                        activeUnoCard = clickedUnoCard;
+                        nextCardColour = clickedUnoCard.getCardColour();
 
-                        if (activeCard.getCardValue() == CardValue.DRAW2) {
+                        if (activeUnoCard.getCardValue() == CardValue.DRAW2) {
                             String punishedPlayer = nextPlayerIndex();
                             nextPlayerIndex();
 
@@ -236,14 +228,16 @@ public class Uno extends Game {
                             );
 
                             giveCardsFromDeck(getPlayerData(punishedPlayer), 2);
-                        } else if (activeCard.getCardValue() == CardValue.REVERSE) {
+                        } else if (activeUnoCard.getCardValue() == CardValue.REVERSE) {
                             getLobby().sendMessage(SendableTextMessage.builder()
                                             .message("*Player order has been reversed!*")
                                             .parseMode(ParseMode.MARKDOWN)
                                             .build()
                             );
                             increasePlayerIndex = !increasePlayerIndex;
-                        } else if (activeCard.getCardValue() == CardValue.SKIP) {
+
+                            nextPlayerIndex();
+                        } else if (activeUnoCard.getCardValue() == CardValue.SKIP) {
                             String punishedPlayer = nextPlayerIndex();
 
                             getLobby().sendMessage(SendableTextMessage.builder()
@@ -257,10 +251,11 @@ public class Uno extends Game {
                             nextPlayerIndex();
                         }
 
-                        if (!removeCard(playerDecks.get(sender.getUsername()), activeCard)) {
+                        if (!removeCard(playerDecks.get(sender.getUsername()), activeUnoCard)) {
                             getLobby().sendMessage("Card was not removed from deck, contact @stuntguy3000");
-                            stopGame(false);
+                            getLobby().stopGame(false);
                         } else {
+                            playedUnoCards.add(activeUnoCard);
                             updateScore(getPlayerData(sender));
 
                             if (playerDecks.get(sender.getUsername()).size() == 0) {
@@ -279,12 +274,12 @@ public class Uno extends Game {
                 }
                 case DRAW4:
                 case WILD: {
-                    getLobby().sendMessage(sender.getUsername() + " played: " + clickedCard.getText());
-                    activeCard = clickedCard;
-                    nextCardColour = clickedCard.getCardColour();
+                    getLobby().sendMessage(sender.getUsername() + " played: " + clickedUnoCard.getText());
+                    activeUnoCard = clickedUnoCard;
+                    nextCardColour = clickedUnoCard.getCardColour();
 
 
-                    if (clickedCard.getCardValue() == CardValue.DRAW4) {
+                    if (clickedUnoCard.getCardValue() == CardValue.DRAW4) {
                         nextPlayerIndex();
                         String punishedPlayer = playerOrder.get(playerOrderIndex);
 
@@ -296,9 +291,9 @@ public class Uno extends Game {
                         giveCardsFromDeck(getPlayerData(punishedPlayer), 4);
                     }
 
-                    if (!removeCard(playerDecks.get(sender.getUsername()), activeCard)) {
+                    if (!removeCard(playerDecks.get(sender.getUsername()), activeUnoCard)) {
                         getLobby().sendMessage("Card was not removed from deck, contact @stuntguy3000");
-                        stopGame(false);
+                        getLobby().stopGame(false);
                     } else {
                         updateScore(getPlayerData(sender));
                         sendColourPicker(sender);
@@ -324,14 +319,14 @@ public class Uno extends Game {
                         .build()
         );
 
-        stopGame(false);
+        getLobby().stopGame(false);
     }
 
     private void updateScore(PlayerData playerData) {
         int score = 0;
 
-        for (Card card : getPlayerDecks().get(playerData.getUsername())) {
-            score += card.getCardValue().getScoreValue();
+        for (UnoCard unoCard : playerDecks.get(playerData.getUsername())) {
+            score += unoCard.getCardValue().getScoreValue();
         }
 
         playerData.setScore(score);
@@ -351,11 +346,11 @@ public class Uno extends Game {
                 TelegramHook.getBot());
     }
 
-    private boolean removeCard(List<Card> cards, Card activeCard) {
+    private boolean removeCard(List<UnoCard> unoCards, UnoCard activeUnoCard) {
         int index = 0;
-        for (Card card : new ArrayList<>(cards)) {
-            if (Card.isSame(card, activeCard)) {
-                cards.remove(index);
+        for (UnoCard unoCard : new ArrayList<>(unoCards)) {
+            if (UnoCard.isSame(unoCard, activeUnoCard)) {
+                unoCards.remove(index);
                 return true;
             }
             index++;
@@ -365,22 +360,22 @@ public class Uno extends Game {
     }
 
     private void giveCardsFromDeck(PlayerData playerData, int amount) {
-        List<Card> givenCards = new ArrayList<>();
+        List<UnoCard> givenUnoCards = new ArrayList<>();
         for (int i = 1; i <= amount; i++) {
             if (entireDeck.size() == 0) {
                 getLobby().sendMessage("Shuffling deck...");
-                entireDeck.addAll(playedCards.stream().collect(Collectors.toList()));
-                playedCards.clear();
+                entireDeck.addAll(playedUnoCards.stream().collect(Collectors.toList()));
+                playedUnoCards.clear();
                 Collections.shuffle(entireDeck);
             }
 
-            givenCards.add(entireDeck.remove(0));
+            givenUnoCards.add(entireDeck.remove(0));
         }
 
         StringBuilder givenCardsMessage = new StringBuilder();
-        for (Card card : givenCards) {
-            givenCardsMessage.append(card.getText()).append(" | ");
-            playerDecks.get(playerData.getUsername()).add(card);
+        for (UnoCard unoCard : givenUnoCards) {
+            givenCardsMessage.append(unoCard.getText()).append(" | ");
+            playerDecks.get(playerData.getUsername()).add(unoCard);
         }
 
         getLobby().sendMessage(playerData.getId(), "Picked up cards: " +
@@ -409,8 +404,11 @@ public class Uno extends Game {
 
             fillDeck();
             fillHands();
-            setActiveCard(entireDeck.remove(0));
-            setNextCardColour(getActiveCard().getCardColour());
+            activeUnoCard = entireDeck.remove(0);
+            nextCardColour = activeUnoCard.getCardColour();
+
+            gameTimer = new GameTimer(this);
+
             nextRound();
             return true;
         } else {
@@ -421,6 +419,8 @@ public class Uno extends Game {
 
     @Override
     public void stopGame(boolean silent) {
+        gameTimer.cancel();
+
         if (!silent) {
             SendableTextMessage.SendableTextMessageBuilder messageBuilder = SendableTextMessage.builder()
                     .message("The game of Uno has ended!")
@@ -455,14 +455,14 @@ public class Uno extends Game {
     public void checkPlayers() {
         switch (getGameState()) {
             case INGAME: {
-                if (getMinPlayers() > getActivePlayers().size()) {
+                if (minPlayers > getActivePlayers().size()) {
                     SendableTextMessage message = SendableTextMessage
                             .builder()
                             .message("*There are not enough players to continue!*")
                             .parseMode(ParseMode.MARKDOWN)
                             .build();
                     getLobby().sendMessage(message);
-                    stopGame(false);
+                    getLobby().stopGame(false);
                 }
             }
         }
@@ -470,11 +470,11 @@ public class Uno extends Game {
 
     private void fillHands() {
         for (PlayerData playerData : getActivePlayers()) {
-            List<Card> deck = new ArrayList<>();
+            List<UnoCard> deck = new ArrayList<>();
             for (int i = 0; i < 7; i++) {
                 deck.add(entireDeck.remove(0));
             }
-            getPlayerDecks().put(playerData.getUsername(), deck);
+            playerDecks.put(playerData.getUsername(), deck);
             updateScore(playerData);
         }
     }
@@ -482,17 +482,17 @@ public class Uno extends Game {
     private void sendDeck(PlayerData playerData) {
         List<List<String>> buttonList = new ArrayList<>();
         List<String> row = new ArrayList<>();
-        List<Card> deck = playerDecks.get(playerData.getUsername());
+        List<UnoCard> deck = playerDecks.get(playerData.getUsername());
 
         int index = 1;
-        for (Card card : deck) {
+        for (UnoCard unoCard : deck) {
             if (index == 4) {
                 index = 0;
                 buttonList.add(new ArrayList<>(row));
                 row.clear();
             }
 
-            row.add(card.getText());
+            row.add(unoCard.getText());
             index++;
         }
 
@@ -525,16 +525,16 @@ public class Uno extends Game {
                     default: {
                         if (cardColor != CardColour.WILD) {
                             if (cardValue != CardValue.ZERO) {
-                                entireDeck.add(new Card(cardColor, cardValue));
+                                entireDeck.add(new UnoCard(cardColor, cardValue));
                             }
-                            entireDeck.add(new Card(cardColor, cardValue));
+                            entireDeck.add(new UnoCard(cardColor, cardValue));
                         }
                         continue;
                     }
                     case WILD:
                     case DRAW4: {
                         if (cardColor != CardColour.WILD) {
-                            entireDeck.add(new Card(CardColour.WILD, cardValue));
+                            entireDeck.add(new UnoCard(CardColour.WILD, cardValue));
                         }
                     }
                 }
@@ -549,17 +549,18 @@ public class Uno extends Game {
         removePlayer(player);
         if (!silent) {
             // We can assume silent will be true ONLY when the game ends
-            getLobby().sendMessage(player.getUserID(), "You have left the game. (Score %d)" + getScore(player.getUsername()));
+            getLobby().sendMessage(player.getUserID(), "You have left the game. (Score " + getScore(player.getUsername() + ")"));
             checkPlayers();
         }
     }
 
     public void nextRound() {
+        secondsSincePlay = 0;
         currentPlayer = playerOrder.get(playerOrderIndex);
 
-        String cardText = getActiveCard().getText();
+        String cardText = activeUnoCard.getText();
 
-        if (!getActiveCard().getCardColour().equals(nextCardColour)) {
+        if (!activeUnoCard.getCardColour().equals(nextCardColour)) {
             cardText = "Any " + nextCardColour.text + " card";
         }
 
@@ -594,20 +595,40 @@ public class Uno extends Game {
 
         return playerOrder.get(playerOrderIndex);
     }
+
+    public void onSecond() {
+        secondsSincePlay++;
+        if (secondsSincePlay == 20) {
+            getLobby().sendMessage(
+                    SendableTextMessage.builder()
+                            .message("*Please play a card @" + currentPlayer + "!*")
+                            .parseMode(ParseMode.MARKDOWN)
+                            .build()
+            );
+        } else if (secondsSincePlay == 30) {
+            getLobby().sendMessage(
+                    SendableTextMessage.builder()
+                            .message("*" + currentPlayer + " ran out of time!*")
+                            .parseMode(ParseMode.MARKDOWN)
+                            .build()
+            );
+            drawCard(currentPlayer);
+        }
+    }
 }
 
-class Card {
+class UnoCard {
     @Getter
     private CardColour cardColour;
     @Getter
     private CardValue cardValue;
 
-    public Card(CardColour cardColor, CardValue cardValue) {
+    public UnoCard(CardColour cardColor, CardValue cardValue) {
         this.cardColour = cardColor;
         this.cardValue = cardValue;
     }
 
-    public static Card getFromString(String message) {
+    public static UnoCard getFromString(String message) {
         CardColour cardColour = null;
         CardValue cardValue = null;
 
@@ -629,7 +650,7 @@ class Card {
                 }
 
                 if (cardColour != null && cardValue != null) {
-                    return new Card(cardColour, cardValue);
+                    return new UnoCard(cardColour, cardValue);
                 }
             }
         }
@@ -637,8 +658,8 @@ class Card {
         return null;
     }
 
-    public static boolean isSame(Card card1, Card card2) {
-        return card1.getCardColour().equals(card2.getCardColour()) && card1.getCardValue().equals(card2.getCardValue());
+    public static boolean isSame(UnoCard unoCard1, UnoCard unoCard2) {
+        return unoCard1.getCardColour().equals(unoCard2.getCardColour()) && unoCard1.getCardValue().equals(unoCard2.getCardValue());
     }
 
     public String getText() {

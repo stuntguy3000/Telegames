@@ -7,6 +7,7 @@ import me.stuntguy3000.java.telegames.object.Game;
 import me.stuntguy3000.java.telegames.object.Lobby;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
+import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardHide;
 import pro.zackpollard.telegrambot.api.user.User;
 
 import java.util.HashMap;
@@ -60,7 +61,7 @@ public class LobbyHandler {
             Lobby lobby = getLobby(lobbyID);
 
             if (lobby != null) {
-                lobby.userJoin(user, true);
+                lobby.userJoin(user);
                 Game game = lobby.getCurrentGame();
 
                 if (game != null) {
@@ -68,7 +69,7 @@ public class LobbyHandler {
                         lobby.userLeave(user, true);
 
                         SendableTextMessage sendableTextMessage = SendableTextMessage.builder()
-                                .message("*You cannot join this Lobby while a game is in progress!*" + lobby.getLobbyID())
+                                .message("*You cannot join this Lobby while a game is in progress!*")
                                 .parseMode(ParseMode.MARKDOWN)
                                 .build();
 
@@ -80,6 +81,7 @@ public class LobbyHandler {
                 SendableTextMessage sendableTextMessage = SendableTextMessage.builder()
                         .message("*[Lobby]* User @" + user.getUsername() + " joined this lobby!")
                         .parseMode(ParseMode.NONE)
+                        .replyMarkup(new ReplyKeyboardHide())
                         .build();
                 lobby.sendMessage(sendableTextMessage);
 

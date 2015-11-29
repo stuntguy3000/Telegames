@@ -31,6 +31,7 @@ public abstract class Game {
         this.name = name;
         this.description = description;
         this.activePlayers = new ArrayList<>();
+        this.gameState = GameState.WAITING_FOR_PLAYERS;
     }
 
     public abstract void onTextMessageReceived(TextMessageReceivedEvent event);
@@ -60,7 +61,16 @@ public abstract class Game {
 
     public PlayerData getPlayerData(User user) {
         for (PlayerData playerData : activePlayers) {
-            if (playerData.getUsername().equalsIgnoreCase(user.getUsername())) {
+            if (playerData.getId() == user.getId()) {
+                return playerData;
+            }
+        }
+        return null;
+    }
+
+    public PlayerData getPlayerData(int id) {
+        for (PlayerData playerData : activePlayers) {
+            if (playerData.getId() == id) {
                 return playerData;
             }
         }
@@ -76,8 +86,8 @@ public abstract class Game {
         return null;
     }
 
-    public void setScore(Player player, int score) {
-        activePlayers.stream().filter(playerData -> playerData.getUsername().equalsIgnoreCase(player.getUsername())).forEach(playerData -> {
+    public void setScore(String username, int score) {
+        activePlayers.stream().filter(playerData -> playerData.getUsername().equalsIgnoreCase(username)).forEach(playerData -> {
             playerData.setScore(score);
         });
     }

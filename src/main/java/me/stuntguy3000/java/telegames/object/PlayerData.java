@@ -10,7 +10,7 @@ public class PlayerData implements Comparable {
     private String username;
     @Getter
     @Setter
-    private Integer id;
+    private int id;
     @Getter
     @Setter
     private int score;

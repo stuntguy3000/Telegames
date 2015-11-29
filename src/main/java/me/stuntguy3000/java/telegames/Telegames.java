@@ -32,8 +32,6 @@ public class Telegames {
         new Telegames().main();
     }
 
-    // TODO: Remove dependency of channels all together
-
     /**
      * Crazy ideas:
      * - Matchmaking
