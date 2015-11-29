@@ -157,6 +157,12 @@ public class Uno extends Game {
                             return;
                         }
 
+                        if (message.startsWith("Your Score:")) {
+                            getLobby().sendMessage(sender.getId(), "Please choose a card.");
+                            sendDeck(getPlayerData(sender));
+                            return;
+                        }
+
                         getLobby().userChat(sender, message);
                     }
                 }
@@ -193,7 +199,27 @@ public class Uno extends Game {
 
             switch (clickedCard.getCardValue()) {
                 default: {
-                    if (nextCardColour.equals(clickedCard.getCardColour()) ||
+                    if (clickedCard.getCardColour() == CardColour.WILD) {
+                        getLobby().sendMessage(sender.getUsername() + " played: " + clickedCard.getText());
+                        activeCard = clickedCard;
+                        nextCardColour = clickedCard.getCardColour();
+                        nextPlayerIndex();
+
+                        if (!removeCard(playerDecks.get(sender.getUsername()), activeCard)) {
+                            getLobby().sendMessage("Card was not removed from deck, contact @stuntguy3000");
+                            stopGame(false);
+                        } else {
+                            updateScore(getPlayerData(sender));
+
+                            if (playerDecks.get(sender.getUsername()).size() == 0) {
+                                // WINNER WINNER CHICKEN DINNER
+                                winner(sender.getUsername());
+                                return;
+                            }
+
+                            nextRound();
+                        }
+                    } else if (nextCardColour.equals(clickedCard.getCardColour()) ||
                             activeCard.getCardValue().equals(clickedCard.getCardValue())) {
                         getLobby().sendMessage(sender.getUsername() + " played: " + clickedCard.getText());
                         activeCard = clickedCard;
@@ -289,7 +315,7 @@ public class Uno extends Game {
         getActivePlayers().forEach(this::updateScore);
 
         SendableTextMessage.SendableTextMessageBuilder message = SendableTextMessage.builder()
-                .message("*===== GAME OVER =====*")
+                .message("*GAME OVER!*")
                 .message("*" + username + "* is the winner!")
                 .parseMode(ParseMode.MARKDOWN);
 
@@ -297,9 +323,8 @@ public class Uno extends Game {
                         .replyMarkup(new ReplyKeyboardHide())
                         .build()
         );
-        printScores();
 
-        stopGame(true);
+        stopGame(false);
     }
 
     private void updateScore(PlayerData playerData) {
@@ -461,7 +486,7 @@ public class Uno extends Game {
 
         int index = 1;
         for (Card card : deck) {
-            if (index == 8) {
+            if (index == 4) {
                 index = 0;
                 buttonList.add(new ArrayList<>(row));
                 row.clear();
@@ -540,9 +565,9 @@ public class Uno extends Game {
 
         getLobby().sendMessage(
                 SendableTextMessage.builder()
-                        .message("*====== Starting Round " + round + " ======*\n" +
-                                " *Current Card:* " + cardText + "\n" +
-                                " *Current Player:* " + currentPlayer)
+                        .message("*Starting Round " + round + "*\n" +
+                                "*Current Card:* " + cardText + "\n" +
+                                "*Current Player:* " + currentPlayer)
                         .parseMode(ParseMode.MARKDOWN)
                         .build()
         );
