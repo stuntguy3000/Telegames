@@ -69,18 +69,12 @@ public class Blackjack extends Game {
     private HashMap<Integer, List<BlackjackCard>> playerCards = new HashMap<>();
     private HashMap<Integer, Integer> playerCardValues = new HashMap<>();
     private int roundDealerIndex = 0;
-    private ReplyKeyboardMarkup standardKeyboard;
     private HashMap<Integer, Integer> aceCount = new HashMap<>();
     private ReplyKeyboardMarkup aceKeyboard;
     private Boolean dealerFold = false;
 
     public Blackjack() {
         setInfo("Blackjack", "A simple card game, closest to 21 wins, but don't bust!");
-
-        standardKeyboard = ReplyKeyboardMarkup.builder()
-                .addRow("Knock", "Fold")
-                .oneTime(false)
-                .build();
 
         aceKeyboard = ReplyKeyboardMarkup.builder()
                 .addRow("Ace is 1", "Ace is 11")
@@ -95,8 +89,8 @@ public class Blackjack extends Game {
             String message = event.getContent().getContent();
 
             switch (message) {
-                case "Knock":
-                    knock(sender, standardKeyboard);
+                case "Hit":
+                    hit(sender, getKeyboard(getPlayerData(sender)));
                     break;
                 case "Fold":
                     fold(sender);
@@ -115,12 +109,12 @@ public class Blackjack extends Game {
     }
 
     private void chooseAceEleven(User sender) {
-        if (checkAces(currentPlayer)) {
+        if (aceCount.containsKey(sender.getId())) {
             List<BlackjackCard> cards = playerCards.get(sender.getId());
 
             int index = 0;
             for (BlackjackCard blackjackCard : new ArrayList<>(cards)) {
-                if (blackjackCard.isModified() && blackjackCard.getCard().getRank() == Rank.ACE) {
+                if (!blackjackCard.isModified() && blackjackCard.getCard().getRank() == Rank.ACE) {
                     cards.remove(blackjackCard);
                     cards.add(index, new BlackjackCard(blackjackCard, 11));
                 }
@@ -134,16 +128,18 @@ public class Blackjack extends Game {
             } else {
                 aceCount.remove(sender.getId());
             }
+
+            fold(sender);
         }
     }
 
     private void chooseAceOne(User sender) {
-        if (checkAces(currentPlayer)) {
+        if (aceCount.containsKey(sender.getId())) {
             List<BlackjackCard> cards = playerCards.get(sender.getId());
 
             int index = 0;
             for (BlackjackCard blackjackCard : new ArrayList<>(cards)) {
-                if (blackjackCard.isModified() && blackjackCard.getCard().getRank() == Rank.ACE) {
+                if (!blackjackCard.isModified() && blackjackCard.getCard().getRank() == Rank.ACE) {
                     cards.remove(blackjackCard);
                     cards.add(index, new BlackjackCard(blackjackCard, 1));
                 }
@@ -157,6 +153,8 @@ public class Blackjack extends Game {
             } else {
                 aceCount.remove(sender.getId());
             }
+
+            fold(sender);
         }
     }
 
@@ -181,33 +179,41 @@ public class Blackjack extends Game {
     }
 
     private void nextRound() {
-        roundDealerIndex++;
+        if (currentRound > maxRounds) {
+            getLobby().stopGame(false);
+        } else {
+            dealerFold = false;
+            roundDealerIndex++;
 
-        if (roundDealerIndex >= getActivePlayers().size()) {
-            roundDealerIndex = 0;
-        }
+            playerCards.clear();
+            playerCardValues.clear();
 
-        roundDealer = getActivePlayers().get(roundDealerIndex);
-
-        for (PlayerData playerData : getActivePlayers()) {
-            if (!(roundDealer.getId() == (playerData.getId()))) {
-                toPlay.add(playerData);
+            if (roundDealerIndex >= getActivePlayers().size()) {
+                roundDealerIndex = 0;
             }
+
+            roundDealer = getActivePlayers().get(roundDealerIndex);
+
+            for (PlayerData playerData : getActivePlayers()) {
+                if (!(roundDealer.getId() == (playerData.getId()))) {
+                    toPlay.add(playerData);
+                }
+            }
+
+            getLobby().sendMessage(
+                    SendableTextMessage.builder()
+                            .message("*Starting Round " + currentRound + "/" + maxRounds + "*\n" +
+                                    "*Dealer:* " + roundDealer.getUsername())
+                            .parseMode(ParseMode.MARKDOWN)
+                            .build()
+            );
+
+            fillDeck();
+            fillHands();
+            nextPlayer();
+
+            currentRound++;
         }
-
-        getLobby().sendMessage(
-                SendableTextMessage.builder()
-                        .message("*Starting Round " + currentRound + "/" + maxRounds + "*\n" +
-                                "*Dealer:* " + roundDealer.getUsername())
-                        .parseMode(ParseMode.MARKDOWN)
-                        .build()
-        );
-
-        fillDeck();
-        fillHands();
-        nextPlayer();
-
-        currentRound++;
     }
 
     private void nextPlayer() {
@@ -244,7 +250,7 @@ public class Blackjack extends Game {
                         int cardScore = playerCardValues.get(playerData.getId());
                         int score = getScore(playerData.getUsername());
 
-                        if (cardScore <= 21) {
+                        if (cardScore >= dealerScore && cardScore <= 21) {
                             playerScoreList.append("@")
                                     .append(playerData.getUsername())
                                     .append("'s card score was ").append(cardScore)
@@ -274,12 +280,12 @@ public class Blackjack extends Game {
 
                 getLobby().sendMessage(
                         SendableTextMessage.builder()
-                                .message("*It is your turn, " + currentPlayer.getUsername() + "*")
+                                .message("*It's your turn, " + currentPlayer.getUsername() + "*")
                                 .parseMode(ParseMode.MARKDOWN)
                                 .build()
                 );
 
-                sendHand(currentPlayer, standardKeyboard);
+                sendHand(currentPlayer, getKeyboard(currentPlayer));
             } else {
                 dealerPlay();
             }
@@ -291,12 +297,12 @@ public class Blackjack extends Game {
 
         getLobby().sendMessage(
                 SendableTextMessage.builder()
-                        .message("*It is your turn, " + currentPlayer.getUsername() + "*")
+                        .message("*It's your turn, " + currentPlayer.getUsername() + "*")
                         .parseMode(ParseMode.MARKDOWN)
                         .build()
         );
 
-        sendHand(currentPlayer, standardKeyboard);
+        sendHand(currentPlayer, getKeyboard(currentPlayer));
     }
 
     private void sendHand(PlayerData player, ReplyMarkup replyMarkup) {
@@ -325,14 +331,6 @@ public class Blackjack extends Game {
     private boolean checkAces(PlayerData player) {
         if (aceCount.containsKey(player.getId())) {
             sendAceKeyboard(player);
-
-            int aces = aceCount.get(player.getId());
-
-            if (aces > 1) {
-                aceCount.put(player.getId(), aces - 1);
-            } else {
-                aceCount.remove(player.getId());
-            }
             return false;
         } else {
             return true;
@@ -358,6 +356,7 @@ public class Blackjack extends Game {
 
         for (int i = 0; i < amount; i++) {
             Card card = deck.getCard();
+
             if (card.getRank() == Rank.ACE) {
                 int playerAceCount = 0;
 
@@ -368,7 +367,7 @@ public class Blackjack extends Game {
                 aceCount.put(playerData.getId(), ++playerAceCount);
             }
 
-            playerCardDeck.add(new BlackjackCard(deck.getCard()));
+            playerCardDeck.add(new BlackjackCard(card));
         }
 
         playerCards.put(playerData.getId(), playerCardDeck);
@@ -379,23 +378,34 @@ public class Blackjack extends Game {
         deck.shuffleCards();
     }
 
-    private void knock(User user, ReplyMarkup replyMarkup) {
+    private void hit(User user, ReplyMarkup replyMarkup) {
         PlayerData playerData = getPlayerData(user);
 
         if (currentPlayer.getId() == playerData.getId()) {
-            getLobby().sendMessage(
-                    SendableTextMessage.builder()
-                            .message("*" + playerData.getUsername() + " chose to knock.*")
-                            .parseMode(ParseMode.MARKDOWN)
-                            .build()
-            );
+            if (playerCardValues.get(currentPlayer.getId()) >= 21) {
+                TelegramBot.getChat(playerData.getId()).sendMessage(
+                        SendableTextMessage.builder()
+                                .message("*You have busted!*")
+                                .parseMode(ParseMode.MARKDOWN)
+                                .build(), TelegramHook.getBot()
+                );
 
-            giveCard(playerData, 1);
-            sendHand(playerData, replyMarkup);
+                fold(user);
+            } else {
+                getLobby().sendMessage(
+                        SendableTextMessage.builder()
+                                .message("*" + playerData.getUsername() + " chose to hit.*")
+                                .parseMode(ParseMode.MARKDOWN)
+                                .build()
+                );
+
+                giveCard(playerData, 1);
+                sendHand(playerData, replyMarkup);
+            }
         } else {
             TelegramBot.getChat(playerData.getId()).sendMessage(
                     SendableTextMessage.builder()
-                            .message("*It is not your turn!*")
+                            .message("*It's not your turn!*")
                             .parseMode(ParseMode.MARKDOWN)
                             .build(), TelegramHook.getBot()
             );
@@ -406,19 +416,19 @@ public class Blackjack extends Game {
         PlayerData playerData = getPlayerData(user);
 
         if (currentPlayer.getId() == playerData.getId()) {
-            getLobby().sendMessage(
-                    SendableTextMessage.builder()
-                            .message("*" + playerData.getUsername() + " chose to fold.*")
-                            .parseMode(ParseMode.MARKDOWN)
-                            .build()
-            );
-
             if (checkAces(currentPlayer)) {
+                getLobby().sendMessage(
+                        SendableTextMessage.builder()
+                                .message("*" + playerData.getUsername() + " chose to fold.*")
+                                .parseMode(ParseMode.MARKDOWN)
+                                .build()
+                );
+
                 calculateValue(currentPlayer);
 
                 TelegramBot.getChat(playerData.getId()).sendMessage(
                         SendableTextMessage.builder()
-                                .message("Card Score: " + playerCardValues.get(currentPlayer.getId()))
+                                .message("Card Score: " + playerCardValues.get(currentPlayer.getId()) + "\n")
                                 .parseMode(ParseMode.MARKDOWN)
                                 .replyMarkup(ReplyKeyboardHide.builder().build())
                                 .build(), TelegramHook.getBot()
@@ -433,7 +443,7 @@ public class Blackjack extends Game {
         } else {
             TelegramBot.getChat(playerData.getId()).sendMessage(
                     SendableTextMessage.builder()
-                            .message("*It is not your turn!(")
+                            .message("*It's not your turn!*")
                             .parseMode(ParseMode.MARKDOWN)
                             .build(), TelegramHook.getBot()
             );
@@ -452,7 +462,25 @@ public class Blackjack extends Game {
 
     @Override
     public void stopGame(boolean silent) {
+        if (!silent) {
+            SendableTextMessage.SendableTextMessageBuilder messageBuilder = SendableTextMessage.builder()
+                    .message("The game of Blackjack has ended!")
+                    .replyMarkup(ReplyKeyboardHide.builder().build());
 
+            getLobby().sendMessage(messageBuilder.build());
+            printScores();
+        }
+    }
+
+    private void printScores() {
+        sortScores();
+        StringBuilder wholeMessage = new StringBuilder();
+        int playerPos = 1;
+        for (int i = 0; i < getActivePlayers().size(); i++) {
+            PlayerData playerData = getActivePlayers().get(i);
+            wholeMessage.append(String.format("#%d - %s (Score: %d)\n", playerPos++, playerData.getUsername(), playerData.getScore()));
+        }
+        getLobby().sendMessage(wholeMessage.toString());
     }
 
     @Override
@@ -486,6 +514,17 @@ public class Blackjack extends Game {
             checkPlayers();
         } else {
             removePlayer(player);
+
+            if (roundDealer.getId() == player.getUserID()) {
+                SendableTextMessage message = SendableTextMessage
+                        .builder()
+                        .message("*The dealer quit!*")
+                        .parseMode(ParseMode.MARKDOWN)
+                        .build();
+                getLobby().sendMessage(message);
+
+                nextRound();
+            }
         }
     }
 
@@ -508,6 +547,22 @@ public class Blackjack extends Game {
     @Override
     public String getGameHelp() {
         return "A simple card game, closest to 21 wins, but don't bust!";
+    }
+
+    public ReplyMarkup getKeyboard(PlayerData playerData) {
+        int score = playerCardValues.get(playerData.getId());
+
+        if (score >= 21) {
+            return ReplyKeyboardMarkup.builder()
+                    .addRow("Hit", "Fold", "Your Score: " + score)
+                    .oneTime(false)
+                    .build();
+        } else {
+            return ReplyKeyboardMarkup.builder()
+                    .addRow("Fold", "Your Score: " + score)
+                    .oneTime(false)
+                    .build();
+        }
     }
 }
     

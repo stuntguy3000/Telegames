@@ -50,6 +50,9 @@ public class Card {
             case NINE: {
                 return 9;
             }
+            case TEN: {
+                return 10;
+            }
             case JACK:
             case KING:
             case QUEEN: {
