@@ -6,11 +6,7 @@ import java.util.HashMap;
 
 // @author Luke Anderson | stuntguy3000
 public class GameHandler {
-    private HashMap<String, Game> gameList;
-
-    public GameHandler() {
-        gameList = new HashMap<>();
-    }
+    private HashMap<String, Game> gameList = new HashMap<>();
 
     /**
      * Register a game class
@@ -18,8 +14,8 @@ public class GameHandler {
      * @param game Game the game to be registered
      */
     public void registerGame(Game game) {
-        gameList.put(game.getName().toLowerCase(), game);
-        LogHandler.log("Registered game %s.", game.getName());
+        gameList.put(game.getGameName().toLowerCase(), game);
+        LogHandler.log("Registered game %s.", game.getGameName());
     }
 
     /**
@@ -32,7 +28,7 @@ public class GameHandler {
         StringBuilder sb = new StringBuilder();
         sb.append("Game List:\n");
         for (Game game : gameList.values()) {
-            sb.append(game.getName()).append(": ").append(game.getDescription()).append("\n");
+            sb.append(game.getGameName()).append(": ").append(game.getGameDescription()).append("\n");
         }
 
         return sb.toString();
@@ -48,4 +44,3 @@ public class GameHandler {
         return gameList.get(gameName.toLowerCase());
     }
 }
-    

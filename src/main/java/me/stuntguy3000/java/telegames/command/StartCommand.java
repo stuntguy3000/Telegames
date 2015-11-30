@@ -11,9 +11,9 @@ import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceived
 import pro.zackpollard.telegrambot.api.user.User;
 
 // @author Luke Anderson | stuntguy3000
-public class StartGameCommand extends Command {
-    public StartGameCommand() {
-        super(Telegames.getInstance(), "startgame", "/startgame <game> Start a game.");
+public class StartCommand extends Command {
+    public StartCommand() {
+        super(Telegames.getInstance(), "start", "/start <game> Start a game.");
     }
 
     public void processCommand(CommandMessageReceivedEvent event) {
@@ -37,7 +37,7 @@ public class StartGameCommand extends Command {
                             respond(chat, "Unknown game!\nUse /gamelist for help.");
                         }
                     } else {
-                        respond(chat, "Correct Syntax: /startgame <game>");
+                        respond(chat, "Correct Syntax: /start <game>");
                     }
                 } else {
                     respond(chat, "A game is already running!");
@@ -50,4 +50,3 @@ public class StartGameCommand extends Command {
         }
     }
 }
-    

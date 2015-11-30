@@ -9,9 +9,9 @@ import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceived
 import pro.zackpollard.telegrambot.api.user.User;
 
 // @author Luke Anderson | stuntguy3000
-public class CreateLobbyCommand extends Command {
-    public CreateLobbyCommand() {
-        super(Telegames.getInstance(), "createlobby", "/createlobby Create a Lobby.");
+public class CreateCommand extends Command {
+    public CreateCommand() {
+        super(Telegames.getInstance(), "create", "/create Create a Lobby.");
     }
 
     public void processCommand(CommandMessageReceivedEvent event) {
@@ -30,4 +30,3 @@ public class CreateLobbyCommand extends Command {
         }
     }
 }
-    

@@ -3,6 +3,7 @@ package me.stuntguy3000.java.telegames.command;
 import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.handler.LobbyHandler;
 import me.stuntguy3000.java.telegames.object.Command;
+import me.stuntguy3000.java.telegames.object.Game;
 import me.stuntguy3000.java.telegames.object.Lobby;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
@@ -10,37 +11,31 @@ import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceived
 import pro.zackpollard.telegrambot.api.user.User;
 
 // @author Luke Anderson | stuntguy3000
-public class JoinLobbyCommand extends Command {
-    public JoinLobbyCommand() {
-        super(Telegames.getInstance(), "joinlobby", "/joinlobby <ID> Join a Lobby.");
+public class StopCommand extends Command {
+    public StopCommand() {
+        super(Telegames.getInstance(), "stop", "/stop <game> Start a game.");
     }
 
     public void processCommand(CommandMessageReceivedEvent event) {
         Chat chat = event.getChat();
         User sender = event.getMessage().getSender();
         LobbyHandler lobbyHandler = getInstance().getLobbyHandler();
-        String[] args = event.getArgs();
 
         if (event.getChat().getType() == ChatType.PRIVATE) {
-            if (lobbyHandler.getLobby(sender) == null) {
-                if (args.length > 0) {
-                    String id = args[0];
-                    Lobby targetLobby = lobbyHandler.getLobby(id);
+            Lobby lobby = lobbyHandler.getLobby(sender);
+            if (lobby != null) {
+                Game lobbyGame = lobby.getCurrentGame();
 
-                    if (targetLobby == null) {
-                        respond(chat, "No such lobby exists!");
-                    } else {
-                        getInstance().getLobbyHandler().userJoinLobby(targetLobby.getLobbyID(), sender);
-                    }
+                if (lobbyGame != null) {
+                    lobby.stopGame();
                 } else {
-                    respond(chat, "Please specify a Lobby ID!\nUsage: /joinlobby <ID>");
+                    respond(chat, "No game is running!");
                 }
             } else {
-                respond(chat, "You are already in a Lobby!");
+                respond(chat, "You are not in a Lobby!");
             }
         } else {
             respond(chat, "This command can only be executed via a private message to @TelegamesBot");
         }
     }
 }
-    

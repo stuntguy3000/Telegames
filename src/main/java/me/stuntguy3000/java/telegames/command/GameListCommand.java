@@ -17,4 +17,3 @@ public class GameListCommand extends Command {
         respond(chat, getInstance().getGameHandler().getGameList());
     }
 }
-    

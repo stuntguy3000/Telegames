@@ -1,29 +1,27 @@
 package me.stuntguy3000.java.telegames.command;
 
 import me.stuntguy3000.java.telegames.Telegames;
-import me.stuntguy3000.java.telegames.handler.LobbyHandler;
 import me.stuntguy3000.java.telegames.object.Command;
+import me.stuntguy3000.java.telegames.object.Lobby;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
 import pro.zackpollard.telegrambot.api.user.User;
 
 // @author Luke Anderson | stuntguy3000
-public class LeaveLobbyCommand extends Command {
-    public LeaveLobbyCommand() {
-        super(Telegames.getInstance(), "leavelobby", "/leavelobby Leave a Lobby.");
+public class LeaveCommand extends Command {
+    public LeaveCommand() {
+        super(Telegames.getInstance(), "leave", "/leave Leave a Lobby.");
     }
 
     public void processCommand(CommandMessageReceivedEvent event) {
         Chat chat = event.getChat();
         User sender = event.getMessage().getSender();
-        LobbyHandler lobbyHandler = getInstance().getLobbyHandler();
+        Lobby lobby = Telegames.getInstance().getLobbyHandler().getLobby(sender);
 
-        if (lobbyHandler.getLobby(sender) != null) {
-            respond(chat, "You have left the Lobby!");
-            lobbyHandler.userLeaveLobby(sender);
+        if (lobby != null) {
+            lobby.userLeave(lobby.getLobbyMember(sender.getUsername()));
         } else {
             respond(chat, "You are not in a Lobby!");
         }
     }
 }
-    
