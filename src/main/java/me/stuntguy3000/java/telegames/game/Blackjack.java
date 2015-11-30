@@ -254,13 +254,13 @@ public class Blackjack extends Game {
                             playerScoreList.append("@")
                                     .append(playerData.getUsername())
                                     .append("'s card score was ").append(cardScore)
-                                    .append(". (+1 Game Points)");
+                                    .append(". (+1 Game Points)\n");
                             setScore(playerData.getUsername(), score + 1);
                         } else {
                             playerScoreList.append("@")
                                     .append(playerData.getUsername())
                                     .append("'s card score was ").append(cardScore)
-                                    .append(". (0 Game Points)");
+                                    .append(". (0 Game Points)\n");
                         }
                     }
                 }
@@ -371,6 +371,7 @@ public class Blackjack extends Game {
         }
 
         playerCards.put(playerData.getId(), playerCardDeck);
+        calculateValue(playerData);
     }
 
     private void fillDeck() {
@@ -509,23 +510,34 @@ public class Blackjack extends Game {
         if (!silent) {
             // We can assume silent will be true ONLY when the game ends
             getLobby().sendMessage(player.getUserID(), "You have left the game. (Score " + getScore(player.getUsername()) + ")");
+        }
 
-            removePlayer(player);
-            checkPlayers();
-        } else {
-            removePlayer(player);
 
-            if (roundDealer.getId() == player.getUserID()) {
-                SendableTextMessage message = SendableTextMessage
+        playerCardValues.remove(player.getUserID());
+        playerCards.remove(player.getUserID());
+        removePlayer(player);
+        checkPlayers();
+
+        if (currentPlayer == getPlayerData(player.getUserID())) {
+            SendableTextMessage message = SendableTextMessage
+                    .builder()
+                    .message("*The current player quit!*")
+                    .parseMode(ParseMode.MARKDOWN)
+                    .build();
+            getLobby().sendMessage(message);
+
+            nextRound();
+        } else if (roundDealer.getId() == player.getUserID()) {
+            SendableTextMessage message = SendableTextMessage
                         .builder()
                         .message("*The dealer quit!*")
                         .parseMode(ParseMode.MARKDOWN)
                         .build();
-                getLobby().sendMessage(message);
+            getLobby().sendMessage(message);
 
-                nextRound();
-            }
+            nextRound();
         }
+
     }
 
     private void checkPlayers() {
@@ -550,16 +562,20 @@ public class Blackjack extends Game {
     }
 
     public ReplyMarkup getKeyboard(PlayerData playerData) {
-        int score = playerCardValues.get(playerData.getId());
+        int score = 0;
 
-        if (score >= 21) {
+        if (playerCardValues.containsKey(playerData.getId())) {
+            score = playerCardValues.get(playerData.getId());
+        }
+
+        if (score < 21) {
             return ReplyKeyboardMarkup.builder()
-                    .addRow("Hit", "Fold", "Your Score: " + score)
+                    .addRow("Hit", "Fold")
                     .oneTime(false)
                     .build();
         } else {
             return ReplyKeyboardMarkup.builder()
-                    .addRow("Fold", "Your Score: " + score)
+                    .addRow("Fold")
                     .oneTime(false)
                     .build();
         }

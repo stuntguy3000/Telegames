@@ -160,6 +160,7 @@ public class Uno extends Game {
 
     private void drawCard(String username) {
         if (currentPlayer.equalsIgnoreCase(username)) {
+            secondsSincePlay = 0;
             getLobby().sendMessage(SendableTextMessage.builder()
                             .message("*" + username + " drew from the deck!*")
                             .parseMode(ParseMode.MARKDOWN)
