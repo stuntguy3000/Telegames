@@ -508,10 +508,8 @@ public class Blackjack extends Game {
     @Override
     public void playerLeave(Player player, boolean silent) {
         if (!silent) {
-            // We can assume silent will be true ONLY when the game ends
-            getLobby().sendMessage(player.getUserID(), "You have left the game. (Score " + getScore(player.getUsername()) + ")");
+            getLobby().sendMessage(player.getUserID(), "You have left the game.");
         }
-
 
         playerCardValues.remove(player.getUserID());
         playerCards.remove(player.getUserID());

@@ -102,14 +102,14 @@ public class LobbyHandler {
             Lobby lobby = getLobby(user);
 
             if (lobby != null) {
+                getUserLobbies().remove(user.getId());
+                lobby.userLeave(user, false);
+
                 Game game = lobby.getCurrentGame();
 
                 if (game != null) {
                     game.playerLeave(lobby.getPlayer(user.getUsername()), false);
                 }
-
-                getUserLobbies().remove(user.getId());
-                lobby.userLeave(user, false);
             } else {
                 throw new NullPointerException("User " + user.getUsername() + " is not in a lobby!");
             }
