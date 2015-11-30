@@ -24,8 +24,6 @@ public abstract class Game {
 
     public abstract void onTextMessageReceived(TextMessageReceivedEvent event);
 
-    public abstract void startGame();
-
     public abstract void endGame();
 
     public abstract boolean tryStartGame();
