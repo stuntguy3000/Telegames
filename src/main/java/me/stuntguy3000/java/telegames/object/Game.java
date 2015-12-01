@@ -2,7 +2,6 @@ package me.stuntguy3000.java.telegames.object;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.stuntguy3000.java.telegames.util.GameState;
 import pro.zackpollard.telegrambot.api.event.chat.message.TextMessageReceivedEvent;
 
 public abstract class Game {
@@ -13,13 +12,10 @@ public abstract class Game {
     @Getter
     @Setter
     private Lobby gameLobby;
-    @Getter
-    private GameState gameState;
 
     public void setGameInfo(String name, String description) {
         this.gameName = name;
         this.gameDescription = description;
-        this.gameState = GameState.WAITING_FOR_PLAYERS;
     }
 
     public abstract void onTextMessageReceived(TextMessageReceivedEvent event);
@@ -30,7 +26,7 @@ public abstract class Game {
 
     public abstract boolean playerJoin(LobbyMember lobbyMember);
 
-    public abstract void playerLeave(String username);
+    public abstract void playerLeave(String username, int userID);
 
     public abstract String getGameHelp();
 }

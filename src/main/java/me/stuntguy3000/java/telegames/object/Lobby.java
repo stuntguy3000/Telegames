@@ -80,6 +80,9 @@ public class Lobby {
                 .build();
         sendMessage(sendableTextMessage);
 
+        String username = user.getUsername();
+        int id = user.getUserID();
+
         for (LobbyMember lobbyMember : new ArrayList<>(lobbyMembers)) {
             if (lobbyMember.getUsername().equals(user.getUsername())) {
                 lobbyMembers.remove(lobbyMember);
@@ -87,7 +90,7 @@ public class Lobby {
         }
 
         if (currentGame != null) {
-            currentGame.playerLeave(user.getUsername());
+            currentGame.playerLeave(username, id);
         }
 
         if (lobbyMembers.size() == 0) {

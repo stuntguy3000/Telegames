@@ -563,7 +563,7 @@ public class Uno extends Game {
     }
 
     @Override
-    public void playerLeave(String username) {
+    public void playerLeave(String username, int id) {
         removePlayer(username);
 
         if (currentPlayer.equals(username) && checkPlayers()) {
