@@ -29,12 +29,19 @@ public class StartCommand extends Command {
 
                 if (lobbyGame == null) {
                     if (args.length > 0) {
-                        Game targetGame = getInstance().getGameHandler().getGame(args[0]);
+                        if (args[0].equalsIgnoreCase("random")) {
+                            respond(chat, "Choosing a random game!");
 
-                        if (targetGame != null) {
-                            lobby.startGame(targetGame);
+                            Game game = getInstance().getGameHandler().getRandomGame();
+                            lobby.startGame(game);
                         } else {
-                            respond(chat, "Unknown game!\nUse /gamelist for help.");
+                            Game targetGame = getInstance().getGameHandler().getGame(args[0]);
+
+                            if (targetGame != null) {
+                                lobby.startGame(targetGame);
+                            } else {
+                                respond(chat, "Unknown game!\nUse /gamelist for help.");
+                            }
                         }
                     } else {
                         respond(chat, "Correct Syntax: /start <game>");

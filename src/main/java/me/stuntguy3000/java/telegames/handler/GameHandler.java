@@ -2,7 +2,10 @@ package me.stuntguy3000.java.telegames.handler;
 
 import me.stuntguy3000.java.telegames.object.Game;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 
 // @author Luke Anderson | stuntguy3000
 public class GameHandler {
@@ -42,5 +45,17 @@ public class GameHandler {
      */
     public Game getGame(String gameName) {
         return gameList.get(gameName.toLowerCase());
+    }
+
+    /**
+     * Returns a randomly chosen Game
+     *
+     * @return Game a randomly chosen Game
+     */
+    public Game getRandomGame() {
+        Random random = new Random();
+        List<Game> gameNewList = new ArrayList<>(gameList.values());
+
+        return gameNewList.get(random.nextInt(gameNewList.size() - 1));
     }
 }
