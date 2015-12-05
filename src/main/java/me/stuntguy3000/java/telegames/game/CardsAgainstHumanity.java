@@ -51,9 +51,11 @@ class CAHCard {
 
 class CAHCardPack {
 
+    @Getter
     @Setter
     private List<CAHCard> cards;
 
+    @Getter
     @Setter
     private HashMap<String, String> metadata;
 
@@ -78,9 +80,7 @@ public class CardsAgainstHumanity extends Game {
     private CAHCard blackCard;
     private List<CAHCard> blackCards = new ArrayList<>();
     private LobbyMember cardCzar;
-    private boolean choosingColour = false;
     private boolean continueGame = false;
-    private String currentPlayer;
     private GameState gameState;
     private GameTimer gameTimer;
     private boolean increasePlayerIndex = true;
@@ -168,7 +168,7 @@ public class CardsAgainstHumanity extends Game {
     public void playerLeave(String username, int id) {
         removePlayer(username);
 
-        if (currentPlayer.equals(username) && checkPlayers()) {
+        if (cardCzar.equals(username) && checkPlayers()) {
             nextRound();
         }
     }
@@ -253,6 +253,14 @@ public class CardsAgainstHumanity extends Game {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+        for (CAHCard cahCard : cahCardPack.getCards()) {
+            if (cahCard.getCahCardType() == CAHCardType.BLACK) {
+                blackCards.add(cahCard);
+            } else if (cahCard.getCahCardType() == CAHCardType.WHITE) {
+                whiteCards.add(cahCard);
+            }
         }
     }
 
