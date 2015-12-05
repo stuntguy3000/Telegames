@@ -57,6 +57,11 @@ class CAHCardPack {
     @Setter
     private HashMap<String, String> metadata;
 
+    public CAHCardPack() {
+        cards = new ArrayList<>();
+        metadata = new HashMap<>();
+    }
+
     public void addCard(String cardText, CAHCardType cahCardType) {
         cards.add(new CAHCard(cardText, cahCardType));
     }
@@ -205,7 +210,7 @@ public class CardsAgainstHumanity extends Game {
 
     // Load Card Packs from Jar resources
     public void loadPacks() {
-        InputStream is = getClass().getResourceAsStream("cah.v3.cards");
+        InputStream is = getClass().getResourceAsStream("/cah.v3.cards");
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         CAHCardPack cahCardPack = new CAHCardPack();
         String packLine;
