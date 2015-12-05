@@ -64,14 +64,14 @@ public class Telegames {
         LogHandler.log(" Telegames build " + BUILD + " by @stuntguy3000");
         LogHandler.log("======================================");
 
-        connectTelegram();
-
         if (this.getConfigHandler().getBotSettings().getAutoUpdater()) {
             LogHandler.log("Starting auto updater...");
             new Thread(new UpdateHandler(this)).start();
         } else {
             LogHandler.log("** Auto Updater is set to false **");
         }
+
+        connectTelegram();
 
         while (true) {
             String in = System.console().readLine();
