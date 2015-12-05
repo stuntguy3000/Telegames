@@ -15,24 +15,24 @@ public class CommandHandler {
         commands = new HashMap<>();
     }
 
-    public void registerCommand(Command cmd) {
-        commands.put(cmd.getName().toLowerCase(), cmd);
-    }
-
     public void executeCommand(String s, CommandMessageReceivedEvent event) {
         Command cmd = commands.get(s.toLowerCase());
-        if (cmd == null) return;
+        if (cmd == null) {
+            return;
+        }
         cmd.processCommand(event);
     }
 
     public String getBotFatherString() {
         StringBuilder sb = new StringBuilder();
         for (Command cmd : commands.values()) {
-            sb
-                    .append(cmd.createBotFatherString())
-                    .append("\n");
+            sb.append(cmd.createBotFatherString()).append("\n");
         }
 
         return sb.toString();
+    }
+
+    public void registerCommand(Command cmd) {
+        commands.put(cmd.getName().toLowerCase(), cmd);
     }
 }

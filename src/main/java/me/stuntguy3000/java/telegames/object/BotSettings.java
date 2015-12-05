@@ -8,11 +8,11 @@ import java.util.List;
 // @author Luke Anderson | stuntguy3000
 public class BotSettings {
     @Getter
-    private String telegramKey;
+    private Boolean autoUpdater;
     @Getter
     private List<Integer> telegramAdmins;
     @Getter
-    private Boolean autoUpdater;
+    private String telegramKey;
 
     public BotSettings() {
         this.telegramKey = "";

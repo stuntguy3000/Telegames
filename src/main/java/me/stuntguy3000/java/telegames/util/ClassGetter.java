@@ -11,8 +11,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 /**
- * User: Austin
- * Date: 4/22/13 Time: 11:47 PM (c) lazertester
+ * User: Austin Date: 4/22/13 Time: 11:47 PM (c) lazertester
  */
 
 // Code for this taken and slightly modified from
@@ -59,8 +58,7 @@ public class ClassGetter {
             JarEntry entry = entries.nextElement();
             String entryName = entry.getName();
             String className = null;
-            if (entryName.endsWith(".class") && entryName.startsWith(relPath)
-                    && entryName.length() > (relPath.length() + "/".length())) {
+            if (entryName.endsWith(".class") && entryName.startsWith(relPath) && entryName.length() > (relPath.length() + "/".length())) {
                 className = entryName.replace('/', '.').replace('\\', '.').replace(".class", "");
             }
             if (className != null) {

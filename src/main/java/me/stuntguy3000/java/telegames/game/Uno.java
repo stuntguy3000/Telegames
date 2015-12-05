@@ -19,7 +19,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 enum CardColour {
-    RED("\uD83D\uDCD5"), YELLOW("\uD83D\uDCD2"), BLUE("\uD83D\uDCD8"), GREEN("\uD83D\uDCD7"), WILD("\uD83C\uDF08");
+    RED("\uD83D\uDCD5"),
+    YELLOW("\uD83D\uDCD2"),
+    BLUE("\uD83D\uDCD8"),
+    GREEN("\uD83D\uDCD7"),
+    WILD("\uD83C\uDF08");
 
     @Getter
     String text;
@@ -30,14 +34,26 @@ enum CardColour {
 }
 
 enum CardValue {
-    ZERO("0⃣", 0), ONE("1⃣", 1), TWO("2⃣", 2), THREE("3⃣", 3), FOUR("4⃣", 4),
-    FIVE("5⃣", 5), SIX("6⃣", 6), SEVEN("7⃣", 7), EIGHT("8⃣", 8), NINE("9⃣", 9),
-    SKIP("\uD83D\uDEAB", 20), REVERSE("↩️", 20), DRAW2("Draw2", 20), DRAW4("Draw4", 50), WILD("Wild", 50);
+    ZERO("0⃣", 0),
+    ONE("1⃣", 1),
+    TWO("2⃣", 2),
+    THREE("3⃣", 3),
+    FOUR("4⃣", 4),
+    FIVE("5⃣", 5),
+    SIX("6⃣", 6),
+    SEVEN("7⃣", 7),
+    EIGHT("8⃣", 8),
+    NINE("9⃣", 9),
+    SKIP("\uD83D\uDEAB", 20),
+    REVERSE("↩️", 20),
+    DRAW2("Draw2", 20),
+    DRAW4("Draw4", 50),
+    WILD("Wild", 50);
 
     @Getter
-    String text;
-    @Getter
     int scoreValue;
+    @Getter
+    String text;
 
     CardValue(String text, int scoreValue) {
         this.text = text;
@@ -62,42 +78,85 @@ class GameTimer extends TimerTask {
 
 public class Uno extends Game {
     @Getter
-    private int round = 1;
+    private List<LobbyMember> activePlayers = new ArrayList<>();
     @Getter
-    private int minPlayers = 2;
+    private UnoCard activeUnoCard;
     @Getter
-    private int secondsSincePlay = 0;
-    @Getter
-    private List<String> playerOrder = new ArrayList<>();
-    @Getter
-    private int playerOrderIndex = 0;
+    private boolean choosingColour = false;
     @Getter
     private String currentPlayer;
     @Getter
     private List<UnoCard> entireDeck = new ArrayList<>();
     @Getter
-    private List<UnoCard> playedUnoCards = new ArrayList<>();
-    @Getter
-    private UnoCard activeUnoCard;
-    @Getter
-    private CardColour nextCardColour;
-    @Getter
-    private HashMap<String, List<UnoCard>> playerDecks = new HashMap<>();
-    @Getter
-    private boolean choosingColour = false;
-    @Getter
-    private boolean increasePlayerIndex = true;
-    @Getter
-    private GameTimer gameTimer;
-    @Getter
     @Setter
     private GameState gameState;
     @Getter
-    private List<LobbyMember> activePlayers = new ArrayList<>();
+    private GameTimer gameTimer;
+    @Getter
+    private boolean increasePlayerIndex = true;
+    @Getter
+    private int minPlayers = 2;
+    @Getter
+    private CardColour nextCardColour;
+    @Getter
+    private List<UnoCard> playedUnoCards = new ArrayList<>();
+    @Getter
+    private HashMap<String, List<UnoCard>> playerDecks = new HashMap<>();
+    @Getter
+    private List<String> playerOrder = new ArrayList<>();
+    @Getter
+    private int playerOrderIndex = 0;
+    @Getter
+    private int round = 1;
+    @Getter
+    private int secondsSincePlay = 0;
 
     public Uno() {
         setGameInfo("Uno", "The classic card game Uno.");
         setGameState(GameState.WAITING_FOR_PLAYERS);
+    }
+
+    private void addPlayer(LobbyMember player) {
+        activePlayers.add(player);
+    }
+
+    public boolean checkPlayers() {
+        if (minPlayers > getActivePlayers().size()) {
+            SendableTextMessage message = SendableTextMessage.builder().message("*There are not enough players to continue!*").parseMode(ParseMode.MARKDOWN).build();
+            getGameLobby().sendMessage(message);
+            getGameLobby().stopGame();
+            return false;
+        }
+        return true;
+    }
+
+    private void chooseColour(User sender, CardColour cardColour) {
+        if (currentPlayer.equalsIgnoreCase(sender.getUsername()) && choosingColour) {
+            choosingColour = false;
+            nextCardColour = cardColour;
+            nextPlayerIndex();
+            nextRound();
+        }
+    }
+
+    private void drawCard(String username) {
+        if (currentPlayer.equalsIgnoreCase(username)) {
+            secondsSincePlay = 0;
+            getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + username + " drew from the deck!*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
+            giveCardsFromDeck(getGameLobby().getLobbyMember(username), 1);
+            nextPlayerIndex();
+            nextRound();
+        }
+    }
+
+    @Override
+    public void endGame() {
+        gameTimer.cancel();
+
+        SendableTextMessage.SendableTextMessageBuilder messageBuilder = SendableTextMessage.builder().message("The game of Uno has ended!").replyMarkup(ReplyKeyboardHide.builder().build());
+
+        getGameLobby().sendMessage(messageBuilder.build());
+        printScores();
     }
 
     @Override
@@ -124,7 +183,7 @@ public class Uno extends Game {
                             "+colour - View the colour picker");
                 } else if (command.equalsIgnoreCase("deck")) {
                     if (getGameState() == GameState.INGAME) {
-                        sendDeck(getGameLobby().getLobbyMember(sender.getUsername()));
+                        sendDeck(lobbyMember);
                     } else {
                         getGameLobby().sendMessage("The game has not started!");
                     }
@@ -165,7 +224,7 @@ public class Uno extends Game {
 
                     if (message.startsWith("Your Score:")) {
                         lobbyMember.getChat().sendMessage("Please choose a card.", TelegramHook.getBot());
-                        sendDeck(getGameLobby().getLobbyMember(sender.getUsername()));
+                        sendDeck(lobbyMember);
                         return;
                     }
 
@@ -175,27 +234,148 @@ public class Uno extends Game {
         }
     }
 
-    private void drawCard(String username) {
-        if (currentPlayer.equalsIgnoreCase(username)) {
-            secondsSincePlay = 0;
-            getGameLobby().sendMessage(SendableTextMessage.builder()
-                            .message("*" + username + " drew from the deck!*")
-                            .parseMode(ParseMode.MARKDOWN)
-                            .replyMarkup(new ReplyKeyboardHide())
-                            .build()
-            );
-            giveCardsFromDeck(getGameLobby().getLobbyMember(username), 1);
-            nextPlayerIndex();
+    @Override
+    public boolean playerJoin(LobbyMember player) {
+        if (getGameState() == GameState.WAITING_FOR_PLAYERS) {
+            addPlayer(player);
+            player.getChat().sendMessage("You have joined the game!", TelegramHook.getBot());
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void playerLeave(String username, int id) {
+        removePlayer(username);
+
+        if (currentPlayer.equals(username) && checkPlayers()) {
             nextRound();
         }
     }
 
-    private void chooseColour(User sender, CardColour cardColour) {
-        if (currentPlayer.equalsIgnoreCase(sender.getUsername()) && choosingColour) {
-            choosingColour = false;
-            nextCardColour = cardColour;
-            nextPlayerIndex();
-            nextRound();
+    @Override
+    public boolean tryStartGame() {
+        if (getActivePlayers().size() >= minPlayers) {
+            startGame();
+            return true;
+        } else {
+            getGameLobby().sendMessage("Not enough players to start!");
+            return false;
+        }
+    }
+
+    private void fillDeck() {
+        /**
+         * The deck consists of 108 cards, of which there are twenty-five of each color (red, green, blue, and yellow),
+         * each color having two of each rank except zero. The ranks in each color are zero to nine,
+         * "Skip", "Draw Two" and "Reverse" (the last three of these being classified as "action cards").
+         * In addition, the deck contains four each of "Wild" and "Wild Draw Four" cards.
+         *
+         * https://en.wikipedia.org/wiki/Uno_(card_game) - 26/11/15
+         */
+        for (CardColour cardColor : CardColour.values()) {
+            for (CardValue cardValue : CardValue.values()) {
+                switch (cardValue) {
+                    default: {
+                        if (cardColor != CardColour.WILD) {
+                            if (cardValue != CardValue.ZERO) {
+                                entireDeck.add(new UnoCard(cardColor, cardValue));
+                            }
+                            entireDeck.add(new UnoCard(cardColor, cardValue));
+                        }
+                        continue;
+                    }
+                    case WILD:
+                    case DRAW4: {
+                        if (cardColor != CardColour.WILD) {
+                            entireDeck.add(new UnoCard(CardColour.WILD, cardValue));
+                        }
+                    }
+                }
+            }
+        }
+
+        Collections.shuffle(entireDeck);
+    }
+
+    private void fillHands() {
+        for (LobbyMember LobbyMember : getActivePlayers()) {
+            List<UnoCard> deck = new ArrayList<>();
+            for (int i = 0; i < 7; i++) {
+                deck.add(entireDeck.remove(0));
+            }
+            playerDecks.put(LobbyMember.getUsername(), deck);
+            updateScore(LobbyMember);
+        }
+    }
+
+    private void giveCardsFromDeck(LobbyMember lobbyMember, int amount) {
+        List<UnoCard> givenUnoCards = new ArrayList<>();
+        for (int i = 1; i <= amount; i++) {
+            if (entireDeck.size() == 0) {
+                getGameLobby().sendMessage("Shuffling deck...");
+                entireDeck.addAll(playedUnoCards.stream().collect(Collectors.toList()));
+                playedUnoCards.clear();
+                Collections.shuffle(entireDeck);
+            }
+
+            givenUnoCards.add(entireDeck.remove(0));
+        }
+
+        StringBuilder givenCardsMessage = new StringBuilder();
+        for (UnoCard unoCard : givenUnoCards) {
+            givenCardsMessage.append(unoCard.getText()).append(" | ");
+            playerDecks.get(lobbyMember.getUsername()).add(unoCard);
+        }
+
+        lobbyMember.getChat().sendMessage("Picked up cards: " + givenCardsMessage.toString().substring(0, givenCardsMessage.length() - 3), TelegramHook.getBot());
+    }
+
+    public String nextPlayerIndex() {
+        if (increasePlayerIndex) {
+            playerOrderIndex++;
+        } else {
+            playerOrderIndex--;
+        }
+
+        if (playerOrderIndex >= playerOrder.size()) {
+            playerOrderIndex = 0;
+        }
+
+        if (playerOrderIndex < 0) {
+            playerOrderIndex = playerOrder.size() - 1;
+        }
+
+        return playerOrder.get(playerOrderIndex);
+    }
+
+    public void nextRound() {
+        secondsSincePlay = 0;
+        currentPlayer = playerOrder.get(playerOrderIndex);
+
+        String cardText = activeUnoCard.getText();
+
+        if (!activeUnoCard.getCardColour().equals(nextCardColour)) {
+            cardText = "Any " + nextCardColour.text + " card";
+        }
+
+        getGameLobby().sendMessage(SendableTextMessage.builder().message("*Starting Round " + round + "*\n" +
+                "*Current Card:* " + cardText + "\n" +
+                "*Current Player:* " + currentPlayer).parseMode(ParseMode.MARKDOWN).build());
+
+        round++;
+
+        sendDeck(getGameLobby().getLobbyMember(currentPlayer));
+    }
+
+    public void onSecond() {
+        secondsSincePlay++;
+        if (secondsSincePlay == 20) {
+            getGameLobby().sendMessage(SendableTextMessage.builder().message("Please play a card @" + currentPlayer).build());
+        } else if (secondsSincePlay == 30) {
+            getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + currentPlayer + " ran out of time!*").parseMode(ParseMode.MARKDOWN).build());
+            drawCard(currentPlayer);
         }
     }
 
@@ -230,8 +410,7 @@ public class Uno extends Game {
 
                             nextRound();
                         }
-                    } else if (nextCardColour.equals(card.getCardColour()) ||
-                            activeUnoCard.getCardValue().equals(card.getCardValue())) {
+                    } else if (nextCardColour.equals(card.getCardColour()) || activeUnoCard.getCardValue().equals(card.getCardValue())) {
                         getGameLobby().sendMessage(sender.getUsername() + " played: " + card.getText());
                         activeUnoCard = card;
                         nextCardColour = card.getCardColour();
@@ -240,30 +419,18 @@ public class Uno extends Game {
                             String punishedPlayer = nextPlayerIndex();
                             nextPlayerIndex();
 
-                            getGameLobby().sendMessage(SendableTextMessage.builder()
-                                            .message("*" + punishedPlayer + " has been given two cards!*")
-                                            .parseMode(ParseMode.MARKDOWN)
-                                            .build()
-                            );
+                            getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + punishedPlayer + " has been given two cards!*").parseMode(ParseMode.MARKDOWN).build());
 
                             giveCardsFromDeck(getGameLobby().getLobbyMember(punishedPlayer), 2);
                         } else if (activeUnoCard.getCardValue() == CardValue.REVERSE) {
-                            getGameLobby().sendMessage(SendableTextMessage.builder()
-                                            .message("*Player order has been reversed!*")
-                                            .parseMode(ParseMode.MARKDOWN)
-                                            .build()
-                            );
+                            getGameLobby().sendMessage(SendableTextMessage.builder().message("*Player order has been reversed!*").parseMode(ParseMode.MARKDOWN).build());
                             increasePlayerIndex = !increasePlayerIndex;
 
                             nextPlayerIndex();
                         } else if (activeUnoCard.getCardValue() == CardValue.SKIP) {
                             String punishedPlayer = nextPlayerIndex();
 
-                            getGameLobby().sendMessage(SendableTextMessage.builder()
-                                            .message("*" + punishedPlayer + " has been skipped!*")
-                                            .parseMode(ParseMode.MARKDOWN)
-                                            .build()
-                            );
+                            getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + punishedPlayer + " has been skipped!*").parseMode(ParseMode.MARKDOWN).build());
 
                             nextPlayerIndex();
                         } else {
@@ -302,11 +469,7 @@ public class Uno extends Game {
                         nextPlayerIndex();
                         String punishedPlayer = playerOrder.get(playerOrderIndex);
 
-                        getGameLobby().sendMessage(SendableTextMessage.builder()
-                                        .message("*" + punishedPlayer + " has been given four cards!*")
-                                        .parseMode(ParseMode.MARKDOWN)
-                                        .build()
-                        );
+                        getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + punishedPlayer + " has been given four cards!*").parseMode(ParseMode.MARKDOWN).build());
                         giveCardsFromDeck(getGameLobby().getLobbyMember(punishedPlayer), 4);
                     }
 
@@ -325,44 +488,15 @@ public class Uno extends Game {
         }
     }
 
-    private void winner(String username) {
-        getActivePlayers().forEach(this::updateScore);
-
-        SendableTextMessage.SendableTextMessageBuilder message = SendableTextMessage.builder()
-                .message("*GAME OVER!*")
-                .message("*" + username + "* is the winner!")
-                .parseMode(ParseMode.MARKDOWN);
-
-        getGameLobby().sendMessage(message
-                        .replyMarkup(new ReplyKeyboardHide())
-                        .build()
-        );
-
-        getGameLobby().stopGame();
-    }
-
-    private void updateScore(LobbyMember lobbyMember) {
-        int score = 0;
-
-        for (UnoCard unoCard : playerDecks.get(lobbyMember.getUsername())) {
-            score += unoCard.getCardValue().getScoreValue();
+    private void printScores() {
+        sortScores();
+        StringBuilder wholeMessage = new StringBuilder();
+        int playerPos = 1;
+        for (int i = getActivePlayers().size() - 1; i >= 0; --i) {
+            LobbyMember lobbyMember = getActivePlayers().get(i);
+            wholeMessage.append(String.format("#%d - %s (Score: %d)\n", playerPos++, lobbyMember.getUsername(), lobbyMember.getGameScore()));
         }
-
-        lobbyMember.setGameScore(score);
-    }
-
-    private void sendColourPicker(User sender) {
-        List<List<String>> buttonList = new ArrayList<>();
-
-        buttonList.add(Arrays.asList(
-                CardColour.RED.getText(), CardColour.BLUE.getText(), CardColour.GREEN.getText(), CardColour.YELLOW.getText()));
-
-        TelegramBot.getChat(sender.getId()).sendMessage(SendableTextMessage
-                        .builder()
-                        .message("Please choose a colour.")
-                        .replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false))
-                        .build(),
-                TelegramHook.getBot());
+        getGameLobby().sendMessage(wholeMessage.toString());
     }
 
     private boolean removeCard(List<UnoCard> unoCards, UnoCard activeUnoCard) {
@@ -378,123 +512,20 @@ public class Uno extends Game {
         return false;
     }
 
-    private void giveCardsFromDeck(LobbyMember lobbyMember, int amount) {
-        List<UnoCard> givenUnoCards = new ArrayList<>();
-        for (int i = 1; i <= amount; i++) {
-            if (entireDeck.size() == 0) {
-                getGameLobby().sendMessage("Shuffling deck...");
-                entireDeck.addAll(playedUnoCards.stream().collect(Collectors.toList()));
-                playedUnoCards.clear();
-                Collections.shuffle(entireDeck);
+    private void removePlayer(String username) {
+        for (LobbyMember lobbyMember : new ArrayList<>(activePlayers)) {
+            if (lobbyMember.getUsername().equals(username)) {
+                activePlayers.remove(lobbyMember);
             }
-
-            givenUnoCards.add(entireDeck.remove(0));
-        }
-
-        StringBuilder givenCardsMessage = new StringBuilder();
-        for (UnoCard unoCard : givenUnoCards) {
-            givenCardsMessage.append(unoCard.getText()).append(" | ");
-            playerDecks.get(lobbyMember.getUsername()).add(unoCard);
-        }
-
-        lobbyMember.getChat().sendMessage("Picked up cards: " +
-                givenCardsMessage.toString().substring(0, givenCardsMessage.length() - 3), TelegramHook.getBot());
-    }
-
-    private void printScores() {
-        sortScores();
-        StringBuilder wholeMessage = new StringBuilder();
-        int playerPos = 1;
-        for (int i = getActivePlayers().size() - 1; i >= 0; --i) {
-            LobbyMember lobbyMember = getActivePlayers().get(i);
-            wholeMessage.append(String.format("#%d - %s (Score: %d)\n",
-                    playerPos++, lobbyMember.getUsername(), lobbyMember.getGameScore()));
-        }
-        getGameLobby().sendMessage(wholeMessage.toString());
-    }
-
-    private void sortScores() {
-        Collections.sort(activePlayers);
-    }
-
-    public void startGame() {
-        setGameState(GameState.INGAME);
-        getGameLobby().sendMessage("Starting the game!");
-
-        playerOrder.addAll(getActivePlayers().stream().map(LobbyMember::getUsername).collect(Collectors.toList()));
-        Collections.shuffle(playerOrder);
-
-        fillDeck();
-        fillHands();
-        activeUnoCard = entireDeck.remove(0);
-        nextCardColour = activeUnoCard.getCardColour();
-
-        gameTimer = new GameTimer(this);
-
-        nextRound();
-    }
-
-    @Override
-    public void endGame() {
-        gameTimer.cancel();
-
-        SendableTextMessage.SendableTextMessageBuilder messageBuilder = SendableTextMessage.builder()
-                .message("The game of Uno has ended!")
-                .replyMarkup(ReplyKeyboardHide.builder().build());
-
-        getGameLobby().sendMessage(messageBuilder.build());
-        printScores();
-    }
-
-    @Override
-    public boolean tryStartGame() {
-        if (getActivePlayers().size() >= minPlayers) {
-            startGame();
-            return true;
-        } else {
-            getGameLobby().sendMessage("Not enough players to start!");
-            return false;
         }
     }
 
-    @Override
-    public boolean playerJoin(LobbyMember player) {
-        if (getGameState() == GameState.WAITING_FOR_PLAYERS) {
-            addPlayer(player);
-            player.getChat().sendMessage("You have joined the game!", TelegramHook.getBot());
-            return true;
-        } else {
-            return false;
-        }
-    }
+    private void sendColourPicker(User sender) {
+        List<List<String>> buttonList = new ArrayList<>();
 
-    private void addPlayer(LobbyMember player) {
-        activePlayers.add(player);
-    }
+        buttonList.add(Arrays.asList(CardColour.RED.getText(), CardColour.BLUE.getText(), CardColour.GREEN.getText(), CardColour.YELLOW.getText()));
 
-    public boolean checkPlayers() {
-        if (minPlayers > getActivePlayers().size()) {
-            SendableTextMessage message = SendableTextMessage
-                    .builder()
-                    .message("*There are not enough players to continue!*")
-                    .parseMode(ParseMode.MARKDOWN)
-                    .build();
-            getGameLobby().sendMessage(message);
-            getGameLobby().stopGame();
-            return false;
-        }
-        return true;
-    }
-
-    private void fillHands() {
-        for (LobbyMember LobbyMember : getActivePlayers()) {
-            List<UnoCard> deck = new ArrayList<>();
-            for (int i = 0; i < 7; i++) {
-                deck.add(entireDeck.remove(0));
-            }
-            playerDecks.put(LobbyMember.getUsername(), deck);
-            updateScore(LobbyMember);
-        }
+        TelegramBot.getChat(sender.getId()).sendMessage(SendableTextMessage.builder().message("Please choose a colour.").replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false)).build(), TelegramHook.getBot());
     }
 
     private void sendDeck(LobbyMember lobbyMember) {
@@ -520,124 +551,48 @@ public class Uno extends Game {
 
         buttonList.add(Arrays.asList("Draw from deck", "Your Score: " + lobbyMember.getGameScore()));
 
-        TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(SendableTextMessage
-                        .builder()
-                        .message("Here are your cards.")
-                        .replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false))
-                        .build(),
-                TelegramHook.getBot());
+        TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(SendableTextMessage.builder().message("Here are your cards.").replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false)).build(), TelegramHook.getBot());
     }
 
-    private void fillDeck() {
-        /**
-         * The deck consists of 108 cards, of which there are twenty-five of each color (red, green, blue, and yellow),
-         * each color having two of each rank except zero. The ranks in each color are zero to nine,
-         * "Skip", "Draw Two" and "Reverse" (the last three of these being classified as "action cards").
-         * In addition, the deck contains four each of "Wild" and "Wild Draw Four" cards.
-         *
-         * https://en.wikipedia.org/wiki/Uno_(card_game) - 26/11/15
-         */
-        for (CardColour cardColor : CardColour.values()) {
-            for (CardValue cardValue : CardValue.values()) {
-                switch (cardValue) {
-                    default: {
-                        if (cardColor != CardColour.WILD) {
-                            if (cardValue != CardValue.ZERO) {
-                                entireDeck.add(new UnoCard(cardColor, cardValue));
-                            }
-                            entireDeck.add(new UnoCard(cardColor, cardValue));
-                        }
-                        continue;
-                    }
-                    case WILD:
-                    case DRAW4: {
-                        if (cardColor != CardColour.WILD) {
-                            entireDeck.add(new UnoCard(CardColour.WILD, cardValue));
-                        }
-                    }
-                }
-            }
-        }
-
-        Collections.shuffle(entireDeck);
+    private void sortScores() {
+        Collections.sort(activePlayers);
     }
 
-    @Override
-    public void playerLeave(String username, int id) {
-        removePlayer(username);
+    public void startGame() {
+        setGameState(GameState.INGAME);
+        getGameLobby().sendMessage("Starting the game!");
 
-        if (currentPlayer.equals(username) && checkPlayers()) {
-            nextRound();
-        }
+        playerOrder.addAll(getActivePlayers().stream().map(LobbyMember::getUsername).collect(Collectors.toList()));
+        Collections.shuffle(playerOrder);
+
+        fillDeck();
+        fillHands();
+        activeUnoCard = entireDeck.remove(0);
+        nextCardColour = activeUnoCard.getCardColour();
+
+        gameTimer = new GameTimer(this);
+
+        nextRound();
     }
 
-    private void removePlayer(String username) {
-        for (LobbyMember lobbyMember : new ArrayList<>(activePlayers)) {
-            if (lobbyMember.getUsername().equals(username)) {
-                activePlayers.remove(lobbyMember);
-            }
+    private void updateScore(LobbyMember lobbyMember) {
+        int score = 0;
+
+        for (UnoCard unoCard : playerDecks.get(lobbyMember.getUsername())) {
+            score += unoCard.getCardValue().getScoreValue();
         }
+
+        lobbyMember.setGameScore(score);
     }
 
-    public void nextRound() {
-        secondsSincePlay = 0;
-        currentPlayer = playerOrder.get(playerOrderIndex);
+    private void winner(String username) {
+        getActivePlayers().forEach(this::updateScore);
 
-        String cardText = activeUnoCard.getText();
+        SendableTextMessage.SendableTextMessageBuilder message = SendableTextMessage.builder().message("*GAME OVER!*").message("*" + username + "* is the winner!").parseMode(ParseMode.MARKDOWN);
 
-        if (!activeUnoCard.getCardColour().equals(nextCardColour)) {
-            cardText = "Any " + nextCardColour.text + " card";
-        }
+        getGameLobby().sendMessage(message.replyMarkup(new ReplyKeyboardHide()).build());
 
-        getGameLobby().sendMessage(
-                SendableTextMessage.builder()
-                        .message("*Starting Round " + round + "*\n" +
-                                "*Current Card:* " + cardText + "\n" +
-                                "*Current Player:* " + currentPlayer)
-                        .parseMode(ParseMode.MARKDOWN)
-                        .build()
-        );
-
-        round++;
-
-        sendDeck(getGameLobby().getLobbyMember(currentPlayer));
-    }
-
-    public String nextPlayerIndex() {
-        if (increasePlayerIndex) {
-            playerOrderIndex++;
-        } else {
-            playerOrderIndex--;
-        }
-
-        if (playerOrderIndex >= playerOrder.size()) {
-            playerOrderIndex = 0;
-        }
-
-        if (playerOrderIndex < 0) {
-            playerOrderIndex = playerOrder.size() - 1;
-        }
-
-        return playerOrder.get(playerOrderIndex);
-    }
-
-    public void onSecond() {
-        secondsSincePlay++;
-        if (secondsSincePlay == 20) {
-            getGameLobby().sendMessage(
-                    SendableTextMessage.builder()
-                            .message("Please play a card @" + currentPlayer)
-                            .build()
-            );
-        } else if (secondsSincePlay == 30) {
-            getGameLobby().sendMessage(
-                    SendableTextMessage.builder()
-                            .message("*" + currentPlayer + " ran out of time!*")
-                            .parseMode(ParseMode.MARKDOWN)
-                            .build()
-            );
-            drawCard(currentPlayer);
-        }
+        getGameLobby().stopGame();
     }
 }
 
@@ -682,12 +637,12 @@ class UnoCard {
         return null;
     }
 
-    public static boolean isSame(UnoCard unoCard1, UnoCard unoCard2) {
-        return unoCard1.getCardColour().equals(unoCard2.getCardColour()) && unoCard1.getCardValue().equals(unoCard2.getCardValue());
-    }
-
     public String getText() {
         return getCardColour().getText() + " " + getCardValue().getText();
+    }
+
+    public static boolean isSame(UnoCard unoCard1, UnoCard unoCard2) {
+        return unoCard1.getCardColour().equals(unoCard2.getCardColour()) && unoCard1.getCardValue().equals(unoCard2.getCardValue());
     }
 
     @Override

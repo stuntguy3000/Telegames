@@ -6,19 +6,14 @@ import lombok.Setter;
 public class Card {
     @Getter
     @Setter
-    private Suit suit;
+    private Rank rank;
     @Getter
     @Setter
-    private Rank rank;
+    private Suit suit;
 
     public Card(Suit suit, Rank rank) {
         this.suit = suit;
         this.rank = rank;
-    }
-
-    @Override
-    public String toString() {
-        return this.getRank() + " " + this.suit.getSymbol();
     }
 
     public int getValue() {
@@ -61,5 +56,10 @@ public class Card {
         }
 
         return 0;
+    }
+
+    @Override
+    public String toString() {
+        return this.getRank() + " " + this.suit.getSymbol();
     }
 }

@@ -9,11 +9,11 @@ import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceived
 
 public abstract class Command {
     @Getter
+    private final String description;
+    @Getter
     private final Telegames instance;
     @Getter
     private final String name;
-    @Getter
-    private final String description;
 
     public Command(Telegames instance, String name, String description) {
         this.instance = instance;
@@ -23,11 +23,11 @@ public abstract class Command {
         instance.getCommandHandler().registerCommand(this);
     }
 
-    public abstract void processCommand(CommandMessageReceivedEvent event);
-
-    public void respond(Chat chat, SendableMessage message) {
-        chat.sendMessage(message, TelegramHook.getBot());
+    public String createBotFatherString() {
+        return String.format("%s - %s", name, description);
     }
+
+    public abstract void processCommand(CommandMessageReceivedEvent event);
 
     public void respond(Chat chat, String message) {
         chat.sendMessage(message, TelegramHook.getBot());
@@ -38,7 +38,7 @@ public abstract class Command {
         respond(c, msg);
     }
 
-    public String createBotFatherString() {
-        return String.format("%s - %s", name, description);
+    public void respond(Chat chat, SendableMessage message) {
+        chat.sendMessage(message, TelegramHook.getBot());
     }
 }

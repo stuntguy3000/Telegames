@@ -16,14 +16,14 @@ import java.util.List;
 // @author Luke Anderson | stuntguy3000
 public class Lobby {
     @Getter
+    private Game currentGame;
+    private SendableTextMessage lobbyHeader;
+    @Getter
     private String lobbyID;
     @Getter
     private List<LobbyMember> lobbyMembers = new ArrayList<>();
     @Getter
     private LobbyMember lobbyOwner;
-    @Getter
-    private Game currentGame;
-    private SendableTextMessage lobbyHeader;
 
     /**
      * Constructs a new Lobby instance
@@ -35,67 +35,7 @@ public class Lobby {
         this.lobbyOwner = new LobbyMember(owner);
         this.lobbyID = lobbyID;
 
-        lobbyHeader = SendableTextMessage.builder()
-                .message("*[---------- " + owner.getUsername() + "'s Lobby ----------]*")
-                .parseMode(ParseMode.MARKDOWN)
-                .build();
-    }
-
-    /**
-     * Called when a user joined this Lobby
-     *
-     * @param user User the user who joined the Lobby
-     */
-    public void userJoin(User user) {
-        LobbyMember lobbyMember = new LobbyMember(user);
-        lobbyMembers.add(lobbyMember);
-        Game game = getCurrentGame();
-        lobbyMember.getChat().sendMessage(lobbyHeader, getTelegramBot());
-
-        SendableTextMessage sendableTextMessage = SendableTextMessage.builder()
-                .message("*[Lobby]* User @" + user.getUsername() + " joined this lobby!")
-                .parseMode(ParseMode.MARKDOWN)
-                .replyMarkup(new ReplyKeyboardHide())
-                .build();
-        sendMessage(sendableTextMessage);
-
-        if (game != null) {
-            sendableTextMessage = SendableTextMessage.builder()
-                    .message("You are spectating a game of " + game.getGameName() + ".")
-                    .parseMode(ParseMode.MARKDOWN)
-                    .build();
-            lobbyMember.getChat().sendMessage(sendableTextMessage, getTelegramBot());
-        }
-    }
-
-    /**
-     * Called when a user left this lobby
-     *
-     * @param user User the user who left the Lobby
-     */
-    public void userLeave(LobbyMember user) {
-        SendableTextMessage sendableTextMessage = SendableTextMessage.builder()
-                .message("*[Lobby]* User @" + user.getUsername() + " (" + user.getFullName() + ") left this lobby!")
-                .parseMode(ParseMode.MARKDOWN)
-                .build();
-        sendMessage(sendableTextMessage);
-
-        String username = user.getUsername();
-        int id = user.getUserID();
-
-        for (LobbyMember lobbyMember : new ArrayList<>(lobbyMembers)) {
-            if (lobbyMember.getUsername().equals(user.getUsername())) {
-                lobbyMembers.remove(lobbyMember);
-            }
-        }
-
-        if (currentGame != null) {
-            currentGame.playerLeave(username, id);
-        }
-
-        if (lobbyMembers.size() == 0) {
-            Telegames.getInstance().getLobbyHandler().destroyLobby(lobbyID);
-        }
+        lobbyHeader = SendableTextMessage.builder().message("*[---------- " + owner.getUsername() + "'s Lobby ----------]*").parseMode(ParseMode.MARKDOWN).build();
     }
 
     /**
@@ -111,28 +51,6 @@ public class Lobby {
         }
 
         return null;
-    }
-
-    /**
-     * Send a message to all players in the lobby
-     *
-     * @param message SendableTextMessage the message to be sent
-     */
-    public void sendMessage(SendableTextMessage message) {
-        for (LobbyMember lobbyMember : lobbyMembers) {
-            lobbyMember.getChat().sendMessage(message, getTelegramBot());
-        }
-    }
-
-    /**
-     * Send a message to all players in the lobby
-     *
-     * @param message String the message to be sent
-     */
-    public void sendMessage(String message) {
-        for (LobbyMember lobbyMember : lobbyMembers) {
-            lobbyMember.getChat().sendMessage(message, getTelegramBot());
-        }
     }
 
     /**
@@ -176,20 +94,24 @@ public class Lobby {
     }
 
     /**
-     * Called when a User sends a message for all users
+     * Send a message to all players in the lobby
      *
-     * @param sender  User the message sender
-     * @param message String the message
+     * @param message SendableTextMessage the message to be sent
      */
-    public void userChat(User sender, String message) {
+    public void sendMessage(SendableTextMessage message) {
         for (LobbyMember lobbyMember : lobbyMembers) {
-            if (!lobbyMember.getUsername().equals(sender.getUsername())) {
-                lobbyMember.getChat().sendMessage(SendableTextMessage.builder()
-                                .message("*[Chat]* " + sender.getUsername() + ": " + message)
-                                .parseMode(ParseMode.MARKDOWN)
-                                .build(), getTelegramBot()
-                );
-            }
+            lobbyMember.getChat().sendMessage(message, getTelegramBot());
+        }
+    }
+
+    /**
+     * Send a message to all players in the lobby
+     *
+     * @param message String the message to be sent
+     */
+    public void sendMessage(String message) {
+        for (LobbyMember lobbyMember : lobbyMembers) {
+            lobbyMember.getChat().sendMessage(message, getTelegramBot());
         }
     }
 
@@ -210,22 +132,12 @@ public class Lobby {
             if (newGame.tryStartGame()) {
                 currentGame = newGame;
             } else {
-                sendMessage(
-                        SendableTextMessage.builder()
-                                .message("*Unable to start game!*")
-                                .parseMode(ParseMode.MARKDOWN)
-                                .build()
-                );
+                sendMessage(SendableTextMessage.builder().message("*Unable to start game!*").parseMode(ParseMode.MARKDOWN).build());
             }
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
 
-            sendMessage(
-                    SendableTextMessage.builder()
-                            .message("*Unexpected Error Occurred! Contact @stuntguy3000*")
-                            .parseMode(ParseMode.MARKDOWN)
-                            .build()
-            );
+            sendMessage(SendableTextMessage.builder().message("*Unexpected Error Occurred! Contact @stuntguy3000*").parseMode(ParseMode.MARKDOWN).build());
         }
     }
 
@@ -234,6 +146,67 @@ public class Lobby {
         currentGame = null;
 
         sendMessage(lobbyHeader);
+    }
+
+    /**
+     * Called when a User sends a message for all users
+     *
+     * @param sender  User the message sender
+     * @param message String the message
+     */
+    public void userChat(User sender, String message) {
+        for (LobbyMember lobbyMember : lobbyMembers) {
+            if (!lobbyMember.getUsername().equals(sender.getUsername())) {
+                lobbyMember.getChat().sendMessage(SendableTextMessage.builder().message("*[Chat]* " + sender.getUsername() + ": " + message).parseMode(ParseMode.MARKDOWN).build(), getTelegramBot());
+            }
+        }
+    }
+
+    /**
+     * Called when a user joined this Lobby
+     *
+     * @param user User the user who joined the Lobby
+     */
+    public void userJoin(User user) {
+        LobbyMember lobbyMember = new LobbyMember(user);
+        lobbyMembers.add(lobbyMember);
+        Game game = getCurrentGame();
+        lobbyMember.getChat().sendMessage(lobbyHeader, getTelegramBot());
+
+        SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message("*[Lobby]* User @" + user.getUsername() + " joined this lobby!").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build();
+        sendMessage(sendableTextMessage);
+
+        if (game != null) {
+            sendableTextMessage = SendableTextMessage.builder().message("You are spectating a game of " + game.getGameName() + ".").parseMode(ParseMode.MARKDOWN).build();
+            lobbyMember.getChat().sendMessage(sendableTextMessage, getTelegramBot());
+        }
+    }
+
+    /**
+     * Called when a user left this lobby
+     *
+     * @param user User the user who left the Lobby
+     */
+    public void userLeave(LobbyMember user) {
+        SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message("*[Lobby]* User @" + user.getUsername() + " (" + user.getFullName() + ") left this lobby!").parseMode(ParseMode.MARKDOWN).build();
+        sendMessage(sendableTextMessage);
+
+        String username = user.getUsername();
+        int id = user.getUserID();
+
+        for (LobbyMember lobbyMember : new ArrayList<>(lobbyMembers)) {
+            if (lobbyMember.getUsername().equals(user.getUsername())) {
+                lobbyMembers.remove(lobbyMember);
+            }
+        }
+
+        if (currentGame != null) {
+            currentGame.playerLeave(username, id);
+        }
+
+        if (lobbyMembers.size() == 0) {
+            Telegames.getInstance().getLobbyHandler().destroyLobby(lobbyID);
+        }
     }
 }
     

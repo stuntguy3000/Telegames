@@ -36,18 +36,6 @@ public class TelegramHook implements Listener {
         this.initializeGames();
     }
 
-    private void initializeGames() {
-        List<Class<?>> allGames = ClassGetter.getClassesForPackage("me.stuntguy3000.java.telegames.game.");
-        allGames.stream().filter(Game.class::isAssignableFrom).forEach(clazz -> {
-            try {
-                getInstance().getGameHandler().registerGame((Game) clazz.newInstance());
-            } catch (InstantiationException | IllegalAccessException e) {
-                LogHandler.log(clazz.getSimpleName() + " failed to instantiate:");
-                e.printStackTrace();
-            }
-        });
-    }
-
     private void initializeCommands() {
         List<Class<?>> allCommands = ClassGetter.getClassesForPackage("me.stuntguy3000.java.telegames.command.");
         allCommands.stream().filter(Command.class::isAssignableFrom).forEach(clazz -> {
@@ -61,6 +49,25 @@ public class TelegramHook implements Listener {
         });
     }
 
+    private void initializeGames() {
+        List<Class<?>> allGames = ClassGetter.getClassesForPackage("me.stuntguy3000.java.telegames.game.");
+        allGames.stream().filter(Game.class::isAssignableFrom).forEach(clazz -> {
+            try {
+                getInstance().getGameHandler().registerGame((Game) clazz.newInstance());
+            } catch (InstantiationException | IllegalAccessException e) {
+                LogHandler.log(clazz.getSimpleName() + " failed to instantiate:");
+                e.printStackTrace();
+            }
+        });
+    }
+
+    @Override
+    public void onCommandMessageReceived(CommandMessageReceivedEvent event) {
+        String command = event.getCommand();
+
+        instance.getCommandHandler().executeCommand(command, event);
+    }
+
     @Override
     public void onTextMessageReceived(TextMessageReceivedEvent event) {
         User user = event.getMessage().getSender();
@@ -69,13 +76,6 @@ public class TelegramHook implements Listener {
         if (lobby != null) {
             lobby.onTextMessageReceived(event);
         }
-    }
-
-    @Override
-    public void onCommandMessageReceived(CommandMessageReceivedEvent event) {
-        String command = event.getCommand();
-
-        instance.getCommandHandler().executeCommand(command, event);
     }
 }
     

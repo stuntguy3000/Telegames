@@ -6,27 +6,27 @@ import pro.zackpollard.telegrambot.api.event.chat.message.TextMessageReceivedEve
 
 public abstract class Game {
     @Getter
-    private String gameName;
-    @Getter
     private String gameDescription;
     @Getter
     @Setter
     private Lobby gameLobby;
+    @Getter
+    private String gameName;
+
+    public abstract void endGame();
+
+    public abstract String getGameHelp();
+
+    public abstract void onTextMessageReceived(TextMessageReceivedEvent event);
+
+    public abstract boolean playerJoin(LobbyMember lobbyMember);
+
+    public abstract void playerLeave(String username, int userID);
 
     public void setGameInfo(String name, String description) {
         this.gameName = name;
         this.gameDescription = description;
     }
 
-    public abstract void onTextMessageReceived(TextMessageReceivedEvent event);
-
-    public abstract void endGame();
-
     public abstract boolean tryStartGame();
-
-    public abstract boolean playerJoin(LobbyMember lobbyMember);
-
-    public abstract void playerLeave(String username, int userID);
-
-    public abstract String getGameHelp();
 }

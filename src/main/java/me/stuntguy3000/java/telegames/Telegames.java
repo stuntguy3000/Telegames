@@ -18,9 +18,9 @@ public class Telegames {
     @Getter
     public static Telegames instance;
     @Getter
-    private ConfigHandler configHandler;
-    @Getter
     private CommandHandler commandHandler = new CommandHandler();
+    @Getter
+    private ConfigHandler configHandler;
     @Getter
     private GameHandler gameHandler = new GameHandler();
     @Getter
@@ -28,15 +28,13 @@ public class Telegames {
     @Getter
     private RandomString randomString = new RandomString(5);
 
-    public static void main(String[] args) {
-        new Telegames().main();
+    private void connectTelegram() {
+        LogHandler.log("Connecting to Telegram...");
+        new TelegramHook(configHandler.getBotSettings().getTelegramKey(), this);
     }
 
     /**
-     * Crazy ideas:
-     * - Matchmaking
-     * - Private/Public Matches (Joinable via IDs, or passwords)
-     * - Computer AI
+     * Crazy ideas: - Matchmaking - Private/Public Matches (Joinable via IDs, or passwords) - Computer AI
      */
     public void main() {
         instance = this;
@@ -99,9 +97,8 @@ public class Telegames {
         }
     }
 
-    private void connectTelegram() {
-        LogHandler.log("Connecting to Telegram...");
-        new TelegramHook(configHandler.getBotSettings().getTelegramKey(), this);
+    public static void main(String[] args) {
+        new Telegames().main();
     }
 
     public void sendToAdmins(String message) {

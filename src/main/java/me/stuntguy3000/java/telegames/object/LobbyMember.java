@@ -9,18 +9,18 @@ import pro.zackpollard.telegrambot.api.user.User;
 // @author Luke Anderson | stuntguy3000
 public class LobbyMember implements Comparable {
     @Getter
-    private int userID;
-    @Getter
-    private String username;
-    @Getter
     private String firstName;
-    @Getter
-    private String lastName;
     @Getter
     private String fullName;
     @Getter
     @Setter
     private int gameScore = 0;
+    @Getter
+    private String lastName;
+    @Getter
+    private int userID;
+    @Getter
+    private String username;
 
     public LobbyMember(User user) {
         this.username = user.getUsername();
@@ -28,10 +28,6 @@ public class LobbyMember implements Comparable {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.fullName = user.getFullName();
-    }
-
-    public Chat getChat() {
-        return TelegramBot.getChat(getUserID());
     }
 
     @Override
@@ -55,6 +51,10 @@ public class LobbyMember implements Comparable {
         }
 
         return 0;
+    }
+
+    public Chat getChat() {
+        return TelegramBot.getChat(getUserID());
     }
 }
     

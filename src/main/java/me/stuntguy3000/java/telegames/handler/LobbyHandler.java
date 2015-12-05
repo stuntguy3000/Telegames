@@ -16,6 +16,32 @@ public class LobbyHandler {
     private HashMap<String, Lobby> activeLobbies = new HashMap<>();
 
     /**
+     * Creates a Lobby
+     *
+     * @param user User the owner of the Lobby
+     */
+    public void createLobby(User user) {
+        Lobby lobby = new Lobby(user, Telegames.getInstance().getRandomString().nextString().toUpperCase());
+        activeLobbies.put(lobby.getLobbyID(), lobby);
+
+        SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message("*You have created a Lobby!*\n" +
+                "*Lobby ID: *" + lobby.getLobbyID()).parseMode(ParseMode.MARKDOWN).build();
+
+        TelegramBot.getChat(user.getId()).sendMessage(sendableTextMessage, lobby.getTelegramBot());
+        lobby.userJoin(user);
+    }
+
+    /**
+     * Destroys a Lobby
+     *
+     * @param lobbyID String the ID of the Lobby to destroy
+     */
+    public void destroyLobby(String lobbyID) {
+        lobbyID = lobbyID.toUpperCase();
+        activeLobbies.remove(lobbyID);
+    }
+
+    /**
      * Return the User's current Lobby
      *
      * @param user User the requested user
@@ -31,35 +57,6 @@ public class LobbyHandler {
         }
 
         return null;
-    }
-
-    /**
-     * Creates a Lobby
-     *
-     * @param user User the owner of the Lobby
-     */
-    public void createLobby(User user) {
-        Lobby lobby = new Lobby(user, Telegames.getInstance().getRandomString().nextString().toUpperCase());
-        activeLobbies.put(lobby.getLobbyID(), lobby);
-
-        SendableTextMessage sendableTextMessage = SendableTextMessage.builder()
-                .message("*You have created a Lobby!*\n" +
-                        "*Lobby ID: *" + lobby.getLobbyID())
-                .parseMode(ParseMode.MARKDOWN)
-                .build();
-
-        TelegramBot.getChat(user.getId()).sendMessage(sendableTextMessage, lobby.getTelegramBot());
-        lobby.userJoin(user);
-    }
-
-    /**
-     * Destroys a Lobby
-     *
-     * @param lobbyID String the ID of the Lobby to destroy
-     */
-    public void destroyLobby(String lobbyID) {
-        lobbyID = lobbyID.toUpperCase();
-        activeLobbies.remove(lobbyID);
     }
 
     /**
