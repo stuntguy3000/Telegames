@@ -218,6 +218,7 @@ public class CardsAgainstHumanity extends Game {
 
         try {
             while ((packLine = reader.readLine()) != null) {
+                System.out.println(packLine);
                 switch (packLine) {
                     case "___METADATA___": {
                         cahPackProperty = CAHPackProperty.METADATA;
@@ -238,13 +239,16 @@ public class CardsAgainstHumanity extends Game {
                                     if (packLine.contains(": ")) {
                                         String[] packData = packLine.split(": ");
                                         cahCardPack.addMetadata(packData[0], packData[1]);
+                                        System.out.println(" IS METADATA");
                                     }
                                 }
                                 case BLACKCARDS: {
                                     cahCardPack.addCard(packLine.replaceAll("~", "\n"), CAHCardType.BLACK);
+                                    System.out.println(" IS BLACK");
                                 }
                                 case WHITECARDS: {
                                     cahCardPack.addCard(packLine.replaceAll("~", "\n"), CAHCardType.WHITE);
+                                    System.out.println(" IS WHITE");
                                 }
                             }
                         }
