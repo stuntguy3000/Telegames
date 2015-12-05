@@ -80,7 +80,7 @@ public class CardsAgainstHumanity extends Game {
     private CAHCard blackCard;
     private List<CAHCard> blackCards = new ArrayList<>();
     private LobbyMember cardCzar;
-    private boolean continueGame = false;
+    private boolean continueGame = true;
     private GameState gameState;
     private GameTimer gameTimer;
     private boolean increasePlayerIndex = true;
