@@ -241,10 +241,10 @@ public class CardsAgainstHumanity extends Game {
                                     }
                                 }
                                 case BLACKCARDS: {
-                                    cahCardPack.addCard(packLine.replaceAll(" | ", "\n"), CAHCardType.BLACK);
+                                    cahCardPack.addCard(packLine.replaceAll("|", "\n"), CAHCardType.BLACK);
                                 }
                                 case WHITECARDS: {
-                                    cahCardPack.addCard(packLine.replaceAll(" | ", "\n"), CAHCardType.WHITE);
+                                    cahCardPack.addCard(packLine.replaceAll("|", "\n"), CAHCardType.WHITE);
                                 }
                             }
                         }
@@ -280,8 +280,7 @@ public class CardsAgainstHumanity extends Game {
             blackCard = blackCards.get(0);
 
             getGameLobby().sendMessage(SendableTextMessage.builder().message("*Starting Round " + round + "*\n" +
-                    "*Card Czar:* " + cardCzar.getUsername() + "\n" +
-                    "_The black card is_").parseMode(ParseMode.MARKDOWN).build());
+                    "*Card Czar:* " + cardCzar.getUsername()).parseMode(ParseMode.MARKDOWN).build());
 
             getGameLobby().sendMessage(SendableTextMessage.builder().message(blackCard.getText()).build());
         }
