@@ -241,10 +241,10 @@ public class CardsAgainstHumanity extends Game {
                                     }
                                 }
                                 case BLACKCARDS: {
-                                    cahCardPack.addCard(packLine.replaceAll("|", "\n"), CAHCardType.BLACK);
+                                    cahCardPack.addCard(packLine.replaceAll("~", "\n"), CAHCardType.BLACK);
                                 }
                                 case WHITECARDS: {
-                                    cahCardPack.addCard(packLine.replaceAll("|", "\n"), CAHCardType.WHITE);
+                                    cahCardPack.addCard(packLine.replaceAll("~", "\n"), CAHCardType.WHITE);
                                 }
                             }
                         }
