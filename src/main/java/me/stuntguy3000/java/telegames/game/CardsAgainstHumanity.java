@@ -218,18 +218,20 @@ public class CardsAgainstHumanity extends Game {
 
         try {
             while ((packLine = reader.readLine()) != null) {
-                System.out.println(packLine);
                 switch (packLine) {
                     case "___METADATA___": {
                         cahPackProperty = CAHPackProperty.METADATA;
+                        System.out.println("Metadata");
                         continue;
                     }
                     case "___BLACK___": {
                         cahPackProperty = CAHPackProperty.BLACKCARDS;
+                        System.out.println("Black");
                         continue;
                     }
                     case "___WHITE___": {
                         cahPackProperty = CAHPackProperty.WHITECARDS;
+                        System.out.println("White");
                         continue;
                     }
                     default: {
