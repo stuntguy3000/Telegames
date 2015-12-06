@@ -138,7 +138,7 @@ public class CardsAgainstHumanity extends Game {
                         modifiedBlackCard.append("*");
                         modifiedBlackCard.append(playerCard.getText());
                         modifiedBlackCard.append("*");
-                        if (blackCardSplit.length >= segmentID) {
+                        if (segmentID < blackCardSplit.length) {
                             modifiedBlackCard.append(blackCardSplit[segmentID]);
                         }
                         modifiedBlackCard.append("\n");
@@ -238,10 +238,17 @@ public class CardsAgainstHumanity extends Game {
                 if (command.equalsIgnoreCase("help")) {
                     getGameLobby().sendMessage("CardsAgainstHumanity Command Menu:\n" +
                             "+help - View the help menu\n" +
-                            "+cards - View your cards");
+                            "+cards - View your cards\n" +
+                            "+score - View your cards");
                 } else if (command.equalsIgnoreCase("cards")) {
-                    if (gameState == GameState.INGAME) {
+                    if (gameState != GameState.WAITING_FOR_PLAYERS) {
                         getGameLobby().sendMessage(createUserKeyboard(lobbyMember).message("Here are your cards:").build());
+                    } else {
+                        getGameLobby().sendMessage("The game has not started!");
+                    }
+                } else if (command.equalsIgnoreCase("score")) {
+                    if (gameState != GameState.WAITING_FOR_PLAYERS) {
+                        getGameLobby().sendMessage("Your score is " + lobbyMember.getGameScore());
                     } else {
                         getGameLobby().sendMessage("The game has not started!");
                     }
@@ -358,7 +365,6 @@ public class CardsAgainstHumanity extends Game {
                                 }
                                 case WHITECARDS: {
                                     cahCardPack.addCard(packLine.replaceAll("~", "\n"), CAHCardType.WHITE);
-                                    continue;
                                 }
                             }
                         }
@@ -383,12 +389,18 @@ public class CardsAgainstHumanity extends Game {
         if (!continueGame) {
             getGameLobby().stopGame();
         } else {
+            for (LobbyMember lobbyMember : activePlayers) {
+                int size = userCards.get(lobbyMember.getUserID()).size();
+                giveWhiteCard(lobbyMember, 10 - size);
+            }
+
             playerOrderIndex++;
 
             if (playerOrderIndex >= activePlayers.size()) {
                 playerOrderIndex = 0;
             }
 
+            czarOptions.clear();
             playedCards.clear();
             czarChoosing = false;
             blackCards.add(currentBlackCard);
@@ -408,7 +420,11 @@ public class CardsAgainstHumanity extends Game {
 
             for (LobbyMember lobbyMember : getGameLobby().getLobbyMembers()) {
                 if (isPlaying(lobbyMember) && !(cardCzar.getUserID() == lobbyMember.getUserID())) {
-                    TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(createUserKeyboard(lobbyMember).message(currentBlackCard.getText() + extraCards.toString()).build(), TelegramHook.getBot());
+                    if (extraCards.toString().isEmpty()) {
+                        TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(SendableTextMessage.builder().message(currentBlackCard.getText()).build(), TelegramHook.getBot());
+                    } else {
+                        TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(createUserKeyboard(lobbyMember).message(currentBlackCard.getText() + extraCards.toString()).build(), TelegramHook.getBot());
+                    }
                 } else {
                     TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(SendableTextMessage.builder().message(currentBlackCard.getText()).build(), TelegramHook.getBot());
                 }
