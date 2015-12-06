@@ -138,7 +138,9 @@ public class CardsAgainstHumanity extends Game {
                         modifiedBlackCard.append("*");
                         modifiedBlackCard.append(playerCard.getText());
                         modifiedBlackCard.append("*");
-                        modifiedBlackCard.append(blackCardSplit[segmentID]);
+                        if (blackCardSplit.length >= segmentID) {
+                            modifiedBlackCard.append(blackCardSplit[segmentID]);
+                        }
                         modifiedBlackCard.append("\n");
                     }
 
@@ -387,9 +389,11 @@ public class CardsAgainstHumanity extends Game {
                 playerOrderIndex = 0;
             }
 
+            playedCards.clear();
+            czarChoosing = false;
             blackCards.add(currentBlackCard);
             cardCzar = activePlayers.get(playerOrderIndex);
-            currentBlackCard = blackCards.get(0);
+            currentBlackCard = blackCards.remove(0);
 
             getGameLobby().sendMessage(SendableTextMessage.builder().message("*Starting Round " + round + "*\n" +
                     "*Card Czar:* " + cardCzar.getUsername()).parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
@@ -409,6 +413,8 @@ public class CardsAgainstHumanity extends Game {
                     TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(SendableTextMessage.builder().message(currentBlackCard.getText()).build(), TelegramHook.getBot());
                 }
             }
+
+            round++;
         }
     }
 
