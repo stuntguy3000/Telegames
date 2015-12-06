@@ -54,6 +54,21 @@ public class Lobby {
     }
 
     /**
+     * Returns a LobbyMember belonging to the username
+     *
+     * @param id Integer the ID of the player
+     */
+    public LobbyMember getLobbyMember(int id) {
+        for (LobbyMember lobbyMember : getLobbyMembers()) {
+            if (lobbyMember.getUserID() == id) {
+                return lobbyMember;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Returns the active TelegramBot instance
      *
      * @return TelegramBot active TelegramBot instance

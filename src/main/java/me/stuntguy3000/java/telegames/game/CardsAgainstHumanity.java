@@ -19,10 +19,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 enum CAHCardType {
     WHITE,
@@ -36,21 +33,36 @@ enum CAHPackProperty {
 }
 
 class CAHCard {
+    @Getter
+    @Setter
+    private int blanks = 0;
     @Setter
     @Getter
     private CAHCardType cahCardType;
     @Setter
-    @Getter
     private String text;
 
     public CAHCard(String text, CAHCardType cahCardType) {
         this.text = text;
         this.cahCardType = cahCardType;
+
+        for (char character : text.toCharArray()) {
+            if (character == '_') {
+                ++blanks;
+            }
+        }
+    }
+
+    public String getRawText() {
+        return text;
+    }
+
+    public String getText() {
+        return text.replace("_", "______");
     }
 }
 
 class CAHCardPack {
-
     @Getter
     @Setter
     private List<CAHCard> cards;
@@ -77,20 +89,20 @@ class CAHCardPack {
 public class CardsAgainstHumanity extends Game {
 
     private List<LobbyMember> activePlayers = new ArrayList<>();
-    private CAHCard blackCard;
     private List<CAHCard> blackCards = new ArrayList<>();
     private LobbyMember cardCzar;
     private boolean continueGame = true;
+    private CAHCard currentBlackCard;
+    private boolean czarChoosing = false;
+    private List<CzarOption> czarOptions = new ArrayList<>();
     private GameState gameState;
-    private GameTimer gameTimer;
-    private boolean increasePlayerIndex = true;
-    private int maxPlayers = 8;
+    private int maxPlayers = 10;
     private int minPlayers = 3;
-    private HashMap<Integer, List<CAHCard>> playerCards = new HashMap<>();
-    private List<String> playerOrder = new ArrayList<>();
+    private HashMap<Integer, LinkedList<CAHCard>> playedCards = new HashMap<>();
     private int playerOrderIndex = 0;
     private int round = 1;
     private int secondsSincePlay = 0;
+    private HashMap<Integer, List<CAHCard>> userCards = new HashMap<>();
     private List<CAHCard> whiteCards = new ArrayList<>();
 
     // Init Class
@@ -107,13 +119,110 @@ public class CardsAgainstHumanity extends Game {
             getGameLobby().stopGame();
             return false;
         }
+
+        if (gameState == GameState.CHOOSING) {
+            if (playedCards.size() == activePlayers.size() - 1) {
+                gameState = GameState.INGAME;
+
+                for (LobbyMember lobbyMember : getGameLobby().getLobbyMembers()) {
+                    if (cardCzar.getUserID() == lobbyMember.getUserID()) {
+                        czarChoosing = true;
+                        getGameLobby().sendMessage(createCzarKeyboard().message("*All users have played.*\n*" + cardCzar.getUsername() + " please choose a card!*").parseMode(ParseMode.MARKDOWN).build());
+                    } else {
+                        getGameLobby().sendMessage(SendableTextMessage.builder().message("*All users have played.*\n*" + cardCzar.getUsername() + " please choose a card!*").parseMode(ParseMode.MARKDOWN).build());
+                    }
+                }
+
+                String[] blackCardSplit = currentBlackCard.getRawText().split("_");
+
+                for (Map.Entry<Integer, LinkedList<CAHCard>> playerCards : playedCards.entrySet()) {
+                    int segmentID = 0;
+                    CzarOption czarOption = new CzarOption(getGameLobby().getLobbyMember(playerCards.getKey()));
+                    StringBuilder modifiedBlackCard = new StringBuilder();
+
+                    modifiedBlackCard.append(blackCardSplit[segmentID]);
+
+                    for (CAHCard playerCard : playerCards.getValue()) {
+                        segmentID++;
+                        modifiedBlackCard.append("*");
+                        modifiedBlackCard.append(playerCard.getText());
+                        modifiedBlackCard.append("*");
+                        modifiedBlackCard.append(blackCardSplit[segmentID]);
+                    }
+
+                    czarOption.setText(modifiedBlackCard.toString());
+                    czarOptions.add(czarOption);
+                }
+
+                StringBuilder options = new StringBuilder();
+
+                Collections.shuffle(czarOptions);
+
+                int id = 1;
+                for (CzarOption czarOption : czarOptions) {
+                    czarOption.setOptionNumber(id);
+                    options.append(id);
+                    options.append(") ");
+                    options.append(czarOption.getText());
+                    id++;
+                }
+
+                getGameLobby().sendMessage(SendableTextMessage.builder().message(options.toString()).parseMode(ParseMode.MARKDOWN).build());
+            }
+        }
         return true;
+    }
+
+    private SendableTextMessage.SendableTextMessageBuilder createCzarKeyboard() {
+        List<List<String>> buttonList = new ArrayList<>();
+        List<String> row = new ArrayList<>();
+
+        int index = 1;
+
+        for (int i = 1; i <= czarOptions.size(); i++) {
+            if (index == 5) {
+                index = 0;
+                buttonList.add(new ArrayList<>(row));
+                row.clear();
+            }
+
+            row.add("Option " + i);
+            index++;
+        }
+
+        if (row.size() > 0) {
+            buttonList.add(new ArrayList<>(row));
+        }
+
+        return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false));
+    }
+
+    private SendableTextMessage.SendableTextMessageBuilder createUserKeyboard(LobbyMember lobbyMember) {
+        List<List<String>> buttonList = new ArrayList<>();
+        List<String> row = new ArrayList<>();
+        List<CAHCard> cards = userCards.get(lobbyMember.getUserID());
+
+        int index = 1;
+        for (CAHCard card : cards) {
+            if (index == 5) {
+                index = 0;
+                buttonList.add(new ArrayList<>(row));
+                row.clear();
+            }
+
+            row.add(card.getText());
+            index++;
+        }
+
+        if (row.size() > 0) {
+            buttonList.add(new ArrayList<>(row));
+        }
+
+        return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false));
     }
 
     @Override
     public void endGame() {
-        gameTimer.cancel();
-
         SendableTextMessage.SendableTextMessageBuilder messageBuilder = SendableTextMessage.builder().message("The game of CardsAgainstHumanity has ended!").replyMarkup(ReplyKeyboardHide.builder().build());
 
         getGameLobby().sendMessage(messageBuilder.build());
@@ -142,13 +251,15 @@ public class CardsAgainstHumanity extends Game {
                             "+cards - View your cards");
                 } else if (command.equalsIgnoreCase("cards")) {
                     if (gameState == GameState.INGAME) {
-                        sendCards(lobbyMember);
+                        getGameLobby().sendMessage(createUserKeyboard(lobbyMember).message("Here are your cards:").build());
                     } else {
                         getGameLobby().sendMessage("The game has not started!");
                     }
                 }
             } else {
-                getGameLobby().userChat(sender, message);
+                if (!playCard(sender, message)) {
+                    getGameLobby().userChat(sender, message);
+                }
             }
         }
     }
@@ -168,7 +279,7 @@ public class CardsAgainstHumanity extends Game {
     public void playerLeave(String username, int id) {
         removePlayer(username);
 
-        if (cardCzar.equals(username) && checkPlayers()) {
+        if (cardCzar.getUsername().equals(username) && checkPlayers()) {
             nextRound();
         }
     }
@@ -195,7 +306,7 @@ public class CardsAgainstHumanity extends Game {
     }
 
     private void giveCard(LobbyMember lobbyMember, int amount) {
-        List<CAHCard> playerCardDeck = playerCards.get(lobbyMember.getUserID());
+        List<CAHCard> playerCardDeck = userCards.get(lobbyMember.getUserID());
 
         if (playerCardDeck == null) {
             playerCardDeck = new ArrayList<>();
@@ -205,7 +316,17 @@ public class CardsAgainstHumanity extends Game {
             playerCardDeck.add(whiteCards.remove(0));
         }
 
-        playerCards.put(lobbyMember.getUserID(), playerCardDeck);
+        userCards.put(lobbyMember.getUserID(), playerCardDeck);
+    }
+
+    private boolean isPlaying(LobbyMember lobbyMember) {
+        for (LobbyMember gamePlayer : activePlayers) {
+            if (gamePlayer.getUserID() == lobbyMember.getUserID()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     // Load Card Packs from Jar resources
@@ -241,16 +362,13 @@ public class CardsAgainstHumanity extends Game {
                                     if (packLine.contains(": ")) {
                                         String[] packData = packLine.split(": ");
                                         cahCardPack.addMetadata(packData[0], packData[1]);
-                                        System.out.println(" IS METADATA");
                                     }
                                 }
                                 case BLACKCARDS: {
                                     cahCardPack.addCard(packLine.replaceAll("~", "\n"), CAHCardType.BLACK);
-                                    System.out.println(" IS BLACK");
                                 }
                                 case WHITECARDS: {
                                     cahCardPack.addCard(packLine.replaceAll("~", "\n"), CAHCardType.WHITE);
-                                    System.out.println(" IS WHITE");
                                 }
                             }
                         }
@@ -281,15 +399,138 @@ public class CardsAgainstHumanity extends Game {
                 playerOrderIndex = 0;
             }
 
-            blackCards.add(blackCard);
-            cardCzar = activePlayers.get(0);
-            blackCard = blackCards.get(0);
+            blackCards.add(currentBlackCard);
+            cardCzar = activePlayers.get(playerOrderIndex);
+            currentBlackCard = blackCards.get(0);
 
             getGameLobby().sendMessage(SendableTextMessage.builder().message("*Starting Round " + round + "*\n" +
-                    "*Card Czar:* " + cardCzar.getUsername()).parseMode(ParseMode.MARKDOWN).build());
+                    "*Card Czar:* " + cardCzar.getUsername()).parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
 
-            getGameLobby().sendMessage(SendableTextMessage.builder().message(blackCard.getText()).build());
+            StringBuilder extraCards = new StringBuilder();
+
+            if (currentBlackCard.getBlanks() > 1) {
+                extraCards.append("\nPlease play ").append(currentBlackCard.getBlanks()).append(" white cards.");
+            }
+
+            for (LobbyMember lobbyMember : getGameLobby().getLobbyMembers()) {
+                if (isPlaying(lobbyMember) && !(cardCzar.getUserID() == lobbyMember.getUserID())) {
+                    getGameLobby().sendMessage(createUserKeyboard(lobbyMember).message(currentBlackCard.getText() + extraCards.toString()).build());
+                } else {
+                    getGameLobby().sendMessage(SendableTextMessage.builder().message(currentBlackCard.getText()).build());
+                }
+            }
         }
+    }
+
+    private boolean playCard(User sender, String message) {
+        if (cardCzar.getUserID() != sender.getId()) {
+            CAHCard cahCard = null;
+
+            for (CAHCard playerCard : userCards.get(sender.getId())) {
+                if (playerCard.getText().equalsIgnoreCase(message)) {
+                    cahCard = playerCard;
+                }
+            }
+
+            if (cahCard != null) {
+                /**
+                 *
+                 * if (playcontains(sender.getId())) {
+                 getGameLobby().sendMessage(
+                 SendableTextMessage.builder().message("*" + sender.getUsername() + " played a card*")
+                 .parseMode(ParseMode.MARKDOWN)
+                 .build()
+                 );
+
+                 // Add played card to list
+                 LinkedList<CAHCard> cards = new LinkedList<>();
+
+                 if (playedCards.containsKey(sender.getId())) {
+                 cards = playedCards.get(sender.getId());
+                 }
+
+                 cards.add(cahCard);
+                 playedCards.put(sender.getId(), cards);
+
+                 // Remove from players hand
+                 List<CAHCard> userCards = userCards.get(sender.getId());
+
+                 for (CAHCard userCard : new ArrayList<>(userCards)) {
+                 if (userCard.getText().equals(cahCard.getText())) {
+                 userCards.remove(userCard);
+                 }
+                 }
+
+                 // See if all cards have been played
+                 checkPlayers();
+                 } else {
+                 TelegramBot.getChat(sender.getId()).sendMessage("You cannot play a card now!", TelegramHook.getBot());
+                 }
+                 *
+                 */
+                LinkedList<CAHCard> cards = new LinkedList<>();
+
+                if (playedCards.containsKey(sender.getId())) {
+                    cards = playedCards.get(sender.getId());
+                }
+
+                int cardsNeeded = currentBlackCard.getBlanks();
+
+                if (cards.size() < cardsNeeded) {
+                    cards.add(cahCard);
+                    playedCards.put(sender.getId(), cards);
+
+                    // Remove from players hand
+                    List<CAHCard> userCards = this.userCards.get(sender.getId());
+
+                    for (CAHCard userCard : new ArrayList<>(userCards)) {
+                        if (userCard.getText().equals(cahCard.getText())) {
+                            userCards.remove(userCard);
+                        }
+                    }
+
+                    if (cards.size() == cardsNeeded) {
+                        getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + sender.getUsername() + " has played*").parseMode(ParseMode.MARKDOWN).build());
+                        checkPlayers();
+                    } else {
+                        TelegramBot.getChat(sender.getId()).sendMessage("Please play " + (cardsNeeded - cards.size()) + " more card(s).", TelegramHook.getBot());
+                    }
+                } else {
+                    TelegramBot.getChat(sender.getId()).sendMessage("You cannot play a card now!", TelegramHook.getBot());
+                }
+            } else {
+                TelegramBot.getChat(sender.getId()).sendMessage("You have chosen an invalid card!", TelegramHook.getBot());
+            }
+
+            return true;
+        } else if (czarChoosing) {
+            try {
+                if (message.startsWith("Option ")) {
+                    LobbyMember winner = null;
+
+                    int number = Integer.parseInt(message.split(" ")[1]);
+
+                    for (CzarOption czarOption : czarOptions) {
+                        if (czarOption.getOptionNumber() == number) {
+                            winner = czarOption.getOwner();
+                        }
+                    }
+
+                    if (winner != null) {
+                        getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + winner.getUsername() + " won the round!*").parseMode(ParseMode.MARKDOWN).build());
+                        winner.setGameScore(winner.getGameScore() + 1);
+                    } else {
+                        TelegramBot.getChat(sender.getId()).sendMessage("You have chosen an invalid card!", TelegramHook.getBot());
+                    }
+
+                    return true;
+                }
+            } catch (NumberFormatException ignore) {
+
+            }
+        }
+
+        return false;
     }
 
     private void printScores() {
@@ -311,33 +552,6 @@ public class CardsAgainstHumanity extends Game {
         }
     }
 
-    private void sendCards(LobbyMember lobbyMember) {
-        if (cardCzar.getUserID() != lobbyMember.getUserID()) {
-            List<List<String>> buttonList = new ArrayList<>();
-            List<String> row = new ArrayList<>();
-            List<CAHCard> cards = playerCards.get(lobbyMember.getUserID());
-
-            int index = 1;
-            for (CAHCard card : cards) {
-                if (index == 5) {
-                    index = 0;
-                    buttonList.add(new ArrayList<>(row));
-                    row.clear();
-                }
-
-                row.add(card.getText());
-                index++;
-            }
-
-            if (row.size() > 0) {
-                buttonList.add(new ArrayList<>(row));
-            }
-
-            TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(SendableTextMessage.builder().message("Here are your cards.").replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false)).build(), TelegramHook.getBot());
-
-        }
-    }
-
     private void sortScores() {
         Collections.sort(activePlayers);
     }
@@ -351,5 +565,20 @@ public class CardsAgainstHumanity extends Game {
 
         fillHands();
         nextRound();
+    }
+}
+
+class CzarOption {
+    @Getter
+    @Setter
+    private int optionNumber;
+    @Getter
+    private LobbyMember owner;
+    @Getter
+    @Setter
+    private String text;
+
+    CzarOption(LobbyMember owner) {
+        this.owner = owner;
     }
 }

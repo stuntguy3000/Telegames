@@ -5,5 +5,6 @@ public enum GameState {
         GENERIC
      */
     WAITING_FOR_PLAYERS,
-    INGAME
+    CHOOSING,
+    INGAME,
 }
