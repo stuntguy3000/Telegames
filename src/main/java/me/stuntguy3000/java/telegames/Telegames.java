@@ -27,6 +27,7 @@ public class Telegames {
     private LobbyHandler lobbyHandler = new LobbyHandler();
     @Getter
     private RandomString randomString = new RandomString(5);
+    private Thread updaterThread;
 
     private void connectTelegram() {
         LogHandler.log("Connecting to Telegram...");
@@ -68,7 +69,9 @@ public class Telegames {
 
         if (this.getConfigHandler().getBotSettings().getAutoUpdater()) {
             LogHandler.log("Starting auto updater...");
-            new Thread(new UpdateHandler(this)).start();
+            Thread updater = new Thread(new UpdateHandler(this, "Telegames"));
+            updater.start();
+            updaterThread = updater;
         } else {
             LogHandler.log("** Auto Updater is set to false **");
         }
@@ -105,6 +108,10 @@ public class Telegames {
         for (int admin : configHandler.getBotSettings().getTelegramAdmins()) {
             TelegramBot.getChat(admin).sendMessage(message, TelegramHook.getBot());
         }
+    }
+
+    public void stopUpdater() {
+        updaterThread.interrupt();
     }
 }
     

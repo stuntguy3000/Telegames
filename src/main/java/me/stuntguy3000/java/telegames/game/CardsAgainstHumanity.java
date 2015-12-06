@@ -124,15 +124,6 @@ public class CardsAgainstHumanity extends Game {
             if (playedCards.size() == activePlayers.size() - 1) {
                 gameState = GameState.INGAME;
 
-                for (LobbyMember lobbyMember : getGameLobby().getLobbyMembers()) {
-                    if (cardCzar.getUserID() == lobbyMember.getUserID()) {
-                        czarChoosing = true;
-                        getGameLobby().sendMessage(createCzarKeyboard().message("*All users have played.*\n*" + cardCzar.getUsername() + " please choose a card!*").parseMode(ParseMode.MARKDOWN).build());
-                    } else {
-                        getGameLobby().sendMessage(SendableTextMessage.builder().message("*All users have played.*\n*" + cardCzar.getUsername() + " please choose a card!*").parseMode(ParseMode.MARKDOWN).build());
-                    }
-                }
-
                 String[] blackCardSplit = currentBlackCard.getRawText().split("_");
 
                 for (Map.Entry<Integer, LinkedList<CAHCard>> playerCards : playedCards.entrySet()) {
@@ -148,6 +139,7 @@ public class CardsAgainstHumanity extends Game {
                         modifiedBlackCard.append(playerCard.getText());
                         modifiedBlackCard.append("*");
                         modifiedBlackCard.append(blackCardSplit[segmentID]);
+                        modifiedBlackCard.append("\n");
                     }
 
                     czarOption.setText(modifiedBlackCard.toString());
@@ -165,6 +157,15 @@ public class CardsAgainstHumanity extends Game {
                     options.append(") ");
                     options.append(czarOption.getText());
                     id++;
+                }
+
+                for (LobbyMember lobbyMember : getGameLobby().getLobbyMembers()) {
+                    if (cardCzar.getUserID() == lobbyMember.getUserID()) {
+                        czarChoosing = true;
+                        TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(createCzarKeyboard().message("*All users have played.*\n*Please choose a winner!*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                    } else {
+                        TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(SendableTextMessage.builder().message("*All users have played.*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                    }
                 }
 
                 getGameLobby().sendMessage(SendableTextMessage.builder().message(options.toString()).parseMode(ParseMode.MARKDOWN).build());
@@ -199,23 +200,10 @@ public class CardsAgainstHumanity extends Game {
 
     private SendableTextMessage.SendableTextMessageBuilder createUserKeyboard(LobbyMember lobbyMember) {
         List<List<String>> buttonList = new ArrayList<>();
-        List<String> row = new ArrayList<>();
         List<CAHCard> cards = userCards.get(lobbyMember.getUserID());
 
-        int index = 1;
         for (CAHCard card : cards) {
-            if (index == 5) {
-                index = 0;
-                buttonList.add(new ArrayList<>(row));
-                row.clear();
-            }
-
-            row.add(card.getText());
-            index++;
-        }
-
-        if (row.size() > 0) {
-            buttonList.add(new ArrayList<>(row));
+            buttonList.add(new ArrayList<>(Collections.singletonList(card.getText())));
         }
 
         return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false));
@@ -301,11 +289,11 @@ public class CardsAgainstHumanity extends Game {
 
     private void fillHands() {
         for (LobbyMember lobbyMember : activePlayers) {
-            giveCard(lobbyMember, 10);
+            giveWhiteCard(lobbyMember, 10);
         }
     }
 
-    private void giveCard(LobbyMember lobbyMember, int amount) {
+    private void giveWhiteCard(LobbyMember lobbyMember, int amount) {
         List<CAHCard> playerCardDeck = userCards.get(lobbyMember.getUserID());
 
         if (playerCardDeck == null) {
@@ -342,17 +330,14 @@ public class CardsAgainstHumanity extends Game {
                 switch (packLine) {
                     case "___METADATA___": {
                         cahPackProperty = CAHPackProperty.METADATA;
-                        System.out.println("Metadata");
                         continue;
                     }
                     case "___BLACK___": {
                         cahPackProperty = CAHPackProperty.BLACKCARDS;
-                        System.out.println("Black");
                         continue;
                     }
                     case "___WHITE___": {
                         cahPackProperty = CAHPackProperty.WHITECARDS;
-                        System.out.println("White");
                         continue;
                     }
                     default: {
@@ -363,12 +348,15 @@ public class CardsAgainstHumanity extends Game {
                                         String[] packData = packLine.split(": ");
                                         cahCardPack.addMetadata(packData[0], packData[1]);
                                     }
+                                    continue;
                                 }
                                 case BLACKCARDS: {
                                     cahCardPack.addCard(packLine.replaceAll("~", "\n"), CAHCardType.BLACK);
+                                    continue;
                                 }
                                 case WHITECARDS: {
                                     cahCardPack.addCard(packLine.replaceAll("~", "\n"), CAHCardType.WHITE);
+                                    continue;
                                 }
                             }
                         }
@@ -412,11 +400,13 @@ public class CardsAgainstHumanity extends Game {
                 extraCards.append("\nPlease play ").append(currentBlackCard.getBlanks()).append(" white cards.");
             }
 
+            gameState = GameState.CHOOSING;
+
             for (LobbyMember lobbyMember : getGameLobby().getLobbyMembers()) {
                 if (isPlaying(lobbyMember) && !(cardCzar.getUserID() == lobbyMember.getUserID())) {
-                    getGameLobby().sendMessage(createUserKeyboard(lobbyMember).message(currentBlackCard.getText() + extraCards.toString()).build());
+                    TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(createUserKeyboard(lobbyMember).message(currentBlackCard.getText() + extraCards.toString()).build(), TelegramHook.getBot());
                 } else {
-                    getGameLobby().sendMessage(SendableTextMessage.builder().message(currentBlackCard.getText()).build());
+                    TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(SendableTextMessage.builder().message(currentBlackCard.getText()).build(), TelegramHook.getBot());
                 }
             }
         }
@@ -433,41 +423,6 @@ public class CardsAgainstHumanity extends Game {
             }
 
             if (cahCard != null) {
-                /**
-                 *
-                 * if (playcontains(sender.getId())) {
-                 getGameLobby().sendMessage(
-                 SendableTextMessage.builder().message("*" + sender.getUsername() + " played a card*")
-                 .parseMode(ParseMode.MARKDOWN)
-                 .build()
-                 );
-
-                 // Add played card to list
-                 LinkedList<CAHCard> cards = new LinkedList<>();
-
-                 if (playedCards.containsKey(sender.getId())) {
-                 cards = playedCards.get(sender.getId());
-                 }
-
-                 cards.add(cahCard);
-                 playedCards.put(sender.getId(), cards);
-
-                 // Remove from players hand
-                 List<CAHCard> userCards = userCards.get(sender.getId());
-
-                 for (CAHCard userCard : new ArrayList<>(userCards)) {
-                 if (userCard.getText().equals(cahCard.getText())) {
-                 userCards.remove(userCard);
-                 }
-                 }
-
-                 // See if all cards have been played
-                 checkPlayers();
-                 } else {
-                 TelegramBot.getChat(sender.getId()).sendMessage("You cannot play a card now!", TelegramHook.getBot());
-                 }
-                 *
-                 */
                 LinkedList<CAHCard> cards = new LinkedList<>();
 
                 if (playedCards.containsKey(sender.getId())) {
@@ -519,6 +474,7 @@ public class CardsAgainstHumanity extends Game {
                     if (winner != null) {
                         getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + winner.getUsername() + " won the round!*").parseMode(ParseMode.MARKDOWN).build());
                         winner.setGameScore(winner.getGameScore() + 1);
+                        nextRound();
                     } else {
                         TelegramBot.getChat(sender.getId()).sendMessage("You have chosen an invalid card!", TelegramHook.getBot());
                     }

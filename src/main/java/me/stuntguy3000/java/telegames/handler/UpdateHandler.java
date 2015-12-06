@@ -1,5 +1,6 @@
 package me.stuntguy3000.java.telegames.handler;
 
+import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import me.stuntguy3000.java.telegames.Telegames;
@@ -14,31 +15,43 @@ import java.net.URL;
  */
 public class UpdateHandler implements Runnable {
 
-    Telegames instance;
+    private Telegames instance;
+    private String projectName;
 
-    public UpdateHandler(Telegames instance) {
+    public UpdateHandler(Telegames instance, String projectName) {
         this.instance = instance;
+        this.projectName = projectName;
     }
 
     @Override
     public void run() {
         File build = new File("build");
-        File jar = new File("Telegames.new");
+        File jar = new File(projectName + ".new");
         int currentBuild = Telegames.BUILD;
         int newBuild = 0;
 
         while (true) {
             try {
-                newBuild = Integer.parseInt(Unirest.get("http://ci.zackpollard.pro/job/Telegames/lastSuccessfulBuild/buildNumber").asString().getBody());
+                HttpResponse<String> response = Unirest.get("http://ci.zackpollard.pro/job/" + projectName + "/lastSuccessfulBuild/buildNumber").asString();
+
+                if (response.getStatus() == 200) {
+                    newBuild = Integer.parseInt(response.getBody());
+                } else {
+                    LogHandler.log("[ERROR] Updater status code: " + response.getStatus());
+                    instance.sendToAdmins("[ERROR] Updater status code: " + response.getStatus() + "\n\nUpdater stopped.");
+                    instance.stopUpdater();
+                }
             } catch (UnirestException e) {
                 e.printStackTrace();
+                instance.stopUpdater();
             }
+
             if (newBuild > currentBuild) {
                 LogHandler.log("Downloading build #" + newBuild);
                 instance.sendToAdmins("Downloading build #" + newBuild);
                 try {
                     FileUtils.writeStringToFile(build, String.valueOf(newBuild));
-                    FileUtils.copyURLToFile(new URL("http://ci.zackpollard.pro/job/Telegames/lastSuccessfulBuild/artifact/target/Telegames.jar"), jar);
+                    FileUtils.copyURLToFile(new URL("http://ci.zackpollard.pro/job/" + projectName + "/lastSuccessfulBuild/artifact/target/" + projectName + ".jar"), jar);
                     LogHandler.log("Build #" + newBuild + " downloaded. Restarting...");
                     instance.sendToAdmins("Build #" + newBuild + " downloaded. Restarting...");
                 } catch (IOException e) {
