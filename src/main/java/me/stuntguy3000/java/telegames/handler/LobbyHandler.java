@@ -9,6 +9,7 @@ import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.user.User;
 
 import java.util.HashMap;
+import java.util.List;
 
 // @author Luke Anderson | stuntguy3000
 public class LobbyHandler {
@@ -29,6 +30,12 @@ public class LobbyHandler {
 
         TelegramBot.getChat(user.getId()).sendMessage(sendableTextMessage, lobby.getTelegramBot());
         lobby.userJoin(user);
+
+        Telegames.getInstance().getConfigHandler().getLobbyList().addLobby(lobby.getLobbyID(), lobby.getLobbyMembers());
+    }
+
+    public void createLobby(String lobbyID, List<Integer> playerList) {
+        // TODO: Need a way to get a User
     }
 
     /**
@@ -39,6 +46,8 @@ public class LobbyHandler {
     public void destroyLobby(String lobbyID) {
         lobbyID = lobbyID.toUpperCase();
         activeLobbies.remove(lobbyID);
+
+        Telegames.getInstance().getConfigHandler().getLobbyList().removeLobby(lobbyID);
     }
 
     /**

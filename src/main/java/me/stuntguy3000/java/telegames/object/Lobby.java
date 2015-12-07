@@ -191,6 +191,8 @@ public class Lobby {
         SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message("*[Lobby]* User @" + user.getUsername() + " joined this lobby!").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build();
         sendMessage(sendableTextMessage);
 
+        Telegames.getInstance().getConfigHandler().getLobbyList().addPlayer(getLobbyID(), lobbyMember.getUserID());
+
         if (game != null) {
             sendableTextMessage = SendableTextMessage.builder().message("You are spectating a game of " + game.getGameName() + ".").parseMode(ParseMode.MARKDOWN).build();
             lobbyMember.getChat().sendMessage(sendableTextMessage, getTelegramBot());
@@ -218,6 +220,8 @@ public class Lobby {
         if (currentGame != null) {
             currentGame.playerLeave(username, id);
         }
+
+        Telegames.getInstance().getConfigHandler().getLobbyList().removePlayer(getLobbyID(), user.getUserID());
 
         if (lobbyMembers.size() == 0) {
             Telegames.getInstance().getLobbyHandler().destroyLobby(lobbyID);

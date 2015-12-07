@@ -6,6 +6,7 @@ import me.stuntguy3000.java.telegames.handler.LogHandler;
 import me.stuntguy3000.java.telegames.object.Command;
 import me.stuntguy3000.java.telegames.object.Game;
 import me.stuntguy3000.java.telegames.object.Lobby;
+import me.stuntguy3000.java.telegames.object.config.LobbyList;
 import me.stuntguy3000.java.telegames.util.ClassGetter;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.event.Listener;
@@ -14,6 +15,7 @@ import pro.zackpollard.telegrambot.api.event.chat.message.TextMessageReceivedEve
 import pro.zackpollard.telegrambot.api.user.User;
 
 import java.util.List;
+import java.util.Map;
 
 // @author Luke Anderson | stuntguy3000
 public class TelegramHook implements Listener {
@@ -34,6 +36,7 @@ public class TelegramHook implements Listener {
 
         this.initializeCommands();
         this.initializeGames();
+        this.initializeLobbies(); 
     }
 
     private void initializeCommands() {
@@ -59,6 +62,14 @@ public class TelegramHook implements Listener {
                 e.printStackTrace();
             }
         });
+    }
+
+    private void initializeLobbies() {
+        LobbyList lobbyList = getInstance().getConfigHandler().getLobbyList();
+
+        for (Map.Entry<String, List<Integer>> lobby : lobbyList.getActiveLobbies().entrySet()) {
+            getInstance().getLobbyHandler().createLobby(lobby.getKey(), lobby.getValue());
+        }
     }
 
     @Override
