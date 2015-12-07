@@ -542,7 +542,7 @@ public class CardsAgainstHumanity extends Game {
         sortScores();
         StringBuilder wholeMessage = new StringBuilder();
         int playerPos = 1;
-        for (int i = activePlayers.size() - 1; i >= 0; --i) {
+        for (int i = 0; i < activePlayers.size(); i++) {
             LobbyMember lobbyMember = activePlayers.get(i);
             wholeMessage.append(String.format("#%d - %s (Score: %d)\n", playerPos++, lobbyMember.getUsername(), lobbyMember.getGameScore()));
         }
