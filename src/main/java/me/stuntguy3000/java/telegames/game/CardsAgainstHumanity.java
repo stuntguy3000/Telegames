@@ -203,9 +203,23 @@ public class CardsAgainstHumanity extends Game {
     private SendableTextMessage.SendableTextMessageBuilder createUserKeyboard(LobbyMember lobbyMember) {
         List<List<String>> buttonList = new ArrayList<>();
         List<CAHCard> cards = userCards.get(lobbyMember.getUserID());
+        List<String> row = new ArrayList<>();
+
+        int index = 1;
 
         for (CAHCard card : cards) {
+            if (index > 2) {
+                index = 0;
+                buttonList.add(new ArrayList<>(row));
+                row.clear();
+            }
+
             buttonList.add(new ArrayList<>(Collections.singletonList(card.getText())));
+            index++;
+        }
+
+        if (row.size() > 0) {
+            buttonList.add(new ArrayList<>(row));
         }
 
         return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false));
