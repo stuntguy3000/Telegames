@@ -342,7 +342,7 @@ public class CardsAgainstHumanity extends Game {
 
     // Load Card Packs from Jar resources
     public void loadPacks() {
-        InputStream is = getClass().getResourceAsStream("/cah.v3.card");
+        InputStream is = getClass().getResourceAsStream("/cah.v3.cards");
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         CAHCardPack cahCardPack = new CAHCardPack();
         String packLine;
