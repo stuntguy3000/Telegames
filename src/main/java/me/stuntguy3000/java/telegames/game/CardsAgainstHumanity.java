@@ -476,7 +476,7 @@ public class CardsAgainstHumanity extends Game {
                     TelegramBot.getChat(sender.getId()).sendMessage("You cannot play a card now!", TelegramHook.getBot());
                 }
             } else {
-                TelegramBot.getChat(sender.getId()).sendMessage("You have chosen an invalid card!", TelegramHook.getBot());
+                return false;
             }
 
             return true;
@@ -497,14 +497,14 @@ public class CardsAgainstHumanity extends Game {
                         getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + winner.getUsername() + " won the round!*").parseMode(ParseMode.MARKDOWN).build());
                         winner.setGameScore(winner.getGameScore() + 1);
 
-                        LobbyMember gameWuinner = null;
+                        LobbyMember gameWinner = null;
                         for (LobbyMember lobbyMember : activePlayers) {
                             if (lobbyMember.getGameScore() >= 10) {
-                                gameWuinner = lobbyMember;
+                                gameWinner = lobbyMember;
                             }
                         }
 
-                        if (gameWuinner != null) {
+                        if (gameWinner != null) {
                             continueGame = false;
                             getGameLobby().stopGame();
                         } else {
