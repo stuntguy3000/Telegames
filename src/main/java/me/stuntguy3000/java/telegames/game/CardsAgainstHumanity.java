@@ -166,7 +166,7 @@ public class CardsAgainstHumanity extends Game {
                         czarChoosing = true;
                         TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(createCzarKeyboard().message("*All users have played.*\n*Please choose a winner!*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                     } else {
-                        TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(SendableTextMessage.builder().message("*All users have played.*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                        TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(SendableTextMessage.builder().message("*All users have played.*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build(), TelegramHook.getBot());
                     }
                 }
 
@@ -342,7 +342,7 @@ public class CardsAgainstHumanity extends Game {
 
     // Load Card Packs from Jar resources
     public void loadPacks() {
-        InputStream is = getClass().getResourceAsStream("/cah.v3.cards");
+        InputStream is = getClass().getResourceAsStream("/cah.v3.card");
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         CAHCardPack cahCardPack = new CAHCardPack();
         String packLine;
@@ -468,6 +468,13 @@ public class CardsAgainstHumanity extends Game {
                 int cardsNeeded = currentBlackCard.getBlanks();
 
                 if (cards.size() < cardsNeeded) {
+                    for (CAHCard userCard : cards) {
+                        if (userCard.getText().equals(cahCard.getText())) {
+                            TelegramBot.getChat(sender.getId()).sendMessage("You cannot play this card again!", TelegramHook.getBot());
+                            return true;
+                        }
+                    }
+
                     cards.add(cahCard);
                     playedCards.put(sender.getId(), cards);
 
@@ -481,10 +488,10 @@ public class CardsAgainstHumanity extends Game {
                     }
 
                     if (cards.size() == cardsNeeded) {
-                        getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + sender.getUsername() + " has played*").parseMode(ParseMode.MARKDOWN).build());
+                        getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + sender.getUsername() + " has played.*").parseMode(ParseMode.MARKDOWN).build());
                         checkPlayers();
                     } else {
-                        TelegramBot.getChat(sender.getId()).sendMessage("Please play " + (cardsNeeded - cards.size()) + " more card(s).", TelegramHook.getBot());
+                        TelegramBot.getChat(sender.getId()).sendMessage(createUserKeyboard(getGameLobby().getLobbyMember(sender.getUsername())).message("*Please play " + (cardsNeeded - cards.size()) + " more card(s).*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                     }
                 } else {
                     TelegramBot.getChat(sender.getId()).sendMessage("You cannot play a card now!", TelegramHook.getBot());
