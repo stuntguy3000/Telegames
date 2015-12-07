@@ -105,6 +105,8 @@ public class Lobby {
             if (message.startsWith("▶️ ")) {
                 message.replace("▶️ ", "");
 
+                event.getChat().sendMessage(message, TelegramHook.getBot());
+
                 Game targetGame = Telegames.getInstance().getGameHandler().getGame(message);
 
                 if (targetGame != null) {
