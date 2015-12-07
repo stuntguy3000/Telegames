@@ -447,7 +447,7 @@ public class CardsAgainstHumanity extends Game {
                 }
             }
 
-            if (cahCard != null) {
+            if (cahCard != null && !czarChoosing) {
                 LinkedList<CAHCard> cards = new LinkedList<>();
 
                 if (playedCards.containsKey(sender.getId())) {

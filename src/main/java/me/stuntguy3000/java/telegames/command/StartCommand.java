@@ -7,6 +7,7 @@ import me.stuntguy3000.java.telegames.object.Game;
 import me.stuntguy3000.java.telegames.object.Lobby;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
+import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
 import pro.zackpollard.telegrambot.api.user.User;
 
@@ -44,7 +45,7 @@ public class StartCommand extends Command {
                             }
                         }
                     } else {
-                        respond(chat, "Correct Syntax: /start <game>");
+                        respond(chat, getInstance().getGameHandler().createGameKeyboard().message("*Please choose a game:*").parseMode(ParseMode.MARKDOWN).build());
                     }
                 } else {
                     respond(chat, "A game is already running!");

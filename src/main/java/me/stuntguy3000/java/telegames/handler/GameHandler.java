@@ -1,6 +1,8 @@
 package me.stuntguy3000.java.telegames.handler;
 
 import me.stuntguy3000.java.telegames.object.Game;
+import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
+import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardMarkup;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +12,30 @@ import java.util.Random;
 // @author Luke Anderson | stuntguy3000
 public class GameHandler {
     private HashMap<String, Game> gameList = new HashMap<>();
+
+    public SendableTextMessage.SendableTextMessageBuilder createGameKeyboard() {
+        List<List<String>> buttonList = new ArrayList<>();
+        List<String> row = new ArrayList<>();
+
+        int index = 1;
+
+        for (Game game : gameList.values()) {
+            if (index > 2) {
+                index = 0;
+                buttonList.add(new ArrayList<>(row));
+                row.clear();
+            }
+
+            row.add("▶️ " + game.getGameName());
+            index++;
+        }
+
+        if (row.size() > 0) {
+            buttonList.add(new ArrayList<>(row));
+        }
+
+        return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false));
+    }
 
     /**
      * Returns a Game associated with gameName

@@ -102,7 +102,19 @@ public class Lobby {
         String message = event.getContent().getContent();
 
         if (currentGame == null) {
-            userChat(event.getMessage().getSender(), message);
+            if (message.startsWith("▶️ ")) {
+                message.replace("▶️ ", "");
+
+                Game targetGame = Telegames.getInstance().getGameHandler().getGame(message);
+
+                if (targetGame != null) {
+                    startGame(targetGame);
+                } else {
+                    event.getChat().sendMessage("Unknown game!\nUse /gamelist for help.", TelegramHook.getBot());
+                }
+            } else {
+                userChat(event.getMessage().getSender(), message);
+            }
         } else {
             currentGame.onTextMessageReceived(event);
         }
