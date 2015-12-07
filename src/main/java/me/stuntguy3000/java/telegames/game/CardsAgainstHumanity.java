@@ -2,7 +2,6 @@ package me.stuntguy3000.java.telegames.game;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.stuntguy3000.java.telegames.handler.LogHandler;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Game;
 import me.stuntguy3000.java.telegames.object.LobbyMember;
@@ -202,10 +201,8 @@ public class CardsAgainstHumanity extends Game {
     }
 
     private SendableTextMessage.SendableTextMessageBuilder createUserKeyboard(LobbyMember lobbyMember) {
-        LogHandler.log("Creating keyboard " + lobbyMember.getUsername());
         List<List<String>> buttonList = new ArrayList<>();
         List<CAHCard> cards = userCards.get(lobbyMember.getUserID());
-        LogHandler.log("Cards: " + cards.size());
 
         for (CAHCard card : cards) {
             buttonList.add(new ArrayList<>(Collections.singletonList(card.getText())));
@@ -499,7 +496,20 @@ public class CardsAgainstHumanity extends Game {
                     if (winner != null) {
                         getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + winner.getUsername() + " won the round!*").parseMode(ParseMode.MARKDOWN).build());
                         winner.setGameScore(winner.getGameScore() + 1);
-                        nextRound();
+
+                        LobbyMember gameWuinner = null;
+                        for (LobbyMember lobbyMember : activePlayers) {
+                            if (lobbyMember.getGameScore() >= 10) {
+                                gameWuinner = lobbyMember;
+                            }
+                        }
+
+                        if (gameWuinner != null) {
+                            continueGame = false;
+                            getGameLobby().stopGame();
+                        } else {
+                            nextRound();
+                        }
                     } else {
                         TelegramBot.getChat(sender.getId()).sendMessage("You have chosen an invalid card!", TelegramHook.getBot());
                     }

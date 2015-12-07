@@ -31,7 +31,7 @@ public class LobbyHandler {
         TelegramBot.getChat(user.getId()).sendMessage(sendableTextMessage, lobby.getTelegramBot());
         lobby.userJoin(user);
 
-        Telegames.getInstance().getConfigHandler().getLobbyList().addLobby(lobby.getLobbyID(), lobby.getLobbyMembers());
+        //Telegames.getInstance().getConfigHandler().getLobbyList().addLobby(lobby.getLobbyID(), lobby.getLobbyMembers());
     }
 
     public void createLobby(String lobbyID, List<Integer> playerList) {
@@ -47,7 +47,7 @@ public class LobbyHandler {
         lobbyID = lobbyID.toUpperCase();
         activeLobbies.remove(lobbyID);
 
-        Telegames.getInstance().getConfigHandler().getLobbyList().removeLobby(lobbyID);
+        //Telegames.getInstance().getConfigHandler().getLobbyList().removeLobby(lobbyID);
     }
 
     /**

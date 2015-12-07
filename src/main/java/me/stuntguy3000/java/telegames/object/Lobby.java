@@ -117,8 +117,6 @@ public class Lobby {
 
                 message = message.substring(indexToRemove);
 
-                event.getChat().sendMessage(message, TelegramHook.getBot());
-
                 Game targetGame = Telegames.getInstance().getGameHandler().getGame(message);
 
                 if (targetGame != null) {
@@ -217,7 +215,7 @@ public class Lobby {
         SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message("*[Lobby]* User @" + user.getUsername() + " joined this lobby!").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build();
         sendMessage(sendableTextMessage);
 
-        Telegames.getInstance().getConfigHandler().getLobbyList().addPlayer(getLobbyID(), lobbyMember.getUserID());
+        //Telegames.getInstance().getConfigHandler().getLobbyList().addPlayer(getLobbyID(), lobbyMember.getUserID());
 
         if (game != null) {
             sendableTextMessage = SendableTextMessage.builder().message("You are spectating a game of " + game.getGameName() + ".").parseMode(ParseMode.MARKDOWN).build();
@@ -247,7 +245,7 @@ public class Lobby {
             currentGame.playerLeave(username, id);
         }
 
-        Telegames.getInstance().getConfigHandler().getLobbyList().removePlayer(getLobbyID(), user.getUserID());
+        //Telegames.getInstance().getConfigHandler().getLobbyList().removePlayer(getLobbyID(), user.getUserID());
 
         if (lobbyMembers.size() == 0) {
             Telegames.getInstance().getLobbyHandler().destroyLobby(lobbyID);
