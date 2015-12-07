@@ -424,7 +424,7 @@ public class CardsAgainstHumanity extends Game {
             for (LobbyMember lobbyMember : getGameLobby().getLobbyMembers()) {
                 if (isPlaying(lobbyMember) && !(cardCzar.getUserID() == lobbyMember.getUserID())) {
                     if (extraCards.toString().isEmpty()) {
-                        TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(SendableTextMessage.builder().message(currentBlackCard.getText()).build(), TelegramHook.getBot());
+                        TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(createUserKeyboard(lobbyMember).message(currentBlackCard.getText()).build(), TelegramHook.getBot());
                     } else {
                         TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(createUserKeyboard(lobbyMember).message(currentBlackCard.getText() + extraCards.toString()).build(), TelegramHook.getBot());
                     }

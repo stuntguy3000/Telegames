@@ -12,9 +12,9 @@ import java.io.*;
 public class ConfigHandler {
 
     @Getter
-    private BotSettings botSettings;
+    private BotSettings botSettings = new BotSettings();
     @Getter
-    private LobbyList lobbyList;
+    private LobbyList lobbyList = new LobbyList();
 
     public ConfigHandler() {
         loadFile("config.json");
