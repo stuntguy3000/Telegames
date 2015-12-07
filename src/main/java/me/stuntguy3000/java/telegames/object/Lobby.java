@@ -115,7 +115,7 @@ public class Lobby {
                     indexToRemove++;
                 }
 
-                message.substring(indexToRemove);
+                message = message.substring(indexToRemove);
 
                 event.getChat().sendMessage(message, TelegramHook.getBot());
 
