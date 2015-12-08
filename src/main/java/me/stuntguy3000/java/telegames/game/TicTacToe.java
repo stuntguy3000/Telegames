@@ -443,8 +443,15 @@ public class TicTacToe extends Game {
                     if (hasMatches(telegramEmoji, tempSquareID)) {
                         winner = currentPlayer;
                         getGameLobby().stopGame();
+                        return;
                     }
                 }
+                
+                if (winner != null) {
+                    nextRound();
+                }
+
+                return;
             }
         }
 
