@@ -114,7 +114,13 @@ public class TicTacToe extends Game {
 
     @Override
     public boolean tryStartGame() {
-        return false;
+        if (activePlayers.size() >= minPlayers) {
+            startGame();
+            return true;
+        } else {
+            getGameLobby().sendMessage("Not enough players to start!");
+            return false;
+        }
     }
 
     private TelegramEmoji getSquare(int squareID) {
@@ -369,6 +375,16 @@ public class TicTacToe extends Game {
         return false;
     }
 
+    private void nextRound() {
+        if (naught.getUserID() == currentPlayer.getUserID()) {
+            currentPlayer = cross;
+        } else {
+            currentPlayer = naught;
+        }
+
+        getGameLobby().sendMessage(createKeyboard().message("It is your turn, " + currentPlayer.getUsername()).parseMode(ParseMode.MARKDOWN).build());
+    }
+
     private void playTurn(LobbyMember currentPlayer, TelegramEmoji emoji) {
         if (emoji != null) {
             int squareID = 0;
@@ -426,6 +442,23 @@ public class TicTacToe extends Game {
         }
 
         TelegramBot.getChat(currentPlayer.getUserID()).sendMessage(SendableTextMessage.builder().message("*Please play a valid option!*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+    }
+
+    private void startGame() {
+        gameState = GameState.INGAME;
+        getGameLobby().sendMessage("Starting the game!");
+
+        gamepad.put(1, TelegramEmoji.NUMBER_BLOCK_ONE);
+        gamepad.put(2, TelegramEmoji.NUMBER_BLOCK_TWO);
+        gamepad.put(3, TelegramEmoji.NUMBER_BLOCK_THREE);
+        gamepad.put(4, TelegramEmoji.NUMBER_BLOCK_FOUR);
+        gamepad.put(5, TelegramEmoji.NUMBER_BLOCK_FIVE);
+        gamepad.put(6, TelegramEmoji.NUMBER_BLOCK_SIX);
+        gamepad.put(7, TelegramEmoji.NUMBER_BLOCK_SEVEN);
+        gamepad.put(8, TelegramEmoji.NUMBER_BLOCK_EIGHT);
+        gamepad.put(9, TelegramEmoji.NUMBER_BLOCK_NINE);
+
+        nextRound();
     }
 }
     
