@@ -48,7 +48,7 @@ public class TicTacToe extends Game {
 
         for (TelegramEmoji emoji : gamepad.values()) {
             if (index == 4) {
-                index = 0;
+                index = 1;
                 buttonList.add(new ArrayList<>(row));
                 row.clear();
             }
@@ -61,7 +61,7 @@ public class TicTacToe extends Game {
             buttonList.add(new ArrayList<>(row));
         }
 
-        return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false));
+        return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, false, false, false));
     }
 
     @Override
