@@ -116,10 +116,6 @@ public class Uno extends Game {
         setGameState(GameState.WAITING_FOR_PLAYERS);
     }
 
-    private void addPlayer(LobbyMember player) {
-        activePlayers.add(player);
-    }
-
     public boolean checkPlayers() {
         if (minPlayers > getActivePlayers().size()) {
             SendableTextMessage message = SendableTextMessage.builder().message("*There are not enough players to continue!*").parseMode(ParseMode.MARKDOWN).build();
@@ -237,8 +233,7 @@ public class Uno extends Game {
     @Override
     public boolean playerJoin(LobbyMember player) {
         if (getGameState() == GameState.WAITING_FOR_PLAYERS) {
-            addPlayer(player);
-            player.getChat().sendMessage("You have joined the game!", TelegramHook.getBot());
+            activePlayers.add(player);
             return true;
         } else {
             return false;

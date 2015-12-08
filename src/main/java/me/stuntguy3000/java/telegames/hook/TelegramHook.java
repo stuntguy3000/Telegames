@@ -36,7 +36,7 @@ public class TelegramHook implements Listener {
 
         this.initializeCommands();
         this.initializeGames();
-        this.initializeLobbies(); 
+        this.initializeLobbies();
     }
 
     private void initializeCommands() {

@@ -279,7 +279,6 @@ public class CardsAgainstHumanity extends Game {
     public boolean playerJoin(LobbyMember player) {
         if (gameState == GameState.WAITING_FOR_PLAYERS) {
             activePlayers.add(player);
-            player.getChat().sendMessage("You have joined the game!", TelegramHook.getBot());
             return true;
         } else {
             return false;
@@ -296,6 +295,7 @@ public class CardsAgainstHumanity extends Game {
     }
 
     // Required Methods
+    @Override
     public boolean tryStartGame() {
         if (activePlayers.size() >= minPlayers) {
             if (activePlayers.size() > maxPlayers) {

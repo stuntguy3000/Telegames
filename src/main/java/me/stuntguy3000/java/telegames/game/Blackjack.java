@@ -54,10 +54,6 @@ public class Blackjack extends Game {
         setGameState(GameState.WAITING_FOR_PLAYERS);
     }
 
-    private void addPlayer(LobbyMember player) {
-        activePlayers.add(player);
-    }
-
     private void calculateValue(LobbyMember lobbyMember) {
         int value = 0;
 
@@ -189,8 +185,7 @@ public class Blackjack extends Game {
     @Override
     public boolean playerJoin(LobbyMember player) {
         if (getGameState() == GameState.WAITING_FOR_PLAYERS) {
-            addPlayer(player);
-            player.getChat().sendMessage("You have joined the game!", TelegramHook.getBot());
+            activePlayers.add(player);
             return true;
         } else {
             return false;
