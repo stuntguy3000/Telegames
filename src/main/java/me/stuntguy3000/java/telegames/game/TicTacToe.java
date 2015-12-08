@@ -463,6 +463,7 @@ public class TicTacToe extends Game {
             }
         }
 
+        System.out.println("--------------");
         TelegramBot.getChat(currentPlayer.getUserID()).sendMessage(SendableTextMessage.builder().message("*Please play a valid option!*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
     }
 
