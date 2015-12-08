@@ -4,7 +4,7 @@ import lombok.Getter;
 
 public enum TelegramEmoji {
 
-    NUMBER_BLOCK_ZERO("1⃣"),
+    NUMBER_BLOCK_ZERO("0⃣"),
     NUMBER_BLOCK_ONE("1⃣"),
     NUMBER_BLOCK_TWO("2⃣"),
     NUMBER_BLOCK_THREE("3⃣"),
