@@ -3,8 +3,8 @@ package me.stuntguy3000.java.telegames.game;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Game;
 import me.stuntguy3000.java.telegames.object.LobbyMember;
-import me.stuntguy3000.java.telegames.util.Direction;
 import me.stuntguy3000.java.telegames.util.GameState;
+import me.stuntguy3000.java.telegames.util.GeneralDirection;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
@@ -128,8 +128,8 @@ public class TicTacToe extends Game {
     }
 
     // Make less ugly
-    private int getSquareID(int squareID, Direction direction, int jumps) {
-        switch (direction) {
+    private int getSquareID(int squareID, GeneralDirection generalDirection, int jumps) {
+        switch (generalDirection) {
             case UP: {
                 if (jumps == 1) {
                     switch (squareID) {
@@ -360,11 +360,11 @@ public class TicTacToe extends Game {
     }
 
     private boolean hasMatches(TelegramEmoji emoji, int tempSquareID) {
-        for (Direction direction : Direction.values()) {
-            int newSquareID = getSquareID(tempSquareID, direction, 1);
+        for (GeneralDirection generalDirection : GeneralDirection.values()) {
+            int newSquareID = getSquareID(tempSquareID, generalDirection, 1);
             TelegramEmoji newSquare = getSquare(newSquareID);
             if (newSquare != null && newSquare == emoji) {
-                TelegramEmoji secondSquare = getSquare(getSquareID(tempSquareID, direction, 2));
+                TelegramEmoji secondSquare = getSquare(getSquareID(tempSquareID, generalDirection, 2));
                 if (secondSquare != null && secondSquare == newSquare) {
                     // WINNER WINNER CHICKEN DINNER
                     return true;
