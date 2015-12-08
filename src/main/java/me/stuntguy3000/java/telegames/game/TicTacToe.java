@@ -436,7 +436,7 @@ public class TicTacToe extends Game {
                 }
             }
 
-            System.out.println(squareID + " | " + gamepad.toString());
+            System.out.println(squareID + " | " + gamepad.toString() + " | " + emoji.name());
 
             if (squareID > 0) {
                 TelegramEmoji character = (currentPlayer.getUserID() == naught.getUserID() ? TelegramEmoji.RED_CIRCLE : TelegramEmoji.RED_CROSS);
