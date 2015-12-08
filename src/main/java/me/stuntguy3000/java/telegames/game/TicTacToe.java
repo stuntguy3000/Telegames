@@ -381,6 +381,8 @@ public class TicTacToe extends Game {
     private void nextRound() {
         if (currentPlayer == null) {
             currentPlayer = activePlayers.get(0);
+            cross = currentPlayer;
+            naught = activePlayers.get(1);
         } else {
             if (naught.getUserID() == currentPlayer.getUserID()) {
                 currentPlayer = cross;
