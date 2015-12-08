@@ -363,8 +363,9 @@ public class TicTacToe extends Game {
     }
 
     private boolean hasMatches(TelegramEmoji emoji, int tempSquareID) {
+
+        System.out.println("--------------");
         for (GeneralDirection generalDirection : GeneralDirection.values()) {
-            System.out.println(generalDirection.name());
             int newSquareID = getSquareID(tempSquareID, generalDirection, 1);
             TelegramEmoji newSquare = getSquare(newSquareID);
             if (newSquare != null && newSquare == emoji) {
@@ -440,8 +441,6 @@ public class TicTacToe extends Game {
                 }
             }
 
-            System.out.println(squareID + " | " + gamepad.toString() + " | " + emoji.name());
-
             if (squareID > 0) {
                 TelegramEmoji character = (currentPlayer.getUserID() == naught.getUserID() ? TelegramEmoji.RED_CIRCLE : TelegramEmoji.RED_CROSS);
                 gamepad.put(squareID, character);
@@ -463,7 +462,6 @@ public class TicTacToe extends Game {
             }
         }
 
-        System.out.println("--------------");
         TelegramBot.getChat(currentPlayer.getUserID()).sendMessage(SendableTextMessage.builder().message("*Please play a valid option!*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
     }
 
