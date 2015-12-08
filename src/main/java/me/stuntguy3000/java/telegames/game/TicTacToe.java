@@ -446,8 +446,8 @@ public class TicTacToe extends Game {
                         return;
                     }
                 }
-                
-                if (winner != null) {
+
+                if (winner == null) {
                     nextRound();
                 }
 
