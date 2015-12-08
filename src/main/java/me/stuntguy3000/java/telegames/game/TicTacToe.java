@@ -16,6 +16,7 @@ import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardMarkup;
 import pro.zackpollard.telegrambot.api.user.User;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -378,10 +379,14 @@ public class TicTacToe extends Game {
     }
 
     private void nextRound() {
-        if (naught.getUserID() == currentPlayer.getUserID()) {
-            currentPlayer = cross;
+        if (currentPlayer == null) {
+            currentPlayer = activePlayers.get(0);
         } else {
-            currentPlayer = naught;
+            if (naught.getUserID() == currentPlayer.getUserID()) {
+                currentPlayer = cross;
+            } else {
+                currentPlayer = naught;
+            }
         }
 
         getGameLobby().sendMessage(createKeyboard().message("It is your turn, " + currentPlayer.getUsername()).parseMode(ParseMode.MARKDOWN).build());
@@ -459,6 +464,8 @@ public class TicTacToe extends Game {
         gamepad.put(7, TelegramEmoji.NUMBER_BLOCK_SEVEN);
         gamepad.put(8, TelegramEmoji.NUMBER_BLOCK_EIGHT);
         gamepad.put(9, TelegramEmoji.NUMBER_BLOCK_NINE);
+
+        Collections.shuffle(activePlayers);
 
         nextRound();
     }
