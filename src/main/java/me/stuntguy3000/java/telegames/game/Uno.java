@@ -558,7 +558,7 @@ public class Uno extends Game {
         fillHands();
         activeUnoCard = entireDeck.remove(0);
 
-        while (activeUnoCard.getCardColour() == CardColour.WILD) {
+        while (activeUnoCard.getCardColour() == CardColour.WILD || activeUnoCard.getCardValue() == CardValue.SKIP || activeUnoCard.getCardValue() == CardValue.DRAW2 || activeUnoCard.getCardValue() == CardValue.DRAW4 || activeUnoCard.getCardValue() == CardValue.REVERSE) {
             playedUnoCards.add(activeUnoCard);
             activeUnoCard = entireDeck.remove(0);
         }
