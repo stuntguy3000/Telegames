@@ -444,7 +444,6 @@ public class Blackjack extends Game {
 
     public void startGame() {
         setGameState(GameState.INGAME);
-        getGameLobby().sendMessage("Starting the game!");
 
         maxRounds = getActivePlayers().size() * 3;
 

@@ -570,7 +570,6 @@ public class CardsAgainstHumanity extends Game {
 
     private void startGame() {
         gameState = GameState.INGAME;
-        getGameLobby().sendMessage("Starting the game!");
 
         Collections.shuffle(whiteCards);
         Collections.shuffle(blackCards);

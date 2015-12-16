@@ -468,7 +468,6 @@ public class TicTacToe extends Game {
 
     private void startGame() {
         gameState = GameState.INGAME;
-        getGameLobby().sendMessage("Starting the game!");
 
         gamepad.put(1, TelegramEmoji.NUMBER_BLOCK_ONE);
         gamepad.put(2, TelegramEmoji.NUMBER_BLOCK_TWO);

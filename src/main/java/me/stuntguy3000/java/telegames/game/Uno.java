@@ -364,9 +364,8 @@ public class Uno extends Game {
             cardText = "Any " + nextCardColour.text + " card";
         }
 
-        getGameLobby().sendMessage(SendableTextMessage.builder().message("*Starting Round " + round + "*\n" +
-                "*Current Card:* " + cardText + "\n" +
-                "*Current Player:* " + currentPlayer).parseMode(ParseMode.MARKDOWN).build());
+        getGameLobby().sendMessage(SendableTextMessage.builder().message("➡️ *Current Card:* " + cardText + "\n" +
+                        "\uD83D\uDC49\uD83C\uDFFB *Current Player:* " + currentPlayer).parseMode(ParseMode.MARKDOWN).build());
 
         round++;
 
@@ -549,7 +548,6 @@ public class Uno extends Game {
 
     public void startGame() {
         setGameState(GameState.INGAME);
-        getGameLobby().sendMessage("Starting the game!");
 
         playerOrder.addAll(getActivePlayers().stream().map(LobbyMember::getUsername).collect(Collectors.toList()));
         Collections.shuffle(playerOrder);

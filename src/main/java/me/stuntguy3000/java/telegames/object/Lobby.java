@@ -169,15 +169,16 @@ public class Lobby {
                 newGame.playerJoin(lobbyMember);
             }
 
+            sendMessage(SendableTextMessage.builder().message(TelegramEmoji.JOYSTICK.getText() + " *Starting game: " + newGame.getGameName() + "*").parseMode(ParseMode.MARKDOWN).build());
             if (newGame.tryStartGame()) {
                 currentGame = newGame;
             } else {
-                sendMessage(SendableTextMessage.builder().message("*Unable to start game!*").parseMode(ParseMode.MARKDOWN).build());
+                sendMessage(SendableTextMessage.builder().message(TelegramEmoji.RED_CROSS.getText() + " *Unable to start game!*").parseMode(ParseMode.MARKDOWN).build());
             }
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
 
-            sendMessage(SendableTextMessage.builder().message("*Unexpected Error Occurred! Contact @stuntguy3000*").parseMode(ParseMode.MARKDOWN).build());
+            sendMessage(SendableTextMessage.builder().message(TelegramEmoji.RED_CROSS.getText() + " *Unexpected Error Occurred! Contact @stuntguy3000*").parseMode(ParseMode.MARKDOWN).build());
         }
     }
 
