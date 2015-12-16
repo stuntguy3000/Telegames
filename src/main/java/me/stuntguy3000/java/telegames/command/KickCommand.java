@@ -28,10 +28,10 @@ public class KickCommand extends Command {
             if (lobby != null) {
                 if (args.length > 0) {
                     LobbyMember lobbyMember = lobby.getLobbyMember(args[0]);
-                    if (lobby.getLobbyOwner().getUserID() == sender.getId()) {
+                    if (lobby.getLobbyOwner().getUserID() == sender.getId() && lobbyMember.getUserID() != sender.getId()) {
                         lobby.kickPlayer(lobbyMember);
                     } else {
-                        respond(chat, TelegramEmoji.RED_CROSS.getText() + " You are not the lobby owner!");
+                        respond(chat, TelegramEmoji.RED_CROSS.getText() + " You cannot kick this player!");
                     }
                 } else {
                     respond(chat, TelegramEmoji.RED_CROSS.getText() + " Please specify a username!\nUsage: /kick <name>");
