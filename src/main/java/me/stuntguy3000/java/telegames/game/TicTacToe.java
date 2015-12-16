@@ -29,7 +29,6 @@ public class TicTacToe extends Game {
     private GameState gameState;
     private LinkedHashMap<Integer, TelegramEmoji> gamepad = new LinkedHashMap<>();
     private int maxPlayers = 2;
-    private int maxRounds = 10;
     private int minPlayers = 2;
     private LobbyMember naught;
     private LobbyMember winner;
