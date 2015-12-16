@@ -2,6 +2,7 @@ package me.stuntguy3000.java.telegames.game;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.stuntguy3000.java.telegames.handler.LogHandler;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Game;
 import me.stuntguy3000.java.telegames.object.LobbyMember;
@@ -275,20 +276,24 @@ public class Uno extends Game {
                     default: {
                         if (cardColor != CardColour.WILD) {
                             if (cardValue != CardValue.ZERO) {
-                                entireDeck.add(new UnoCard(cardColor, cardValue));
+                                //entireDeck.add(new UnoCard(cardColor, cardValue));
                             }
-                            entireDeck.add(new UnoCard(cardColor, cardValue));
+                            //entireDeck.add(new UnoCard(cardColor, cardValue));
                         }
                         continue;
                     }
                     case WILD:
                     case DRAW4: {
                         if (cardColor != CardColour.WILD) {
-                            entireDeck.add(new UnoCard(CardColour.WILD, cardValue));
+                            //entireDeck.add(new UnoCard(CardColour.WILD, cardValue));
                         }
                     }
                 }
             }
+        }
+
+        for (int i = 0; i < 40; i++) {
+            entireDeck.add(new UnoCard(CardColour.BLUE, CardValue.FIVE));
         }
 
         Collections.shuffle(entireDeck);
@@ -314,6 +319,8 @@ public class Uno extends Game {
                 playedUnoCards.clear();
                 Collections.shuffle(entireDeck);
             }
+
+            LogHandler.log(String.valueOf(entireDeck.size()));
 
             givenUnoCards.add(entireDeck.remove(0));
         }
