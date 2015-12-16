@@ -14,6 +14,7 @@ import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceived
 import pro.zackpollard.telegrambot.api.event.chat.message.TextMessageReceivedEvent;
 import pro.zackpollard.telegrambot.api.user.User;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +45,7 @@ public class TelegramHook implements Listener {
         allCommands.stream().filter(Command.class::isAssignableFrom).forEach(clazz -> {
             try {
                 Command command = (Command) clazz.newInstance();
-                LogHandler.log("Registered command " + command.getName());
+                LogHandler.log("Registered command " + Arrays.toString(command.getNames()));
             } catch (InstantiationException | IllegalAccessException e) {
                 LogHandler.log(clazz.getSimpleName() + " failed to instantiate:");
                 e.printStackTrace();
