@@ -104,8 +104,8 @@ public class Lobby {
      */
     public void kickPlayer(LobbyMember lobbyMember) {
         sendMessage(SendableTextMessage.builder().message(TelegramEmoji.RED_CROSS.getText() + " *" + lobbyMember.getUsername() + " was removed from the lobby!*").parseMode(ParseMode.MARKDOWN).build());
-        kickList.add(lobbyMember.getUserID());
         userLeave(lobbyMember, true);
+        kickList.add(lobbyMember.getUserID());
     }
 
     /**
@@ -265,7 +265,7 @@ public class Lobby {
         int id = user.getUserID();
 
         for (LobbyMember lobbyMember : new ArrayList<>(lobbyMembers)) {
-            if (lobbyMember.getUsername().equalsIgnoreCase(user.getUsername())) {
+            if (lobbyMember.getUserID() == user.getUserID()) {
                 lobbyMembers.remove(lobbyMember);
             }
         }

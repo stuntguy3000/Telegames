@@ -38,7 +38,7 @@ public class LobbyCommand extends Command {
                 SendableTextMessage message = SendableTextMessage.builder().message("*Lobby Information:*\n" +
                         "*ID:* " + lobby.getLobbyID() + "\n" +
                         "*Game:* " + (lobby.getCurrentGame() == null ? "No Active Game" : lobby.getCurrentGame().getGameName()) + "\n" +
-                        "*Players:* " + playersList.substring(0, playersList.length() - 2) +
+                        "*Players:* " + playersList.substring(0, playersList.length() - 2) + "\n" +
                         "*Join Link:* http://telegram.me/TelegamesBot?start=" + lobby.getLobbyID()).parseMode(ParseMode.MARKDOWN).build();
                 respond(chat, message);
             } else {

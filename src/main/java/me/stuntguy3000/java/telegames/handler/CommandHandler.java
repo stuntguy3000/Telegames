@@ -16,8 +16,6 @@ public class CommandHandler {
     public void executeCommand(String s, CommandMessageReceivedEvent event) {
         Command cmd = null;
 
-        LogHandler.log(commands.keySet().toString());
-
         for (Map.Entry<String[], Command> command : commands.entrySet()) {
             for (String name : command.getKey()) {
                 if (s.equalsIgnoreCase(name)) {

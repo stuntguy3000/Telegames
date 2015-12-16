@@ -80,8 +80,6 @@ public class TelegramHook implements Listener {
         String command = event.getCommand();
 
         instance.getCommandHandler().executeCommand(command, event);
-
-        LogHandler.log(command);
     }
 
     @Override
