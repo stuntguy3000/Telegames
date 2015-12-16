@@ -195,7 +195,8 @@ public class Lobby {
      * @param message String the message
      */
     public void userChat(User sender, String message) {
-        message = message.replace('*', ' ').replace('_', ' ').replace(":)", TelegramEmoji.HAPPY_FACE.getText()).replace(":(", TelegramEmoji.SAD_FACE.getText()).replace("<3", TelegramEmoji.HEART.getText());
+        message = message.replace('*', ' ').replace('_', ' ');
+        // .replace(":)", TelegramEmoji.HAPPY_FACE.getText()).replace(":(", TelegramEmoji.SAD_FACE.getText());
 
         for (LobbyMember lobbyMember : lobbyMembers) {
             if (!lobbyMember.getUsername().equals(sender.getUsername())) {
