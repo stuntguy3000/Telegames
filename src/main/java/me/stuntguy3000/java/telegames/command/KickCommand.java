@@ -27,16 +27,15 @@ public class KickCommand extends Command {
             Lobby lobby = lobbyHandler.getLobby(sender);
             if (lobby != null) {
                 if (args.length > 0) {
-                    StringBuilder fullName = new StringBuilder();
-                    for (int i = 1; i < args.length; i++) {
-                        fullName.append(args[i]).append(" ");
-                    }
-
-                    LobbyMember lobbyMember = lobby.getLobbyMember(fullName.toString());
-                    if (lobby.getLobbyOwner().getUserID() == sender.getId() && lobbyMember.getUserID() != sender.getId()) {
-                        lobby.kickPlayer(lobbyMember);
+                    LobbyMember lobbyMember = lobby.getLobbyMember(args[0]);
+                    if (lobbyMember != null) {
+                        if (lobby.getLobbyOwner().getUserID() == sender.getId() && lobbyMember.getUserID() != sender.getId()) {
+                            lobby.kickPlayer(lobbyMember);
+                        } else {
+                            respond(chat, TelegramEmoji.RED_CROSS.getText() + " You cannot kick this player!");
+                        }
                     } else {
-                        respond(chat, TelegramEmoji.RED_CROSS.getText() + " You cannot kick this player!");
+                        respond(chat, TelegramEmoji.RED_CROSS.getText() + " Player not found!");
                     }
                 } else {
                     respond(chat, TelegramEmoji.RED_CROSS.getText() + " Please specify a username!\nUsage: /kick <name>");
