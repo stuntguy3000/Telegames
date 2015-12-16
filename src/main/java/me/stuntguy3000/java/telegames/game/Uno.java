@@ -2,7 +2,6 @@ package me.stuntguy3000.java.telegames.game;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.stuntguy3000.java.telegames.handler.LogHandler;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Game;
 import me.stuntguy3000.java.telegames.object.LobbyMember;
@@ -320,8 +319,6 @@ public class Uno extends Game {
                 Collections.shuffle(entireDeck);
             }
 
-            LogHandler.log(String.valueOf(entireDeck.size()));
-
             givenUnoCards.add(entireDeck.remove(0));
         }
 
@@ -354,6 +351,15 @@ public class Uno extends Game {
 
     public void nextRound() {
         secondsSincePlay = 0;
+
+        for (LobbyMember lobbyMember : getActivePlayers()) {
+            if (playerDecks.get(lobbyMember.getUsername()).size() == 0) {
+                // WINNER WINNER CHICKEN DINNER
+                winner(lobbyMember.getUsername());
+                return;
+            }
+        }
+
         currentPlayer = playerOrder.get(playerOrderIndex);
 
         String cardText = activeUnoCard.getText();
@@ -403,13 +409,6 @@ public class Uno extends Game {
                         } else {
                             playedUnoCards.add(activeUnoCard);
                             updateScore(getGameLobby().getLobbyMember(sender.getUsername()));
-
-                            if (playerDecks.get(sender.getUsername()).size() == 0) {
-                                // WINNER WINNER CHICKEN DINNER
-                                winner(sender.getUsername());
-                                return;
-                            }
-
                             nextRound();
                         }
                     } else if (nextCardColour.equals(card.getCardColour()) || activeUnoCard.getCardValue().equals(card.getCardValue())) {
@@ -422,7 +421,6 @@ public class Uno extends Game {
                             nextPlayerIndex();
 
                             getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + punishedPlayer + " has been given two cards!*").parseMode(ParseMode.MARKDOWN).build());
-
                             giveCardsFromDeck(getGameLobby().getLobbyMember(punishedPlayer), 2);
                         } else if (activeUnoCard.getCardValue() == CardValue.REVERSE) {
                             getGameLobby().sendMessage(SendableTextMessage.builder().message("*Player order has been reversed!*").parseMode(ParseMode.MARKDOWN).build());
@@ -445,13 +443,6 @@ public class Uno extends Game {
                         } else {
                             playedUnoCards.add(activeUnoCard);
                             updateScore(getGameLobby().getLobbyMember(sender.getUsername()));
-
-                            if (playerDecks.get(sender.getUsername()).size() == 0) {
-                                // WINNER WINNER CHICKEN DINNER
-                                winner(sender.getUsername());
-                                return;
-                            }
-
                             nextRound();
                         }
                     } else {
