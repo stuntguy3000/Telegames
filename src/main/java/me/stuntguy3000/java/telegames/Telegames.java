@@ -7,6 +7,8 @@ import me.stuntguy3000.java.telegames.object.Lobby;
 import me.stuntguy3000.java.telegames.util.RandomString;
 import org.apache.commons.io.FileUtils;
 import pro.zackpollard.telegrambot.api.TelegramBot;
+import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
+import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 
 import java.io.File;
 import java.io.IOException;
@@ -107,6 +109,12 @@ public class Telegames {
     public void sendToAdmins(String message) {
         for (int admin : configHandler.getBotSettings().getTelegramAdmins()) {
             TelegramBot.getChat(admin).sendMessage(message, TelegramHook.getBot());
+        }
+    }
+
+    public void sendToLobbies(String message) {
+        for (Lobby lobby : getLobbyHandler().getActiveLobbies().values()) {
+            lobby.sendMessage(SendableTextMessage.builder().message(message).parseMode(ParseMode.MARKDOWN).build());
         }
     }
 
