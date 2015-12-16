@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import lombok.Getter;
 import me.stuntguy3000.java.telegames.object.config.BotSettings;
 import me.stuntguy3000.java.telegames.object.config.LobbyList;
+import me.stuntguy3000.java.telegames.object.config.UserStatistics;
 
 import java.io.*;
 
@@ -15,10 +16,13 @@ public class ConfigHandler {
     private BotSettings botSettings = new BotSettings();
     @Getter
     private LobbyList lobbyList = new LobbyList();
+    @Getter
+    private UserStatistics userStatistics = new UserStatistics();
 
     public ConfigHandler() {
         loadFile("config.json");
         loadFile("lobby.json");
+        loadFile("stats.json");
     }
 
     public void loadFile(String fileName) {
@@ -41,6 +45,10 @@ public class ConfigHandler {
                 }
                 case "lobby": {
                     lobbyList = gson.fromJson(br, LobbyList.class);
+                    return;
+                }
+                case "stats": {
+                    userStatistics = gson.fromJson(br, UserStatistics.class);
                 }
             }
         } else {
@@ -63,6 +71,10 @@ public class ConfigHandler {
                 json = gson.toJson(lobbyList);
                 break;
             }
+            case "stats": {
+                json = gson.toJson(userStatistics);
+                break;
+            }
         }
 
         FileOutputStream outputStream;
@@ -72,6 +84,7 @@ public class ConfigHandler {
                 configFile.createNewFile();
             }
             outputStream = new FileOutputStream(configFile);
+            assert json != null;
             outputStream.write(json.getBytes());
             outputStream.close();
         } catch (FileNotFoundException e) {

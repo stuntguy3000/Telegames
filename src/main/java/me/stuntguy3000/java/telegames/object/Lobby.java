@@ -182,6 +182,7 @@ public class Lobby {
             sendMessage(SendableTextMessage.builder().message(TelegramEmoji.JOYSTICK.getText() + " *Starting game: " + newGame.getGameName() + "*").parseMode(ParseMode.MARKDOWN).build());
             if (newGame.tryStartGame()) {
                 currentGame = newGame;
+                Telegames.getInstance().getConfigHandler().getUserStatistics().addGame(newGame);
             } else {
                 sendMessage(SendableTextMessage.builder().message(TelegramEmoji.RED_CROSS.getText() + " *Unable to start game!*").parseMode(ParseMode.MARKDOWN).build());
             }
@@ -231,6 +232,7 @@ public class Lobby {
         sendMessage(sendableTextMessage);
 
         //Telegames.getInstance().getConfigHandler().getLobbyList().addPlayer(getLobbyID(), lobbyMember.getUserID());
+        Telegames.getInstance().getConfigHandler().getUserStatistics().addPlayer(user);
 
         if (game != null) {
             sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.MONKEY_HIDING.getText() + " *You are spectating a game of " + game.getGameName() + ".*").parseMode(ParseMode.MARKDOWN).build();

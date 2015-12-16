@@ -53,6 +53,7 @@ public class UpdateHandler implements Runnable {
                     FileUtils.writeStringToFile(build, String.valueOf(newBuild));
                     FileUtils.copyURLToFile(new URL("http://ci.zackpollard.pro/job/" + projectName + "/lastSuccessfulBuild/artifact/target/" + projectName + ".jar"), jar);
                     LogHandler.log("Build #" + newBuild + " downloaded. Restarting...");
+                    instance.getConfigHandler().saveConfig("stats.json");
                     instance.sendToAdmins("Build #" + newBuild + " downloaded. Restarting...");
                     instance.sendToLobbies("*A new software update for the bot has been released.\nPlease re-create the lobby to continue.*");
                 } catch (IOException e) {

@@ -96,6 +96,7 @@ public class Telegames {
                 case "quit":
                 case "stop":
                 case "exit": {
+                    configHandler.saveConfig("stats.json");
                     System.exit(0);
                 }
             }
