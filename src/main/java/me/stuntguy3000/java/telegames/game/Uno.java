@@ -275,24 +275,20 @@ public class Uno extends Game {
                     default: {
                         if (cardColor != CardColour.WILD) {
                             if (cardValue != CardValue.ZERO) {
-                                //entireDeck.add(new UnoCard(cardColor, cardValue));
+                                entireDeck.add(new UnoCard(cardColor, cardValue));
                             }
-                            //entireDeck.add(new UnoCard(cardColor, cardValue));
+                            entireDeck.add(new UnoCard(cardColor, cardValue));
                         }
                         continue;
                     }
                     case WILD:
                     case DRAW4: {
                         if (cardColor != CardColour.WILD) {
-                            //entireDeck.add(new UnoCard(CardColour.WILD, cardValue));
+                            entireDeck.add(new UnoCard(CardColour.WILD, cardValue));
                         }
                     }
                 }
             }
-        }
-
-        for (int i = 0; i < 40; i++) {
-            entireDeck.add(new UnoCard(CardColour.BLUE, CardValue.FIVE));
         }
 
         Collections.shuffle(entireDeck);
@@ -561,6 +557,12 @@ public class Uno extends Game {
         fillDeck();
         fillHands();
         activeUnoCard = entireDeck.remove(0);
+
+        while (activeUnoCard.getCardColour() == CardColour.WILD) {
+            playedUnoCards.add(activeUnoCard);
+            activeUnoCard = entireDeck.remove(0);
+        }
+
         nextCardColour = activeUnoCard.getCardColour();
 
         gameTimer = new GameTimer(this);
