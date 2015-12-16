@@ -41,7 +41,7 @@ public class StatsCommand extends Command {
 
         respond(chat, SendableTextMessage.builder().message("*Telegames Statistics:*\n" +
                 "*Most Popular Game:* " + mostPopularGame + " (Play Count: " + getCount(mostPopularGame) + ")\n" +
-                "*Least Popular Game:* " + leastPopularGame + "(Play Count: " + getCount(leastPopularGame) + ")\n" +
+                "*Least Popular Game:* " + leastPopularGame + " (Play Count: " + getCount(leastPopularGame) + ")\n" +
                 "*User Count:* " + userCount).parseMode(ParseMode.MARKDOWN).build());
     }
 }
