@@ -26,7 +26,8 @@ public class LobbyHandler {
         activeLobbies.put(lobby.getLobbyID(), lobby);
 
         SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message("*You have created a Lobby!*\n" +
-                "*Lobby ID: *" + lobby.getLobbyID()).parseMode(ParseMode.MARKDOWN).build();
+                "*Lobby ID: *" + lobby.getLobbyID() +
+                "\n\n*Send this link to your friends to play:*\nhttp://telegram.me/Telegames?start=" + lobby.getLobbyID()).parseMode(ParseMode.MARKDOWN).build();
 
         TelegramBot.getChat(user.getId()).sendMessage(sendableTextMessage, lobby.getTelegramBot());
         lobby.userJoin(user);
@@ -35,7 +36,8 @@ public class LobbyHandler {
     }
 
     public void createLobby(String lobbyID, List<Integer> playerList) {
-        // TODO: Need a way to get a User
+        // TODO: Need a way to get a User [specifically a username]
+        // Feature was intended for on bot reboot, reconnect users.
     }
 
     /**
