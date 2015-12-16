@@ -1,6 +1,7 @@
 package me.stuntguy3000.java.telegames.handler;
 
 import me.stuntguy3000.java.telegames.object.Game;
+import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardMarkup;
 
@@ -26,7 +27,7 @@ public class GameHandler {
                 row.clear();
             }
 
-            row.add("▶️ " + game.getGameName());
+            row.add(TelegramEmoji.BLUE_RIGHT_ARROW.getText() + " " + game.getGameName());
             index++;
         }
 

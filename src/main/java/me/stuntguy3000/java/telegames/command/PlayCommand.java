@@ -5,6 +5,7 @@ import me.stuntguy3000.java.telegames.handler.LobbyHandler;
 import me.stuntguy3000.java.telegames.object.Command;
 import me.stuntguy3000.java.telegames.object.Game;
 import me.stuntguy3000.java.telegames.object.Lobby;
+import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
@@ -31,7 +32,7 @@ public class PlayCommand extends Command {
                 if (lobbyGame == null) {
                     if (args.length > 0) {
                         if (args[0].equalsIgnoreCase("random")) {
-                            respond(chat, "Choosing a random game!");
+                            respond(chat, TelegramEmoji.JOYSTICK.getText() + " Choosing a random game!");
 
                             Game game = getInstance().getGameHandler().getRandomGame();
                             lobby.startGame(game);
@@ -41,11 +42,11 @@ public class PlayCommand extends Command {
                             if (targetGame != null) {
                                 lobby.startGame(targetGame);
                             } else {
-                                respond(chat, "Unknown game!\nUse /gamelist for help.");
+                                respond(chat, TelegramEmoji.JOYSTICK.getText() + "Unknown game!\nUse /gamelist for help.");
                             }
                         }
                     } else {
-                        respond(chat, getInstance().getGameHandler().createGameKeyboard().message("*Please choose a game:*").parseMode(ParseMode.MARKDOWN).build());
+                        respond(chat, getInstance().getGameHandler().createGameKeyboard().message(TelegramEmoji.JOYSTICK.getText() + "*Please choose a game:*").parseMode(ParseMode.MARKDOWN).build());
                     }
                 } else {
                     respond(chat, "A game is already running!");

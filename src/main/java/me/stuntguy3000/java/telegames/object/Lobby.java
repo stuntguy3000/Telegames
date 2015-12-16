@@ -3,6 +3,7 @@ package me.stuntguy3000.java.telegames.object;
 import lombok.Getter;
 import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
+import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
@@ -194,9 +195,11 @@ public class Lobby {
      * @param message String the message
      */
     public void userChat(User sender, String message) {
+        message = message.replace('*', ' ').replace('_', ' ').replace(":)", TelegramEmoji.HAPPY_FACE.getText()).replace(":(", TelegramEmoji.SAD_FACE.getText()).replace("<3", TelegramEmoji.HEART.getText());
+
         for (LobbyMember lobbyMember : lobbyMembers) {
             if (!lobbyMember.getUsername().equals(sender.getUsername())) {
-                lobbyMember.getChat().sendMessage(SendableTextMessage.builder().message("*[Chat]* " + sender.getUsername() + ": " + message).parseMode(ParseMode.MARKDOWN).build(), getTelegramBot());
+                lobbyMember.getChat().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.PERSON_SPEAKING.getText() + " *" + sender.getUsername() + ":* " + message).parseMode(ParseMode.MARKDOWN).build(), getTelegramBot());
             }
         }
     }
@@ -212,13 +215,13 @@ public class Lobby {
         Game game = getCurrentGame();
         lobbyMember.getChat().sendMessage(lobbyHeader, getTelegramBot());
 
-        SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message("*[Lobby]* User @" + user.getUsername() + " joined this lobby!").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build();
+        SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.PERSON.getText() + " *" + user.getUsername() + " joined!*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build();
         sendMessage(sendableTextMessage);
 
         //Telegames.getInstance().getConfigHandler().getLobbyList().addPlayer(getLobbyID(), lobbyMember.getUserID());
 
         if (game != null) {
-            sendableTextMessage = SendableTextMessage.builder().message("You are spectating a game of " + game.getGameName() + ".").parseMode(ParseMode.MARKDOWN).build();
+            sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.MONKEY_HIDING.getText() + " *You are spectating a game of " + game.getGameName() + ".*").parseMode(ParseMode.MARKDOWN).build();
             lobbyMember.getChat().sendMessage(sendableTextMessage, getTelegramBot());
         }
     }
@@ -229,7 +232,7 @@ public class Lobby {
      * @param user User the user who left the Lobby
      */
     public void userLeave(LobbyMember user) {
-        SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message("*[Lobby]* User @" + user.getUsername() + " (" + user.getFullName() + ") left this lobby!").parseMode(ParseMode.MARKDOWN).build();
+        SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.PERSON.getText() + " *" + user.getUsername() + " left!*").parseMode(ParseMode.MARKDOWN).build();
         sendMessage(sendableTextMessage);
 
         String username = user.getUsername();

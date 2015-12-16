@@ -3,7 +3,6 @@ package me.stuntguy3000.java.telegames.util;
 import lombok.Getter;
 
 public enum TelegramEmoji {
-
     NUMBER_BLOCK_ZERO("0⃣"),
     NUMBER_BLOCK_ONE("1⃣"),
     NUMBER_BLOCK_TWO("2⃣"),
@@ -16,7 +15,24 @@ public enum TelegramEmoji {
     NUMBER_BLOCK_NINE("9⃣"),
     NUMBER_BLOCK_TEN("\uD83D\uDD1F"),
     RED_CROSS("❌"),
-    RED_CIRCLE("⭕️");
+    PERSON("\uD83D\uDC64"),
+    PERSON_SPEAKING("\uD83D\uDDE3"),
+    CHECKBOX("☑️"),
+    CIRCLE_CHECKBOX("\uD83D\uDD18"),
+    WHITE_CIRCLE("⚪️"),
+    BLACK_CIRCLE("⚫️"),
+    RED_CIRCLE("\uD83D\uDD34"),
+    BLUE_CIRCLE("\uD83D\uDD35"),
+    WHITE_SQUARE("◻️"),
+    BLACK_SQUARE("◼️"),
+    GREEN_BOX_TICK("✅"),
+    GREEN_BOX_CROSS("❎"),
+    MONKEY_HIDING("\uD83D\uDE48"),
+    JOYSTICK("\uD83D\uDD79"),
+    HAPPY_FACE("\uD83D\uDE00"),
+    SAD_FACE("\uD83D\uDE41"),
+    BLUE_RIGHT_ARROW("▶️"),
+    HEART("❤️");
 
     @Getter
     String text;
