@@ -7,6 +7,8 @@ import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableMessage;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
 
+import java.util.Arrays;
+
 public abstract class Command {
     @Getter
     private final String description;
@@ -25,7 +27,7 @@ public abstract class Command {
 
 
     public String createBotFatherString() {
-        return String.format("%s - %s", names[0], description);
+        return String.format("%s - %s", Arrays.toString(names), description);
     }
 
     public abstract void processCommand(CommandMessageReceivedEvent event);
