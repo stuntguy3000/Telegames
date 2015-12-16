@@ -4,6 +4,7 @@ import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.handler.LobbyHandler;
 import me.stuntguy3000.java.telegames.object.Command;
 import me.stuntguy3000.java.telegames.object.Lobby;
+import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
@@ -28,18 +29,18 @@ public class JoinCommand extends Command {
                     Lobby targetLobby = lobbyHandler.getLobby(id);
 
                     if (targetLobby == null) {
-                        respond(chat, "No such lobby exists!");
+                        respond(chat, TelegramEmoji.RED_CROSS.getText() + " No such lobby exists!");
                     } else {
                         targetLobby.userJoin(sender);
                     }
                 } else {
-                    respond(chat, "Please specify a Lobby ID!\nUsage: /joinlobby <ID>");
+                    respond(chat, TelegramEmoji.RED_CROSS.getText() + " Please specify a Lobby ID!\nUsage: /joinlobby <ID>");
                 }
             } else {
-                respond(chat, "You are already in a Lobby!");
+                respond(chat, TelegramEmoji.RED_CROSS.getText() + " You are already in a Lobby!");
             }
         } else {
-            respond(chat, "This command can only be executed via a private message to @TelegamesBot");
+            respond(chat, TelegramEmoji.RED_CROSS.getText() + " This command can only be executed via a private message to @TelegamesBot");
         }
     }
 }

@@ -32,7 +32,9 @@ public enum TelegramEmoji {
     HAPPY_FACE("\uD83D\uDE00"),
     SAD_FACE("\uD83D\uDE41"),
     BLUE_RIGHT_ARROW("▶️"),
-    HEART("❤️");
+    HEART("❤️"),
+    BOOK("\uD83D\uDCD4"),
+    GHOST("\uD83D\uDC7B");
 
     @Getter
     String text;

@@ -42,20 +42,20 @@ public class PlayCommand extends Command {
                             if (targetGame != null) {
                                 lobby.startGame(targetGame);
                             } else {
-                                respond(chat, TelegramEmoji.JOYSTICK.getText() + "Unknown game!\nUse /gamelist for help.");
+                                respond(chat, TelegramEmoji.RED_CROSS.getText() + " Unknown game!\nUse /gamelist for help.");
                             }
                         }
                     } else {
                         respond(chat, getInstance().getGameHandler().createGameKeyboard().message(TelegramEmoji.JOYSTICK.getText() + "*Please choose a game:*").parseMode(ParseMode.MARKDOWN).build());
                     }
                 } else {
-                    respond(chat, "A game is already running!");
+                    respond(chat, TelegramEmoji.RED_CROSS.getText() + " A game is already running!");
                 }
             } else {
-                respond(chat, "You are not in a Lobby!");
+                respond(chat, TelegramEmoji.RED_CROSS.getText() + " You are not in a Lobby!");
             }
         } else {
-            respond(chat, "This command can only be executed via a private message to @TelegamesBot");
+            respond(chat, TelegramEmoji.RED_CROSS.getText() + " This command can only be executed via a private message to @TelegamesBot");
         }
     }
 }

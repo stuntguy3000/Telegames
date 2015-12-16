@@ -5,6 +5,7 @@ import me.stuntguy3000.java.telegames.handler.LobbyHandler;
 import me.stuntguy3000.java.telegames.object.Command;
 import me.stuntguy3000.java.telegames.object.Lobby;
 import me.stuntguy3000.java.telegames.object.LobbyMember;
+import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
@@ -40,10 +41,10 @@ public class LobbyCommand extends Command {
                         "*Players:* " + playersList.substring(0, playersList.length() - 2)).parseMode(ParseMode.MARKDOWN).build();
                 respond(chat, message);
             } else {
-                respond(chat, "You are not in an Lobby!");
+                respond(chat, TelegramEmoji.RED_CROSS.getText() + " You are not in an Lobby!");
             }
         } else {
-            respond(chat, "This command can only be executed via a private message to @TelegamesBot");
+            respond(chat, TelegramEmoji.RED_CROSS.getText() + " This command can only be executed via a private message to @TelegamesBot");
         }
     }
 }
