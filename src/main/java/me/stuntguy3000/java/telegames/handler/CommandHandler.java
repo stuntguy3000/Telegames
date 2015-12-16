@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 /**
  * Created by amir on 2015-11-25.
+ * Modified by stuntguy3000 :D
  */
 public class CommandHandler {
     public HashMap<String, Command> commands;
@@ -33,6 +34,8 @@ public class CommandHandler {
     }
 
     public void registerCommand(Command cmd) {
-        commands.put(cmd.getName().toLowerCase(), cmd);
+        for (String name : cmd.getNames()) {
+            commands.put(name.toLowerCase(), cmd);
+        }
     }
 }

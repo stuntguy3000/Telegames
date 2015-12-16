@@ -10,7 +10,7 @@ import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceived
 // @author Luke Anderson | stuntguy3000
 public class GameHelpCommand extends Command {
     public GameHelpCommand() {
-        super(Telegames.getInstance(), "gamehelp", "/gamehelp <game> View specific help information for a game");
+        super(Telegames.getInstance(), "/gamehelp <game> View specific help information for a game", "gamehelp", "ghelp");
     }
 
     public void processCommand(CommandMessageReceivedEvent event) {

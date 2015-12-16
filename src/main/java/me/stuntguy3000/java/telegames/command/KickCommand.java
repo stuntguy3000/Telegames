@@ -4,6 +4,7 @@ import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.handler.LobbyHandler;
 import me.stuntguy3000.java.telegames.object.Command;
 import me.stuntguy3000.java.telegames.object.Lobby;
+import me.stuntguy3000.java.telegames.object.LobbyMember;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
@@ -11,9 +12,9 @@ import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceived
 import pro.zackpollard.telegrambot.api.user.User;
 
 // @author Luke Anderson | stuntguy3000
-public class JoinCommand extends Command {
-    public JoinCommand() {
-        super(Telegames.getInstance(), "/join <ID> Join a lobby.", "join");
+public class KickCommand extends Command {
+    public KickCommand() {
+        super(Telegames.getInstance(), "/kick <name> Remove a player from the lobby.", "kick");
     }
 
     public void processCommand(CommandMessageReceivedEvent event) {
@@ -23,21 +24,20 @@ public class JoinCommand extends Command {
         String[] args = event.getArgs();
 
         if (event.getChat().getType() == ChatType.PRIVATE) {
-            if (lobbyHandler.getLobby(sender) == null) {
+            Lobby lobby = lobbyHandler.getLobby(sender);
+            if (lobby != null) {
                 if (args.length > 0) {
-                    String id = args[0];
-                    Lobby targetLobby = lobbyHandler.getLobby(id);
-
-                    if (targetLobby == null) {
-                        respond(chat, TelegramEmoji.RED_CROSS.getText() + " No such lobby exists!");
+                    LobbyMember lobbyMember = lobby.getLobbyMember(args[0]);
+                    if (lobby.getLobbyOwner().getUserID() == sender.getId()) {
+                        lobby.kickPlayer(lobbyMember);
                     } else {
-                        targetLobby.userJoin(sender);
+                        respond(chat, TelegramEmoji.RED_CROSS.getText() + " You are not the lobby owner!");
                     }
                 } else {
-                    respond(chat, TelegramEmoji.RED_CROSS.getText() + " Please specify a lobby ID!\nUsage: /joinlobby <ID>");
+                    respond(chat, TelegramEmoji.RED_CROSS.getText() + " Please specify a username!\nUsage: /kick <name>");
                 }
             } else {
-                respond(chat, TelegramEmoji.RED_CROSS.getText() + " You are already in a lobby!");
+                respond(chat, TelegramEmoji.RED_CROSS.getText() + " You are not in an lobby!");
             }
         } else {
             respond(chat, TelegramEmoji.RED_CROSS.getText() + " This command can only be executed via a private message to @TelegamesBot");

@@ -14,7 +14,7 @@ import pro.zackpollard.telegrambot.api.user.User;
 // @author Luke Anderson | stuntguy3000
 public class StopCommand extends Command {
     public StopCommand() {
-        super(Telegames.getInstance(), "stop", "/stop <game> Start a game.");
+        super(Telegames.getInstance(), "/stop <game> Start a game.", "stop");
     }
 
     public void processCommand(CommandMessageReceivedEvent event) {
@@ -33,7 +33,7 @@ public class StopCommand extends Command {
                     respond(chat, TelegramEmoji.RED_CROSS.getText() + " No game is running!");
                 }
             } else {
-                respond(chat, TelegramEmoji.RED_CROSS.getText() + " You are not in a Lobby!");
+                respond(chat, TelegramEmoji.RED_CROSS.getText() + " You are not in a lobby!");
             }
         } else {
             respond(chat, TelegramEmoji.RED_CROSS.getText() + " This command can only be executed via a private message to @TelegamesBot");

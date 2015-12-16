@@ -9,7 +9,7 @@ import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceived
 // @author Luke Anderson | stuntguy3000
 public class GameListCommand extends Command {
     public GameListCommand() {
-        super(Telegames.getInstance(), "gamelist", "/gamelist List all available games.");
+        super(Telegames.getInstance(), "/gamelist List all available games.", "gamelist");
     }
 
     public void processCommand(CommandMessageReceivedEvent event) {

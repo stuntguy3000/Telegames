@@ -16,7 +16,7 @@ import pro.zackpollard.telegrambot.api.user.User;
 // @author Luke Anderson | stuntguy3000
 public class LobbyCommand extends Command {
     public LobbyCommand() {
-        super(Telegames.getInstance(), "lobby", "/lobby View current lobby information.");
+        super(Telegames.getInstance(), "/lobby View current lobby information.", "lobby");
     }
 
     public void processCommand(CommandMessageReceivedEvent event) {
@@ -42,7 +42,7 @@ public class LobbyCommand extends Command {
                         "*Join Link:* http://telegram.me/TelegamesBot?start=" + lobby.getLobbyID()).parseMode(ParseMode.MARKDOWN).build();
                 respond(chat, message);
             } else {
-                respond(chat, TelegramEmoji.RED_CROSS.getText() + " You are not in an Lobby!");
+                respond(chat, TelegramEmoji.RED_CROSS.getText() + " You are not in an lobby!");
             }
         } else {
             respond(chat, TelegramEmoji.RED_CROSS.getText() + " This command can only be executed via a private message to @TelegamesBot");

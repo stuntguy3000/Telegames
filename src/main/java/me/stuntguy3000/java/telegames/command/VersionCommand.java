@@ -9,7 +9,7 @@ import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceived
 // @author Luke Anderson | stuntguy3000
 public class VersionCommand extends Command {
     public VersionCommand() {
-        super(Telegames.getInstance(), "version", "/version View the bot's current version");
+        super(Telegames.getInstance(), "/version View the bot's current version", "version");
     }
 
     public void processCommand(CommandMessageReceivedEvent event) {

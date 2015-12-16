@@ -46,7 +46,7 @@ public class Lobby {
      */
     public LobbyMember getLobbyMember(String username) {
         for (LobbyMember lobbyMember : getLobbyMembers()) {
-            if (lobbyMember.getUsername().equals(username)) {
+            if (lobbyMember.getUsername().equalsIgnoreCase(username)) {
                 return lobbyMember;
             }
         }
@@ -86,12 +86,22 @@ public class Lobby {
      */
     public boolean isInLobby(String username) {
         for (LobbyMember lobbyMember : lobbyMembers) {
-            if (lobbyMember.getUsername().equals(username)) {
+            if (lobbyMember.getUsername().equalsIgnoreCase(username)) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    /**
+     * Kicks a player from a Lobby
+     *
+     * @param lobbyMember the player to be kicked
+     */
+    public void kickPlayer(LobbyMember lobbyMember) {
+        sendMessage(SendableTextMessage.builder().message(TelegramEmoji.RED_CROSS.getText() + " *" + lobbyMember.getUsername() + " was removed from the lobby!*").parseMode(ParseMode.MARKDOWN).build());
+        userLeave(lobbyMember, true);
     }
 
     /**
@@ -200,7 +210,7 @@ public class Lobby {
         // .replace(":)", TelegramEmoji.HAPPY_FACE.getText()).replace(":(", TelegramEmoji.SAD_FACE.getText());
 
         for (LobbyMember lobbyMember : lobbyMembers) {
-            if (!lobbyMember.getUsername().equals(sender.getUsername())) {
+            if (!lobbyMember.getUsername().equalsIgnoreCase(sender.getUsername())) {
                 lobbyMember.getChat().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.PERSON_SPEAKING.getText() + " *" + sender.getUsername() + ":* " + message).parseMode(ParseMode.MARKDOWN).build(), getTelegramBot());
             }
         }
@@ -233,15 +243,17 @@ public class Lobby {
      *
      * @param user User the user who left the Lobby
      */
-    public void userLeave(LobbyMember user) {
-        SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.PERSON.getText() + " *" + user.getUsername() + " left!*").parseMode(ParseMode.MARKDOWN).build();
-        sendMessage(sendableTextMessage);
+    public void userLeave(LobbyMember user, boolean silent) {
+        if (!silent) {
+            SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.PERSON.getText() + " *" + user.getUsername() + " left!*").parseMode(ParseMode.MARKDOWN).build();
+            sendMessage(sendableTextMessage);
+        }
 
         String username = user.getUsername();
         int id = user.getUserID();
 
         for (LobbyMember lobbyMember : new ArrayList<>(lobbyMembers)) {
-            if (lobbyMember.getUsername().equals(user.getUsername())) {
+            if (lobbyMember.getUsername().equalsIgnoreCase(user.getUsername())) {
                 lobbyMembers.remove(lobbyMember);
             }
         }

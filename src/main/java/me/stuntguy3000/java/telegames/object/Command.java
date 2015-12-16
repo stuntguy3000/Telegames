@@ -13,18 +13,25 @@ public abstract class Command {
     @Getter
     private final Telegames instance;
     @Getter
-    private final String name;
+    private final String[] names;
 
-    public Command(Telegames instance, String name, String description) {
+    public Command(Telegames instance, String description, String... names) {
         this.instance = instance;
-        this.name = name;
+        this.names = names;
         this.description = description;
 
         instance.getCommandHandler().registerCommand(this);
     }
 
+
     public String createBotFatherString() {
-        return String.format("%s - %s", name, description);
+        StringBuilder commands = new StringBuilder();
+
+        for (String cmd : names) {
+            commands.append(String.format("%s - %s", cmd, description)).append("\n");
+        }
+
+        return commands.toString();
     }
 
     public abstract void processCommand(CommandMessageReceivedEvent event);

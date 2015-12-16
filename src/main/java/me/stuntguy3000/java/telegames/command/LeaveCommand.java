@@ -11,7 +11,7 @@ import pro.zackpollard.telegrambot.api.user.User;
 // @author Luke Anderson | stuntguy3000
 public class LeaveCommand extends Command {
     public LeaveCommand() {
-        super(Telegames.getInstance(), "leave", "/leave Leave a Lobby.");
+        super(Telegames.getInstance(), "/leave Leave a lobby.", "leave", "quit", "exit");
     }
 
     public void processCommand(CommandMessageReceivedEvent event) {
@@ -20,9 +20,9 @@ public class LeaveCommand extends Command {
         Lobby lobby = Telegames.getInstance().getLobbyHandler().getLobby(sender);
 
         if (lobby != null) {
-            lobby.userLeave(lobby.getLobbyMember(sender.getUsername()));
+            lobby.userLeave(lobby.getLobbyMember(sender.getUsername()), false);
         } else {
-            respond(chat, TelegramEmoji.RED_CROSS.getText() + " You are not in a Lobby!");
+            respond(chat, TelegramEmoji.RED_CROSS.getText() + " You are not in a lobby!");
         }
     }
 }

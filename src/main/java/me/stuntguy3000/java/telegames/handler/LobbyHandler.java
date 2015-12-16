@@ -25,7 +25,7 @@ public class LobbyHandler {
         Lobby lobby = new Lobby(user, Telegames.getInstance().getRandomString().nextString().toUpperCase());
         activeLobbies.put(lobby.getLobbyID(), lobby);
 
-        SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message("*You have created a Lobby!*\n" +
+        SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message("*You have created a lobby!*\n" +
                 "*Send this link to your friends to play:*\nhttp://telegram.me/TelegamesBot?start=" + lobby.getLobbyID()).parseMode(ParseMode.MARKDOWN).build();
 
         TelegramBot.getChat(user.getId()).sendMessage(sendableTextMessage, lobby.getTelegramBot());

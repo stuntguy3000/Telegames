@@ -13,7 +13,7 @@ import pro.zackpollard.telegrambot.api.user.User;
 // @author Luke Anderson | stuntguy3000
 public class StartCommand extends Command {
     public StartCommand() {
-        super(Telegames.getInstance(), "start", "/start Create a Lobby.");
+        super(Telegames.getInstance(), "/start Create a lobby.", "start");
     }
 
     public void processCommand(CommandMessageReceivedEvent event) {
@@ -29,7 +29,7 @@ public class StartCommand extends Command {
                     Lobby targetLobby = lobbyHandler.getLobby(id);
 
                     if (targetLobby == null) {
-                        respond(chat, TelegramEmoji.RED_CROSS.getText() + " No such Lobby exists!");
+                        respond(chat, TelegramEmoji.RED_CROSS.getText() + " No such lobby exists!");
                     } else {
                         targetLobby.userJoin(sender);
                     }
@@ -37,7 +37,7 @@ public class StartCommand extends Command {
                     lobbyHandler.createLobby(sender);
                 }
             } else {
-                respond(chat, TelegramEmoji.RED_CROSS.getText() + " You are already in a Lobby!");
+                respond(chat, TelegramEmoji.RED_CROSS.getText() + " You are already in a lobby!");
             }
         } else {
             respond(chat, TelegramEmoji.RED_CROSS.getText() + " This command can only be executed via a private message to @TelegamesBot");

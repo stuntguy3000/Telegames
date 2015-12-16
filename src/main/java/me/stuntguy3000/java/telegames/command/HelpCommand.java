@@ -9,7 +9,7 @@ import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceived
 // @author Luke Anderson | stuntguy3000
 public class HelpCommand extends Command {
     public HelpCommand() {
-        super(Telegames.getInstance(), "help", "/help View all commands.");
+        super(Telegames.getInstance(), "/help View all commands.", "help");
     }
 
     public void processCommand(CommandMessageReceivedEvent event) {

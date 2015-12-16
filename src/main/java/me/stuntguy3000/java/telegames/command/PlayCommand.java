@@ -15,7 +15,7 @@ import pro.zackpollard.telegrambot.api.user.User;
 // @author Luke Anderson | stuntguy3000
 public class PlayCommand extends Command {
     public PlayCommand() {
-        super(Telegames.getInstance(), "play", "/play <game> Play a game.");
+        super(Telegames.getInstance(), "/play <game> Play a game.", "play", "startgame");
     }
 
     public void processCommand(CommandMessageReceivedEvent event) {
