@@ -18,6 +18,8 @@ import java.util.List;
 public class Lobby {
     @Getter
     private Game currentGame;
+    @Getter
+    private List<Integer> kickList;
     private SendableTextMessage lobbyHeader;
     @Getter
     private String lobbyID;
@@ -35,6 +37,7 @@ public class Lobby {
     public Lobby(User owner, String lobbyID) {
         this.lobbyOwner = new LobbyMember(owner);
         this.lobbyID = lobbyID;
+        kickList = new ArrayList<>();
 
         lobbyHeader = SendableTextMessage.builder().message("*[---------- " + owner.getUsername() + "'s Lobby ----------]*").parseMode(ParseMode.MARKDOWN).build();
     }
@@ -101,6 +104,7 @@ public class Lobby {
      */
     public void kickPlayer(LobbyMember lobbyMember) {
         sendMessage(SendableTextMessage.builder().message(TelegramEmoji.RED_CROSS.getText() + " *" + lobbyMember.getUsername() + " was removed from the lobby!*").parseMode(ParseMode.MARKDOWN).build());
+        kickList.add(lobbyMember.getUserID());
         userLeave(lobbyMember, true);
     }
 
@@ -227,6 +231,12 @@ public class Lobby {
         lobbyMembers.add(lobbyMember);
         Game game = getCurrentGame();
         lobbyMember.getChat().sendMessage(lobbyHeader, getTelegramBot());
+
+        if (kickList.contains(user.getId())) {
+            SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.RED_CROSS.getText() + " *You cannot join this lobby.*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build();
+            TelegramHook.getBot().sendMessage(TelegramBot.getChat(user.getId()), sendableTextMessage);
+            return;
+        }
 
         SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.PERSON.getText() + " *" + user.getUsername() + " joined!*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build();
         sendMessage(sendableTextMessage);
