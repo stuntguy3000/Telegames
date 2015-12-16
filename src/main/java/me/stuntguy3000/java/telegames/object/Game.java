@@ -6,6 +6,9 @@ import pro.zackpollard.telegrambot.api.event.chat.message.TextMessageReceivedEve
 
 public abstract class Game {
     @Getter
+    @Setter
+    private boolean devModeOnly = false;
+    @Getter
     private String gameDescription;
     @Getter
     @Setter

@@ -36,6 +36,7 @@ public class TicTacToe extends Game {
 
     public TicTacToe() {
         setGameInfo("TicTacToe", "First player to line three in a row wins.");
+        setDevModeOnly(true);
 
         gameState = GameState.WAITING_FOR_PLAYERS;
     }

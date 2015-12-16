@@ -58,7 +58,7 @@ public class GameHandler {
         StringBuilder sb = new StringBuilder();
         sb.append("Game List:\n");
         for (Game game : gameList.values()) {
-            sb.append(game.getGameName()).append(": ").append(game.getGameDescription()).append("\n");
+            sb.append("*").append(game.getGameName()).append("*: ").append(game.getGameDescription()).append("\n");
         }
 
         return sb.toString();

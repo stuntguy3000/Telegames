@@ -17,6 +17,7 @@ import java.io.PrintWriter;
 // @author Luke Anderson | stuntguy3000
 public class Telegames {
     public static int BUILD = 0;
+    public static boolean DEV_MODE = false;
     @Getter
     public static Telegames instance;
     @Getter
@@ -77,6 +78,8 @@ public class Telegames {
         } else {
             LogHandler.log("** Auto Updater is set to false **");
         }
+
+        DEV_MODE = getConfigHandler().getBotSettings().getDevMode();
 
         while (true) {
             String in = System.console().readLine();

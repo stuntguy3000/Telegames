@@ -57,7 +57,11 @@ public class TelegramHook implements Listener {
         List<Class<?>> allGames = ClassGetter.getClassesForPackage("me.stuntguy3000.java.telegames.game.");
         allGames.stream().filter(Game.class::isAssignableFrom).forEach(clazz -> {
             try {
-                getInstance().getGameHandler().registerGame((Game) clazz.newInstance());
+                Game game = (Game) clazz.newInstance();
+                if (game.isDevModeOnly() && !Telegames.DEV_MODE) {
+                    return;
+                }
+                getInstance().getGameHandler().registerGame(game);
             } catch (InstantiationException | IllegalAccessException e) {
                 LogHandler.log(clazz.getSimpleName() + " failed to instantiate:");
                 e.printStackTrace();
