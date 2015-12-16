@@ -11,14 +11,12 @@ import java.util.Map;
  * Modified by stuntguy3000 :D
  */
 public class CommandHandler {
-    public HashMap<String[], Command> commands;
-
-    public CommandHandler() {
-        commands = new HashMap<>();
-    }
+    public HashMap<String[], Command> commands = new HashMap<>();
 
     public void executeCommand(String s, CommandMessageReceivedEvent event) {
         Command cmd = null;
+
+        LogHandler.log(commands.keySet().toString());
 
         for (Map.Entry<String[], Command> command : commands.entrySet()) {
             for (String name : command.getKey()) {
