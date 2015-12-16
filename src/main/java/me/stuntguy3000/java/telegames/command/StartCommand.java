@@ -3,6 +3,7 @@ package me.stuntguy3000.java.telegames.command;
 import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.handler.LobbyHandler;
 import me.stuntguy3000.java.telegames.object.Command;
+import me.stuntguy3000.java.telegames.object.Lobby;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
@@ -18,10 +19,22 @@ public class StartCommand extends Command {
         Chat chat = event.getChat();
         User sender = event.getMessage().getSender();
         LobbyHandler lobbyHandler = getInstance().getLobbyHandler();
+        String[] args = event.getArgs();
 
         if (event.getChat().getType() == ChatType.PRIVATE) {
             if (lobbyHandler.getLobby(sender) == null) {
-                lobbyHandler.createLobby(sender);
+                if (args.length > 0) {
+                    String id = args[0];
+                    Lobby targetLobby = lobbyHandler.getLobby(id);
+
+                    if (targetLobby == null) {
+                        respond(chat, "No such Lobby exists!");
+                    } else {
+                        targetLobby.userJoin(sender);
+                    }
+                } else {
+                    lobbyHandler.createLobby(sender);
+                }
             } else {
                 respond(chat, "You are already in a Lobby!");
             }
