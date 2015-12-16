@@ -13,42 +13,10 @@ import java.util.List;
 
 // @author Luke Anderson | stuntguy3000
 public class StatsCommand extends Command {
-    public StatsCommand() {
-        super(Telegames.getInstance(), "/stats View the bot's statistics", "stats", "statistics");
-    }
-
     private List<GameStatistics> gameStats;
 
-    public void processCommand(CommandMessageReceivedEvent event) {
-        Chat chat = event.getChat();
-
-        UserStatistics userStatistics = getInstance().getConfigHandler().getUserStatistics();
-        gameStats = userStatistics.sortGames();
-
-        String mostPopularGame = (gameStats.size() > 0 ? gameStats.get(0).getName() : "No Game!");
-        String leastPopularGame = (gameStats.size() > 0 ? gameStats.get(gameStats.size() - 1).getName() : "No Game!");
-        int userCount = userStatistics.getKnownPlayers().size();
-
-        respond(chat, SendableTextMessage.builder().message("*Telegames Statistics:*\n" +
-                "*Most Popular Game:* " + mostPopularGame + " (Play Count: " + getCount(mostPopularGame) + ")\n" +
-                "*Least Popular Game:* " + leastPopularGame + "(Play Count: " + getCount(leastPopularGame) + ")\n" +
-                "*User Count:* " + userCount).parseMode(ParseMode.MARKDOWN).build());
-    }
-
-    public void processCommand(CommandMessageReceivedEvent event) {
-        Chat chat = event.getChat();
-
-        UserStatistics userStatistics = getInstance().getConfigHandler().getUserStatistics();
-        gameStats = userStatistics.sortGames();
-
-        String mostPopularGame = (gameStats.size() > 0 ? gameStats.get(0).getName() : "No Game!");
-        String leastPopularGame = (gameStats.size() > 0 ? gameStats.get(gameStats.size() - 1).getName() : "No Game!");
-        int userCount = userStatistics.getKnownPlayers().size();
-
-        respond(chat, SendableTextMessage.builder().message("*Telegames Statistics:*\n" +
-                "*Most Popular Game:* " + mostPopularGame + " (Play Count: " + getCount(mostPopularGame) + ")\n" +
-                "*Least Popular Game:* " + leastPopularGame + "(Play Count: " + getCount(leastPopularGame) + ")\n" +
-                "*User Count:* " + userCount).parseMode(ParseMode.MARKDOWN).build());
+    public StatsCommand() {
+        super(Telegames.getInstance(), "/stats View the bot's statistics", "stats", "statistics");
     }
 
     private int getCount(String gameName) {
@@ -59,5 +27,21 @@ public class StatsCommand extends Command {
         }
 
         return 0;
+    }
+
+    public void processCommand(CommandMessageReceivedEvent event) {
+        Chat chat = event.getChat();
+
+        UserStatistics userStatistics = getInstance().getConfigHandler().getUserStatistics();
+        gameStats = userStatistics.sortGames();
+
+        String mostPopularGame = (gameStats.size() > 0 ? gameStats.get(0).getName() : "No Game!");
+        String leastPopularGame = (gameStats.size() > 0 ? gameStats.get(gameStats.size() - 1).getName() : "No Game!");
+        int userCount = userStatistics.getKnownPlayers().size();
+
+        respond(chat, SendableTextMessage.builder().message("*Telegames Statistics:*\n" +
+                "*Most Popular Game:* " + mostPopularGame + " (Play Count: " + getCount(mostPopularGame) + ")\n" +
+                "*Least Popular Game:* " + leastPopularGame + "(Play Count: " + getCount(leastPopularGame) + ")\n" +
+                "*User Count:* " + userCount).parseMode(ParseMode.MARKDOWN).build());
     }
 }
