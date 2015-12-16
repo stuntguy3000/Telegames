@@ -27,6 +27,10 @@ public class KickCommand extends Command {
             Lobby lobby = lobbyHandler.getLobby(sender);
             if (lobby != null) {
                 if (args.length > 0) {
+                    StringBuilder fullName = new StringBuilder();
+                    for (int i = 1; i < args.length; i++) {
+                        fullName.append(args[i]).append(" ");
+                    }
                     LobbyMember lobbyMember = lobby.getLobbyMember(args[0]);
                     if (lobby.getLobbyOwner().getUserID() == sender.getId() && lobbyMember.getUserID() != sender.getId()) {
                         lobby.kickPlayer(lobbyMember);
