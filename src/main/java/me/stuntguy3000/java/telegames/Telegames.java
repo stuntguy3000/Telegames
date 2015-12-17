@@ -4,6 +4,7 @@ import lombok.Getter;
 import me.stuntguy3000.java.telegames.handler.*;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Lobby;
+import me.stuntguy3000.java.telegames.object.LobbyTimer;
 import me.stuntguy3000.java.telegames.util.RandomString;
 import org.apache.commons.io.FileUtils;
 import pro.zackpollard.telegrambot.api.TelegramBot;
@@ -13,6 +14,7 @@ import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Timer;
 
 // @author Luke Anderson | stuntguy3000
 public class Telegames {
@@ -79,6 +81,9 @@ public class Telegames {
         } else {
             LogHandler.log("** Auto Updater is set to false **");
         }
+
+        LobbyTimer lobbyTimer = new LobbyTimer();
+        new Timer().schedule(lobbyTimer, 0, 60 * 1000);
 
         while (true) {
             String in = System.console().readLine();

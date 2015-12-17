@@ -56,6 +56,17 @@ public class LobbyHandler {
     }
 
     /**
+     * Expires a lobby after 10min of inactivity
+     *
+     * @param lobby Lobby the Lobby to destroy
+     */
+    public void expireLobby(Lobby lobby) {
+        lobby.sendMessage(SendableTextMessage.builder().message("\n\n*This lobby has expired!\n\n").parseMode(ParseMode.MARKDOWN).build());
+
+        destroyLobby(lobby.getLobbyID());
+    }
+
+    /**
      * Return the User's current Lobby
      *
      * @param user User the requested user

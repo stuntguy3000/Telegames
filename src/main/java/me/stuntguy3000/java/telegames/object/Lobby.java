@@ -20,6 +20,8 @@ public class Lobby {
     private Game currentGame;
     @Getter
     private List<Integer> kickList;
+    @Getter
+    private long lastLobbyAction;
     private SendableTextMessage lobbyHeader;
     @Getter
     private String lobbyID;
@@ -37,8 +39,9 @@ public class Lobby {
     public Lobby(User owner, String lobbyID) {
         this.lobbyOwner = new LobbyMember(owner);
         this.lobbyID = lobbyID;
-        kickList = new ArrayList<>();
 
+        kickList = new ArrayList<>();
+        lastLobbyAction = System.currentTimeMillis();
         lobbyHeader = SendableTextMessage.builder().message("*[---------- " + owner.getUsername() + "'s Lobby ----------]*").parseMode(ParseMode.MARKDOWN).build();
     }
 
@@ -114,6 +117,7 @@ public class Lobby {
      * @param event TextMessageReceivedEvent
      */
     public void onTextMessageReceived(TextMessageReceivedEvent event) {
+        lastLobbyAction = System.currentTimeMillis();
         String message = event.getContent().getContent();
 
         if (currentGame == null) {
@@ -175,6 +179,7 @@ public class Lobby {
      * @param targetGame Game the game to be played
      */
     public void startGame(Game targetGame) {
+        lastLobbyAction = System.currentTimeMillis();
         try {
             Game newGame = targetGame.getClass().newInstance();
             newGame.setGameLobby(this);
@@ -198,7 +203,11 @@ public class Lobby {
         }
     }
 
+    /**
+     * Stop the current game
+     */
     public void stopGame() {
+        lastLobbyAction = System.currentTimeMillis();
         currentGame.endGame();
         currentGame = null;
 
@@ -215,7 +224,6 @@ public class Lobby {
      */
     public void userChat(User sender, String message) {
         message = message.replace('*', ' ').replace('_', ' ');
-        // .replace(":)", TelegramEmoji.HAPPY_FACE.getText()).replace(":(", TelegramEmoji.SAD_FACE.getText());
 
         for (LobbyMember lobbyMember : lobbyMembers) {
             if (!lobbyMember.getUsername().equalsIgnoreCase(sender.getUsername())) {
@@ -230,6 +238,7 @@ public class Lobby {
      * @param user User the user who joined the Lobby
      */
     public void userJoin(User user) {
+        lastLobbyAction = System.currentTimeMillis();
         LobbyMember lobbyMember = new LobbyMember(user);
         lobbyMembers.add(lobbyMember);
         Game game = getCurrentGame();
@@ -259,6 +268,7 @@ public class Lobby {
      * @param user User the user who left the Lobby
      */
     public void userLeave(LobbyMember user, boolean silent) {
+        lastLobbyAction = System.currentTimeMillis();
         if (!silent) {
             SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.PERSON.getText() + " *" + StringUtil.markdownSafe(user.getUsername()) + " left!*").parseMode(ParseMode.MARKDOWN).build();
             sendMessage(sendableTextMessage);
