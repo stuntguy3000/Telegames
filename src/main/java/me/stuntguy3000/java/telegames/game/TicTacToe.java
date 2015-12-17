@@ -63,7 +63,7 @@ public class TicTacToe extends Game {
             buttonList.add(new ArrayList<>(row));
         }
 
-        return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, false, false, false));
+        return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, false, true, false));
     }
 
     @Override
@@ -473,7 +473,15 @@ public class TicTacToe extends Game {
                     tempSquareID++;
                 }
 
-                if (!gamepad.values().contains(TelegramEmoji.RED_CIRCLE) && !gamepad.values().contains(TelegramEmoji.RED_CROSS)) {
+                boolean noDraw = true;
+
+                for (TelegramEmoji squareEmoji : gamepad.values()) {
+                    if (!(squareEmoji.equals(TelegramEmoji.RED_CIRCLE) || squareEmoji.equals(TelegramEmoji.RED_CROSS))) {
+                        noDraw = false;
+                    }
+                }
+
+                if (!noDraw) {
                     getGameLobby().stopGame();
                     return;
                 }
