@@ -473,15 +473,23 @@ public class TicTacToe extends Game {
                     tempSquareID++;
                 }
 
-                boolean noDraw = true;
+                boolean hasNumberSquares = false;
 
                 for (TelegramEmoji squareEmoji : gamepad.values()) {
-                    if (!(squareEmoji.equals(TelegramEmoji.RED_CIRCLE) || squareEmoji.equals(TelegramEmoji.RED_CROSS))) {
-                        noDraw = false;
+                    if (squareEmoji == TelegramEmoji.NUMBER_BLOCK_ONE ||
+                            squareEmoji == TelegramEmoji.NUMBER_BLOCK_TWO ||
+                            squareEmoji == TelegramEmoji.NUMBER_BLOCK_THREE ||
+                            squareEmoji == TelegramEmoji.NUMBER_BLOCK_FOUR ||
+                            squareEmoji == TelegramEmoji.NUMBER_BLOCK_FIVE ||
+                            squareEmoji == TelegramEmoji.NUMBER_BLOCK_SIX ||
+                            squareEmoji == TelegramEmoji.NUMBER_BLOCK_SEVEN ||
+                            squareEmoji == TelegramEmoji.NUMBER_BLOCK_EIGHT ||
+                            squareEmoji == TelegramEmoji.NUMBER_BLOCK_NINE) {
+                        hasNumberSquares = true;
                     }
                 }
 
-                if (!noDraw) {
+                if (!hasNumberSquares) {
                     getGameLobby().stopGame();
                     return;
                 }
