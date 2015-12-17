@@ -1,5 +1,6 @@
 package me.stuntguy3000.java.telegames.game;
 
+import me.stuntguy3000.java.telegames.handler.LogHandler;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Game;
 import me.stuntguy3000.java.telegames.object.LobbyMember;
@@ -363,18 +364,17 @@ public class TicTacToe extends Game {
     }
 
     private boolean hasMatches(TelegramEmoji emoji, int tempSquareID) {
-
         for (GeneralDirection generalDirection : GeneralDirection.values()) {
-            System.out.println("Checking: " + generalDirection.name());
+            LogHandler.debug("Checking: " + generalDirection.name());
             int newSquareID = getSquareID(tempSquareID, generalDirection, 1);
             TelegramEmoji newSquare = getSquare(newSquareID);
             if (newSquare != null && newSquare == emoji) {
-                System.out.println(newSquare + " (1)");
+                LogHandler.debug(newSquare + " (1)");
                 TelegramEmoji secondSquare = getSquare(getSquareID(tempSquareID, generalDirection, 2));
-                System.out.println(secondSquare + " (2)");
+                LogHandler.debug(secondSquare + " (2)");
                 if (secondSquare != null && secondSquare == newSquare) {
                     // WINNER WINNER CHICKEN DINNER
-                    System.out.println(secondSquare + " (WINNER)");
+                    LogHandler.debug(secondSquare + " (WINNER)");
                     return true;
                 }
             }
