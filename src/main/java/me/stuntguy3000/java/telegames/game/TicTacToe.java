@@ -72,16 +72,17 @@ public class TicTacToe extends Game {
 
         if (winner != null) {
             StringBuilder board = new StringBuilder();
+            board.append("Results:\n");
             for (int i = 1; i < 4; i++) {
-                board.append(gamepad.get(i));
+                board.append(gamepad.get(i).getText());
             }
             board.append("\n");
             for (int i = 4; i < 8; i++) {
-                board.append(gamepad.get(i));
+                board.append(gamepad.get(i).getText());
             }
             board.append("\n");
             for (int i = 7; i < 10; i++) {
-                board.append(gamepad.get(i));
+                board.append(gamepad.get(i).getText());
             }
             messageBuilder.message("\n\n*The winner is " + StringUtil.markdownSafe(winner.getUsername()) + ".*").parseMode(ParseMode.MARKDOWN);
             getGameLobby().sendMessage(board.toString());
