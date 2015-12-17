@@ -83,7 +83,8 @@ public class TicTacToe extends Game {
             for (int i = 7; i < 10; i++) {
                 board.append(gamepad.get(i));
             }
-            messageBuilder.message("\n\n*The winner is " + StringUtil.markdownSafe(winner.getUsername()) + ".*\n\n" + board.toString()).parseMode(ParseMode.MARKDOWN);
+            messageBuilder.message("\n\n*The winner is " + StringUtil.markdownSafe(winner.getUsername()) + ".*").parseMode(ParseMode.MARKDOWN);
+            getGameLobby().sendMessage(board.toString());
         } else {
             messageBuilder.message("\n\n*The game was a draw!*").parseMode(ParseMode.MARKDOWN);
         }

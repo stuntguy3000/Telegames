@@ -342,7 +342,7 @@ public class Uno extends Game {
         secondsSincePlay = 0;
 
         for (LobbyMember lobbyMember : getActivePlayers()) {
-            if (playerDecks.get(lobbyMember.getUsername()).size() == 0) {
+            if (playerDecks.get(lobbyMember.getUserID()).size() == 0) {
                 // WINNER WINNER CHICKEN DINNER
                 winner(lobbyMember.getUsername());
                 return;
@@ -381,7 +381,7 @@ public class Uno extends Game {
                         nextCardColour = card.getCardColour();
                         nextPlayerIndex();
 
-                        if (!removeCard(playerDecks.get(sender.getUsername()), activeUnoCard)) {
+                        if (!removeCard(playerDecks.get(sender.getId()), activeUnoCard)) {
                             getGameLobby().sendMessage("Card was not removed from deck, contact @stuntguy3000");
                             getGameLobby().stopGame();
                         } else {
@@ -415,7 +415,7 @@ public class Uno extends Game {
                             nextPlayerIndex();
                         }
 
-                        if (!removeCard(playerDecks.get(sender.getUsername()), activeUnoCard)) {
+                        if (!removeCard(playerDecks.get(sender.getId()), activeUnoCard)) {
                             getGameLobby().sendMessage("Card was not removed from deck, contact @stuntguy3000");
                             getGameLobby().stopGame();
                         } else {
@@ -444,7 +444,7 @@ public class Uno extends Game {
                         giveCardsFromDeck(getGameLobby().getLobbyMember(punishedPlayer), 4);
                     }
 
-                    if (!removeCard(playerDecks.get(sender.getUsername()), activeUnoCard)) {
+                    if (!removeCard(playerDecks.get(sender.getId()), activeUnoCard)) {
                         getGameLobby().sendMessage("Card was not removed from deck, contact @stuntguy3000");
                         getGameLobby().stopGame();
                     } else {
@@ -552,7 +552,7 @@ public class Uno extends Game {
     private void updateScore(LobbyMember lobbyMember) {
         int score = 0;
 
-        for (UnoCard unoCard : playerDecks.get(lobbyMember.getUsername())) {
+        for (UnoCard unoCard : playerDecks.get(lobbyMember.getUserID())) {
             score += unoCard.getCardValue().getScoreValue();
         }
 
