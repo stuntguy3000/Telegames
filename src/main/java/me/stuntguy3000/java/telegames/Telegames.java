@@ -84,7 +84,7 @@ public class Telegames {
         }
 
         LobbyTimer lobbyTimer = new LobbyTimer();
-        new Timer().schedule(lobbyTimer, 0, 60 * 1000);
+        new Timer().schedule(lobbyTimer, 0, 30 * 1000);
 
         while (true) {
             String in = System.console().readLine();
