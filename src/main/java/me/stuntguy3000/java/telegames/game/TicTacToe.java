@@ -412,7 +412,7 @@ public class TicTacToe extends Game {
             }
         }
 
-        getGameLobby().sendMessage(createKeyboard().message("*It's your turn, " + StringUtil.markdownSafe(currentPlayer.getUsername()) + "*").parseMode(ParseMode.MARKDOWN).build());
+        TelegramBot.getChat(currentPlayer.getUserID()).sendMessage(createKeyboard().message("*It's your turn, " + StringUtil.markdownSafe(currentPlayer.getUsername()) + "*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
     }
 
     private void playTurn(LobbyMember currentPlayer, TelegramEmoji emoji) {
