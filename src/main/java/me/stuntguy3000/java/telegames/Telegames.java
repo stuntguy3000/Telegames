@@ -34,6 +34,8 @@ public class Telegames {
 
     private void connectTelegram() {
         LogHandler.log("Connecting to Telegram...");
+        DEV_MODE = getConfigHandler().getBotSettings().getDevMode();
+        LogHandler.log("Developer Mode is set to " + DEV_MODE);
         new TelegramHook(configHandler.getBotSettings().getTelegramKey(), this);
     }
 
@@ -66,9 +68,6 @@ public class Telegames {
         LogHandler.log("======================================");
         LogHandler.log(" Telegames build " + BUILD + " by @stuntguy3000");
         LogHandler.log("======================================");
-
-        DEV_MODE = getConfigHandler().getBotSettings().getDevMode();
-        LogHandler.log("Developer Mode is set to " + DEV_MODE);
 
         if (this.getConfigHandler().getBotSettings().getAutoUpdater()) {
             LogHandler.log("Starting auto updater...");
