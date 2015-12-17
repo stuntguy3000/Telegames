@@ -58,7 +58,6 @@ public class TelegramHook implements Listener {
         allGames.stream().filter(Game.class::isAssignableFrom).forEach(clazz -> {
             try {
                 Game game = (Game) clazz.newInstance();
-                LogHandler.debug(clazz.getSimpleName() + " | " + game.isDevModeOnly() + " | " + Telegames.DEV_MODE);
                 if (game.isDevModeOnly() && !Telegames.DEV_MODE) {
                     return;
                 }
