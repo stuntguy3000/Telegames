@@ -68,8 +68,6 @@ public class Telegames {
         LogHandler.log(" Telegames build " + BUILD + " by @stuntguy3000");
         LogHandler.log("======================================");
 
-        connectTelegram();
-
         DEV_MODE = getConfigHandler().getBotSettings().getDevMode();
         LogHandler.log("Developer Mode is set to " + DEV_MODE);
 
@@ -81,6 +79,8 @@ public class Telegames {
         } else {
             LogHandler.log("** Auto Updater is set to false **");
         }
+
+        connectTelegram();
 
         while (true) {
             String in = System.console().readLine();
