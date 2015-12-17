@@ -71,7 +71,19 @@ public class TicTacToe extends Game {
         SendableTextMessage.SendableTextMessageBuilder messageBuilder = SendableTextMessage.builder().message("The game of Uno has ended!").replyMarkup(ReplyKeyboardHide.builder().build());
 
         if (winner != null) {
-            messageBuilder.message("\n\n*The winner is " + StringUtil.markdownSafe(winner.getUsername()) + ".*").parseMode(ParseMode.MARKDOWN);
+            StringBuilder board = new StringBuilder();
+            for (int i = 1; i < 4; i++) {
+                board.append(gamepad.get(i));
+            }
+            board.append("\n");
+            for (int i = 4; i < 8; i++) {
+                board.append(gamepad.get(i));
+            }
+            board.append("\n");
+            for (int i = 7; i < 10; i++) {
+                board.append(gamepad.get(i));
+            }
+            messageBuilder.message("\n\n*The winner is " + StringUtil.markdownSafe(winner.getUsername()) + ".*\n\n" + board.toString()).parseMode(ParseMode.MARKDOWN);
         } else {
             messageBuilder.message("\n\n*The game was a draw!*").parseMode(ParseMode.MARKDOWN);
         }
