@@ -365,7 +365,6 @@ public class TicTacToe extends Game {
 
     private boolean hasMatches(TelegramEmoji emoji, int tempSquareID) {
         for (GeneralDirection generalDirection : GeneralDirection.values()) {
-            LogHandler.debug("Checking: " + generalDirection.name());
             int newSquareID = getSquareID(tempSquareID, generalDirection, 1);
             TelegramEmoji newSquare = getSquare(newSquareID);
             if (newSquare != null && newSquare == emoji) {
