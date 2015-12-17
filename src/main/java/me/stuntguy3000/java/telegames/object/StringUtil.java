@@ -10,7 +10,7 @@ public class StringUtil {
      * @param message String the original message
      * @return String the "cleaned" string
      */
-    public static String cleanString(String message) {
+    public static String markdownSafe(String message) {
         return StringEscapeUtils.escapeJava(message);
     }
 }

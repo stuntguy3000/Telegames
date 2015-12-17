@@ -103,7 +103,7 @@ public class Lobby {
      * @param lobbyMember the player to be kicked
      */
     public void kickPlayer(LobbyMember lobbyMember) {
-        sendMessage(SendableTextMessage.builder().message(TelegramEmoji.RED_CROSS.getText() + " *" + StringUtil.cleanString(lobbyMember.getUsername()) + " was removed from the lobby!*").parseMode(ParseMode.MARKDOWN).build());
+        sendMessage(SendableTextMessage.builder().message(TelegramEmoji.RED_CROSS.getText() + " *" + StringUtil.markdownSafe(lobbyMember.getUsername()) + " was removed from the lobby!*").parseMode(ParseMode.MARKDOWN).build());
         userLeave(lobbyMember, true);
         kickList.add(lobbyMember.getUserID());
     }
@@ -186,6 +186,7 @@ public class Lobby {
             sendMessage(SendableTextMessage.builder().message(TelegramEmoji.JOYSTICK.getText() + " *Starting game: " + newGame.getGameName() + "*").parseMode(ParseMode.MARKDOWN).build());
             if (newGame.tryStartGame()) {
                 currentGame = newGame;
+                Telegames.getInstance().getLobbyHandler().startTimer(this);
                 Telegames.getInstance().getConfigHandler().getUserStatistics().addGame(newGame);
             } else {
                 sendMessage(SendableTextMessage.builder().message(TelegramEmoji.RED_CROSS.getText() + " *Unable to start game!*").parseMode(ParseMode.MARKDOWN).build());
@@ -200,6 +201,8 @@ public class Lobby {
     public void stopGame() {
         currentGame.endGame();
         currentGame = null;
+
+        Telegames.getInstance().getLobbyHandler().stopTimer(this);
 
         sendMessage(lobbyHeader);
     }
@@ -216,7 +219,7 @@ public class Lobby {
 
         for (LobbyMember lobbyMember : lobbyMembers) {
             if (!lobbyMember.getUsername().equalsIgnoreCase(sender.getUsername())) {
-                lobbyMember.getChat().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.PERSON_SPEAKING.getText() + " *" + StringUtil.cleanString(sender.getUsername()) + ":* " + message).parseMode(ParseMode.MARKDOWN).build(), getTelegramBot());
+                lobbyMember.getChat().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.PERSON_SPEAKING.getText() + " *" + StringUtil.markdownSafe(sender.getUsername()) + ":* " + message).parseMode(ParseMode.MARKDOWN).build(), getTelegramBot());
             }
         }
     }
@@ -238,7 +241,7 @@ public class Lobby {
             return;
         }
 
-        SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.PERSON.getText() + " *" + StringUtil.cleanString(user.getUsername()) + " joined!*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build();
+        SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.PERSON.getText() + " *" + StringUtil.markdownSafe(user.getUsername()) + " joined!*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build();
         sendMessage(sendableTextMessage);
 
         //Telegames.getInstance().getConfigHandler().getLobbyList().addPlayer(getLobbyID(), lobbyMember.getUserID());
@@ -257,7 +260,7 @@ public class Lobby {
      */
     public void userLeave(LobbyMember user, boolean silent) {
         if (!silent) {
-            SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.PERSON.getText() + " *" + StringUtil.cleanString(user.getUsername()) + " left!*").parseMode(ParseMode.MARKDOWN).build();
+            SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.PERSON.getText() + " *" + StringUtil.markdownSafe(user.getUsername()) + " left!*").parseMode(ParseMode.MARKDOWN).build();
             sendMessage(sendableTextMessage);
         }
 

@@ -45,6 +45,7 @@ public class Blackjack extends Game {
     private HashMap<Integer, List<BlackjackCard>> playerCards = new HashMap<>();
     private LobbyMember roundDealer;
     private int roundDealerIndex = 0;
+    private int secondsSincePlay = 0;
     private List<LobbyMember> toPlay = new ArrayList<>();
 
     public Blackjack() {
@@ -86,53 +87,28 @@ public class Blackjack extends Game {
         }
     }
 
-    private void chooseAceEleven(User sender) {
-        if (aceCount.containsKey(sender.getId())) {
-            List<BlackjackCard> cards = playerCards.get(sender.getId());
+    private void chooseAce(LobbyMember lobbyMember, int value) {
+        if (aceCount.containsKey(lobbyMember.getUserID())) {
+            List<BlackjackCard> cards = playerCards.get(lobbyMember.getUserID());
 
             int index = 0;
             for (BlackjackCard blackjackCard : new ArrayList<>(cards)) {
                 if (!blackjackCard.isModified() && blackjackCard.getCard().getRank() == Rank.ACE) {
                     cards.remove(blackjackCard);
-                    cards.add(index, new BlackjackCard(blackjackCard, 11));
+                    cards.add(index, new BlackjackCard(blackjackCard, value));
                 }
 
                 index++;
             }
 
-            int userAces = aceCount.get(sender.getId()) - 1;
+            int userAces = aceCount.get(lobbyMember.getUserID()) - 1;
             if (userAces > 0) {
-                aceCount.put(sender.getId(), userAces);
+                aceCount.put(lobbyMember.getUserID(), userAces);
             } else {
-                aceCount.remove(sender.getId());
+                aceCount.remove(lobbyMember.getUserID());
             }
 
-            fold(sender);
-        }
-    }
-
-    private void chooseAceOne(User sender) {
-        if (aceCount.containsKey(sender.getId())) {
-            List<BlackjackCard> cards = playerCards.get(sender.getId());
-
-            int index = 0;
-            for (BlackjackCard blackjackCard : new ArrayList<>(cards)) {
-                if (!blackjackCard.isModified() && blackjackCard.getCard().getRank() == Rank.ACE) {
-                    cards.remove(blackjackCard);
-                    cards.add(index, new BlackjackCard(blackjackCard, 1));
-                }
-
-                index++;
-            }
-
-            int userAces = aceCount.get(sender.getId()) - 1;
-            if (userAces > 0) {
-                aceCount.put(sender.getId(), userAces);
-            } else {
-                aceCount.remove(sender.getId());
-            }
-
-            fold(sender);
+            fold(lobbyMember);
         }
     }
 
@@ -158,23 +134,35 @@ public class Blackjack extends Game {
     }
 
     @Override
+    public void onSecond() {
+        secondsSincePlay++;
+        if (secondsSincePlay == 20) {
+            getGameLobby().sendMessage(SendableTextMessage.builder().message("Please make a play @" + currentPlayer).build());
+        } else if (secondsSincePlay == 30) {
+            getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.markdownSafe(currentPlayer.getUsername()) + " ran out of time!*").parseMode(ParseMode.MARKDOWN).build());
+            fold(currentPlayer);
+        }
+    }
+
+    @Override
     public void onTextMessageReceived(TextMessageReceivedEvent event) {
         if (event.getChat().getType() == ChatType.PRIVATE) {
             User sender = event.getMessage().getSender();
             String message = event.getContent().getContent();
+            LobbyMember lobbyMember = getGameLobby().getLobbyMember(sender.getUsername());
 
             switch (message) {
                 case "Hit":
-                    hit(sender, getKeyboard(getGameLobby().getLobbyMember(sender.getUsername())));
+                    hit(lobbyMember, getKeyboard(getGameLobby().getLobbyMember(sender.getUsername())));
                     break;
                 case "Fold":
-                    fold(sender);
+                    fold(lobbyMember);
                     break;
                 case "Ace is 1":
-                    chooseAceOne(sender);
+                    chooseAce(lobbyMember, 1);
                     break;
                 case "Ace is 11":
-                    chooseAceEleven(sender);
+                    chooseAce(lobbyMember, 11);
                     break;
                 default:
                     getGameLobby().userChat(sender, message);
@@ -239,18 +227,16 @@ public class Blackjack extends Game {
         }
     }
 
-    private void fold(User user) {
-        LobbyMember lobbyMember = getGameLobby().getLobbyMember(user.getUsername());
-
+    private void fold(LobbyMember lobbyMember) {
         if (currentPlayer.getUserID() == lobbyMember.getUserID()) {
             if (checkAces(currentPlayer)) {
-                getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.cleanString(lobbyMember.getUsername()) + " chose to fold.*").parseMode(ParseMode.MARKDOWN).build());
+                getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.markdownSafe(lobbyMember.getUsername()) + " chose to fold.*").parseMode(ParseMode.MARKDOWN).build());
 
                 calculateValue(currentPlayer);
 
                 TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(SendableTextMessage.builder().message("Card Score: " + playerCardValues.get(currentPlayer.getUserID()) + "\n").parseMode(ParseMode.MARKDOWN).replyMarkup(ReplyKeyboardHide.builder().build()).build(), TelegramHook.getBot());
 
-                if (roundDealer.getUserID() == user.getId()) {
+                if (roundDealer.getUserID() == lobbyMember.getUserID()) {
                     dealerFold = true;
                 }
 
@@ -303,16 +289,14 @@ public class Blackjack extends Game {
         calculateValue(lobbyMember);
     }
 
-    private void hit(User user, ReplyMarkup replyMarkup) {
-        LobbyMember lobbyMember = getGameLobby().getLobbyMember(user.getUsername());
-
+    private void hit(LobbyMember lobbyMember, ReplyMarkup replyMarkup) {
         if (currentPlayer.getUserID() == lobbyMember.getUserID()) {
             if (playerCardValues.get(currentPlayer.getUserID()) >= 21) {
                 TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(SendableTextMessage.builder().message("*You have busted!*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
 
-                fold(user);
+                fold(lobbyMember);
             } else {
-                getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.cleanString(lobbyMember.getUsername()) + " chose to hit.*").parseMode(ParseMode.MARKDOWN).build());
+                getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.markdownSafe(lobbyMember.getUsername()) + " chose to hit.*").parseMode(ParseMode.MARKDOWN).build());
 
                 giveCard(lobbyMember, 1);
                 sendHand(lobbyMember, replyMarkup);

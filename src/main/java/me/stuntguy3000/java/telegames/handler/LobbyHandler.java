@@ -2,6 +2,7 @@ package me.stuntguy3000.java.telegames.handler;
 
 import lombok.Getter;
 import me.stuntguy3000.java.telegames.Telegames;
+import me.stuntguy3000.java.telegames.object.GameSecondTimer;
 import me.stuntguy3000.java.telegames.object.Lobby;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
@@ -10,11 +11,14 @@ import pro.zackpollard.telegrambot.api.user.User;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimerTask;
 
 // @author Luke Anderson | stuntguy3000
 public class LobbyHandler {
     @Getter
     private HashMap<String, Lobby> activeLobbies = new HashMap<>();
+    @Getter
+    private HashMap<String, TimerTask> lobbyTimers = new HashMap<>();
 
     /**
      * Creates a Lobby
@@ -80,6 +84,28 @@ public class LobbyHandler {
             return getActiveLobbies().get(lobbyID.toUpperCase());
         } else {
             return null;
+        }
+    }
+
+    /**
+     * Starts a GameSecondTimer instance
+     *
+     * @param lobby Lobby the associated Lobby
+     */
+    public void startTimer(Lobby lobby) {
+        if (!lobbyTimers.containsKey(lobby.getLobbyID().toLowerCase())) {
+            lobbyTimers.put(lobby.getLobbyID().toLowerCase(), new GameSecondTimer(lobby.getCurrentGame()));
+        }
+    }
+
+    /**
+     * Stops a GameSecondTimer instance
+     *
+     * @param lobby Lobby the associated Lobby
+     */
+    public void stopTimer(Lobby lobby) {
+        if (lobbyTimers.containsKey(lobby.getLobbyID().toLowerCase())) {
+            lobbyTimers.remove(lobby.getLobbyID().toLowerCase()).cancel();
         }
     }
 }

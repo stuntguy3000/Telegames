@@ -4,6 +4,7 @@ import me.stuntguy3000.java.telegames.handler.LogHandler;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Game;
 import me.stuntguy3000.java.telegames.object.LobbyMember;
+import me.stuntguy3000.java.telegames.object.StringUtil;
 import me.stuntguy3000.java.telegames.util.GameState;
 import me.stuntguy3000.java.telegames.util.GeneralDirection;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
@@ -70,7 +71,9 @@ public class TicTacToe extends Game {
         SendableTextMessage.SendableTextMessageBuilder messageBuilder = SendableTextMessage.builder().message("The game of Uno has ended!").replyMarkup(ReplyKeyboardHide.builder().build());
 
         if (winner != null) {
-            messageBuilder.message("\n\n*The winner is " + winner.getUsername() + "*").parseMode(ParseMode.MARKDOWN);
+            messageBuilder.message("\n\n*The winner is " + StringUtil.markdownSafe(winner.getUsername()) + ".*").parseMode(ParseMode.MARKDOWN);
+        } else {
+            messageBuilder.message("\n\n*The game was a draw!*").parseMode(ParseMode.MARKDOWN);
         }
 
         getGameLobby().sendMessage(messageBuilder.build());
@@ -395,7 +398,7 @@ public class TicTacToe extends Game {
             }
         }
 
-        getGameLobby().sendMessage(createKeyboard().message("It is your turn, " + currentPlayer.getUsername()).parseMode(ParseMode.MARKDOWN).build());
+        getGameLobby().sendMessage(createKeyboard().message("*It's your turn, " + StringUtil.markdownSafe(currentPlayer.getUsername()) + "*").parseMode(ParseMode.MARKDOWN).build());
     }
 
     private void playTurn(LobbyMember currentPlayer, TelegramEmoji emoji) {
@@ -445,7 +448,7 @@ public class TicTacToe extends Game {
                 gamepad.put(squareID, character);
 
                 int tempSquareID = 1;
-                System.out.println("++++++++++");
+                LogHandler.debug("++++++++++");
                 for (TelegramEmoji telegramEmoji : gamepad.values()) {
                     if (hasMatches(telegramEmoji, tempSquareID)) {
                         winner = currentPlayer;
@@ -454,6 +457,11 @@ public class TicTacToe extends Game {
                     }
 
                     tempSquareID++;
+                }
+
+                if (!gamepad.values().contains(TelegramEmoji.RED_CIRCLE) && !gamepad.values().contains(TelegramEmoji.RED_CROSS)) {
+                    getGameLobby().stopGame();
+                    return;
                 }
 
                 if (winner == null) {

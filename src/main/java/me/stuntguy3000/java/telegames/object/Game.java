@@ -18,7 +18,13 @@ public abstract class Game {
 
     public abstract void endGame();
 
-    public abstract String getGameHelp();
+    public String getGameHelp() {
+        return "No help available";
+    }
+
+    public void onSecond() {
+        // Do nothing
+    }
 
     public abstract void onTextMessageReceived(TextMessageReceivedEvent event);
 

@@ -102,7 +102,6 @@ public class CardsAgainstHumanity extends Game {
     private HashMap<Integer, LinkedList<CAHCard>> playedCards = new HashMap<>();
     private int playerOrderIndex = 0;
     private int round = 1;
-    private int secondsSincePlay = 0;
     private HashMap<Integer, List<CAHCard>> userCards = new HashMap<>();
     private List<CAHCard> whiteCards = new ArrayList<>();
 
@@ -236,7 +235,7 @@ public class CardsAgainstHumanity extends Game {
 
     @Override
     public String getGameHelp() {
-        return "The most fun and offensive card game ever known.\n\nMessage @Telegames +help while ingame for a list of commands.";
+        return "The most fun and offensive card game ever known.\n\nMessage @TelegamesBot +help while in-game for a list of commands.";
     }
 
     @Override
@@ -287,7 +286,7 @@ public class CardsAgainstHumanity extends Game {
     }
 
     @Override
-    public void playerLeave(String username, int id) {
+    public void playerLeave(String username, int userID) {
         removePlayer(username);
 
         if (cardCzar.getUsername().equals(username) && checkPlayers()) {
@@ -489,7 +488,7 @@ public class CardsAgainstHumanity extends Game {
                     }
 
                     if (cards.size() == cardsNeeded) {
-                        getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.cleanString(sender.getUsername()) + " has played.*").parseMode(ParseMode.MARKDOWN).build());
+                        getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.markdownSafe(sender.getUsername()) + " has played.*").parseMode(ParseMode.MARKDOWN).build());
                         checkPlayers();
                     } else {
                         TelegramBot.getChat(sender.getId()).sendMessage(createUserKeyboard(getGameLobby().getLobbyMember(sender.getUsername())).message("*Please play " + (cardsNeeded - cards.size()) + " more card(s).*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
@@ -516,7 +515,7 @@ public class CardsAgainstHumanity extends Game {
                     }
 
                     if (winner != null) {
-                        getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.cleanString(winner.getUsername()) + " won the round!*").parseMode(ParseMode.MARKDOWN).build());
+                        getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.markdownSafe(winner.getUsername()) + " won the round!*").parseMode(ParseMode.MARKDOWN).build());
                         winner.setGameScore(winner.getGameScore() + 1);
 
                         LobbyMember gameWinner = null;
