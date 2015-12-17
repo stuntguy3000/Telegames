@@ -70,17 +70,17 @@ public class Telegames {
 
         connectTelegram();
 
+        DEV_MODE = getConfigHandler().getBotSettings().getDevMode();
+        LogHandler.log("Developer Mode is set to " + DEV_MODE);
+
         if (this.getConfigHandler().getBotSettings().getAutoUpdater()) {
             LogHandler.log("Starting auto updater...");
-            Thread updater = new Thread(new UpdateHandler(this, "Telegames"));
+            Thread updater = new Thread(new UpdateHandler(this, "Telegames-" + (DEV_MODE ? "Development" : "Master")));
             updater.start();
             updaterThread = updater;
         } else {
             LogHandler.log("** Auto Updater is set to false **");
         }
-
-        DEV_MODE = getConfigHandler().getBotSettings().getDevMode();
-        LogHandler.log("Developer Mode is set to " + DEV_MODE);
 
         while (true) {
             String in = System.console().readLine();
