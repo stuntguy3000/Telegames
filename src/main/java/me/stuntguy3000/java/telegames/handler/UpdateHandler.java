@@ -28,7 +28,7 @@ public class UpdateHandler implements Runnable {
     @Override
     public void run() {
         File build = new File("build");
-        File jar = new File(fileName);
+        File jar = new File(fileName + ".new");
         int currentBuild = Telegames.BUILD;
         int newBuild = 0;
 
@@ -53,7 +53,7 @@ public class UpdateHandler implements Runnable {
                 instance.sendToAdmins("Downloading build #" + newBuild);
                 try {
                     FileUtils.writeStringToFile(build, String.valueOf(newBuild));
-                    FileUtils.copyURLToFile(new URL("http://ci.zackpollard.pro/job/" + projectName + "/lastSuccessfulBuild/artifact/target/" + fileName), jar);
+                    FileUtils.copyURLToFile(new URL("http://ci.zackpollard.pro/job/" + projectName + "/lastSuccessfulBuild/artifact/target/" + fileName + ".jar"), jar);
                     LogHandler.log("Build #" + newBuild + " downloaded. Restarting...");
                     instance.getConfigHandler().saveConfig("stats.json");
                     instance.sendToAdmins("Build #" + newBuild + " downloaded. Restarting...");
