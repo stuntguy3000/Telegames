@@ -5,6 +5,7 @@ import me.stuntguy3000.java.telegames.handler.*;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Lobby;
 import me.stuntguy3000.java.telegames.object.LobbyTimer;
+import me.stuntguy3000.java.telegames.object.StringUtil;
 import me.stuntguy3000.java.telegames.util.RandomString;
 import org.apache.commons.io.FileUtils;
 import pro.zackpollard.telegrambot.api.TelegramBot;
@@ -92,7 +93,7 @@ public class Telegames {
                     LogHandler.log("Lobby List:");
 
                     for (Lobby lobby : lobbyHandler.getActiveLobbies().values()) {
-                        LogHandler.log(String.format("ID: %s Owner: %s %s", lobby.getLobbyID(), lobby.getLobbyOwner().getUsername(), lobby.getCurrentGame() != null ? "Playing " + lobby.getCurrentGame() : ""));
+                        LogHandler.log(String.format("ID: %s Owner: %s Last Active: %s %s", lobby.getLobbyID(), lobby.getLobbyOwner().getUsername(), StringUtil.millisecondsToHumanReadable(lobby.getLastLobbyAction()), lobby.getCurrentGame() != null ? "Playing " + lobby.getCurrentGame() : ""));
                     }
                     continue;
                 }
