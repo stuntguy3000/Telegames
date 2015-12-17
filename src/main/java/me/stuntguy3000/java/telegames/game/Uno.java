@@ -5,6 +5,7 @@ import lombok.Setter;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Game;
 import me.stuntguy3000.java.telegames.object.LobbyMember;
+import me.stuntguy3000.java.telegames.object.StringUtil;
 import me.stuntguy3000.java.telegames.util.GameState;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
@@ -138,7 +139,7 @@ public class Uno extends Game {
     private void drawCard(String username) {
         if (currentPlayer.equalsIgnoreCase(username)) {
             secondsSincePlay = 0;
-            getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + username + " drew from the deck!*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
+            getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.cleanString(username) + " drew from the deck!*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
             giveCardsFromDeck(getGameLobby().getLobbyMember(username), 1);
             nextPlayerIndex();
             nextRound();
@@ -377,7 +378,7 @@ public class Uno extends Game {
         if (secondsSincePlay == 20) {
             getGameLobby().sendMessage(SendableTextMessage.builder().message("Please play a card @" + currentPlayer).build());
         } else if (secondsSincePlay == 30) {
-            getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + currentPlayer + " ran out of time!*").parseMode(ParseMode.MARKDOWN).build());
+            getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.cleanString(currentPlayer) + " ran out of time!*").parseMode(ParseMode.MARKDOWN).build());
             drawCard(currentPlayer);
         }
     }
@@ -407,7 +408,7 @@ public class Uno extends Game {
                             nextRound();
                         }
                     } else if (nextCardColour.equals(card.getCardColour()) || activeUnoCard.getCardValue().equals(card.getCardValue())) {
-                        getGameLobby().sendMessage(sender.getUsername() + " played: " + card.getText());
+                        getGameLobby().sendMessage(StringUtil.cleanString(sender.getUsername()) + " played: " + card.getText());
                         activeUnoCard = card;
                         nextCardColour = card.getCardColour();
 
@@ -415,7 +416,7 @@ public class Uno extends Game {
                             String punishedPlayer = nextPlayerIndex();
                             nextPlayerIndex();
 
-                            getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + punishedPlayer + " has been given two cards!*").parseMode(ParseMode.MARKDOWN).build());
+                            getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.cleanString(punishedPlayer) + " has been given two cards!*").parseMode(ParseMode.MARKDOWN).build());
                             giveCardsFromDeck(getGameLobby().getLobbyMember(punishedPlayer), 2);
                         } else if (activeUnoCard.getCardValue() == CardValue.REVERSE) {
                             getGameLobby().sendMessage(SendableTextMessage.builder().message("*Player order has been reversed!*").parseMode(ParseMode.MARKDOWN).build());
@@ -425,7 +426,7 @@ public class Uno extends Game {
                         } else if (activeUnoCard.getCardValue() == CardValue.SKIP) {
                             String punishedPlayer = nextPlayerIndex();
 
-                            getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + punishedPlayer + " has been skipped!*").parseMode(ParseMode.MARKDOWN).build());
+                            getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.cleanString(punishedPlayer) + " has been skipped!*").parseMode(ParseMode.MARKDOWN).build());
 
                             nextPlayerIndex();
                         } else {
@@ -457,7 +458,7 @@ public class Uno extends Game {
                         nextPlayerIndex();
                         String punishedPlayer = playerOrder.get(playerOrderIndex);
 
-                        getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + punishedPlayer + " has been given four cards!*").parseMode(ParseMode.MARKDOWN).build());
+                        getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.cleanString(punishedPlayer) + " has been given four cards!*").parseMode(ParseMode.MARKDOWN).build());
                         giveCardsFromDeck(getGameLobby().getLobbyMember(punishedPlayer), 4);
                     }
 
@@ -581,7 +582,7 @@ public class Uno extends Game {
     private void winner(String username) {
         getActivePlayers().forEach(this::updateScore);
 
-        SendableTextMessage.SendableTextMessageBuilder message = SendableTextMessage.builder().message("*GAME OVER!*").message("*" + username + "* is the winner!").parseMode(ParseMode.MARKDOWN);
+        SendableTextMessage.SendableTextMessageBuilder message = SendableTextMessage.builder().message("*GAME OVER!*").message("*" + StringUtil.cleanString(username) + "* is the winner!").parseMode(ParseMode.MARKDOWN);
 
         getGameLobby().sendMessage(message.replyMarkup(new ReplyKeyboardHide()).build());
 
