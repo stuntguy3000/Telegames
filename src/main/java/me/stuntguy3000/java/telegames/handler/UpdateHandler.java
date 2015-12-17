@@ -15,12 +15,14 @@ import java.net.URL;
  */
 public class UpdateHandler implements Runnable {
 
-    private Telegames instance;
-    private String projectName;
+    private final String fileName;
+    private final Telegames instance;
+    private final String projectName;
 
-    public UpdateHandler(Telegames instance, String projectName) {
+    public UpdateHandler(Telegames instance, String projectName, String fileName) {
         this.instance = instance;
         this.projectName = projectName;
+        this.fileName = fileName;
     }
 
     @Override
@@ -51,7 +53,7 @@ public class UpdateHandler implements Runnable {
                 instance.sendToAdmins("Downloading build #" + newBuild);
                 try {
                     FileUtils.writeStringToFile(build, String.valueOf(newBuild));
-                    FileUtils.copyURLToFile(new URL("http://ci.zackpollard.pro/job/" + projectName + "/lastSuccessfulBuild/artifact/target/" + projectName + ".jar"), jar);
+                    FileUtils.copyURLToFile(new URL("http://ci.zackpollard.pro/job/" + projectName + "/lastSuccessfulBuild/artifact/target/" + fileName), jar);
                     LogHandler.log("Build #" + newBuild + " downloaded. Restarting...");
                     instance.getConfigHandler().saveConfig("stats.json");
                     instance.sendToAdmins("Build #" + newBuild + " downloaded. Restarting...");
