@@ -77,7 +77,7 @@ public class TicTacToe extends Game {
                 board.append(gamepad.get(i).getText());
             }
             board.append("\n");
-            for (int i = 4; i < 8; i++) {
+            for (int i = 4; i < 7; i++) {
                 board.append(gamepad.get(i).getText());
             }
             board.append("\n");
