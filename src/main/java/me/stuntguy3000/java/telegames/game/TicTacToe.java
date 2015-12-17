@@ -1,10 +1,8 @@
 package me.stuntguy3000.java.telegames.game;
 
-import me.stuntguy3000.java.telegames.handler.LogHandler;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Game;
 import me.stuntguy3000.java.telegames.object.LobbyMember;
-import me.stuntguy3000.java.telegames.object.StringUtil;
 import me.stuntguy3000.java.telegames.util.GameState;
 import me.stuntguy3000.java.telegames.util.GeneralDirection;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
@@ -27,7 +25,6 @@ public class TicTacToe extends Game {
     private List<LobbyMember> activePlayers = new ArrayList<>();
     private LobbyMember cross;
     private LobbyMember currentPlayer;
-    private int currentRound = 1;
     private GameState gameState;
     private LinkedHashMap<Integer, TelegramEmoji> gamepad = new LinkedHashMap<>();
     private int maxPlayers = 2;
@@ -37,7 +34,6 @@ public class TicTacToe extends Game {
 
     public TicTacToe() {
         setGameInfo("TicTacToe", "First player to line three in a row wins.");
-        setDevModeOnly(true);
 
         gameState = GameState.WAITING_FOR_PLAYERS;
     }
@@ -63,7 +59,7 @@ public class TicTacToe extends Game {
             buttonList.add(new ArrayList<>(row));
         }
 
-        return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, false, true, false));
+        return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, false, false, false));
     }
 
     @Override
@@ -71,23 +67,7 @@ public class TicTacToe extends Game {
         SendableTextMessage.SendableTextMessageBuilder messageBuilder = SendableTextMessage.builder().message("The game of Uno has ended!").replyMarkup(ReplyKeyboardHide.builder().build());
 
         if (winner != null) {
-            StringBuilder board = new StringBuilder();
-            board.append("Results:\n");
-            for (int i = 1; i < 4; i++) {
-                board.append(gamepad.get(i).getText());
-            }
-            board.append("\n");
-            for (int i = 4; i < 7; i++) {
-                board.append(gamepad.get(i).getText());
-            }
-            board.append("\n");
-            for (int i = 7; i < 10; i++) {
-                board.append(gamepad.get(i).getText());
-            }
-            messageBuilder.message("\n\n*The winner is " + StringUtil.markdownSafe(winner.getUsername()) + ".*").parseMode(ParseMode.MARKDOWN);
-            getGameLobby().sendMessage(board.toString());
-        } else {
-            messageBuilder.message("\n\n*The game was a draw!*").parseMode(ParseMode.MARKDOWN);
+            messageBuilder.message("\n\n*The winner is " + winner.getUsername() + "*").parseMode(ParseMode.MARKDOWN);
         }
 
         getGameLobby().sendMessage(messageBuilder.build());
@@ -381,16 +361,18 @@ public class TicTacToe extends Game {
     }
 
     private boolean hasMatches(TelegramEmoji emoji, int tempSquareID) {
+
         for (GeneralDirection generalDirection : GeneralDirection.values()) {
+            System.out.println("Checking: " + generalDirection.name());
             int newSquareID = getSquareID(tempSquareID, generalDirection, 1);
             TelegramEmoji newSquare = getSquare(newSquareID);
             if (newSquare != null && newSquare == emoji) {
-                LogHandler.debug(newSquare + " (1)");
+                System.out.println(newSquare + " (1)");
                 TelegramEmoji secondSquare = getSquare(getSquareID(tempSquareID, generalDirection, 2));
-                LogHandler.debug(secondSquare + " (2)");
+                System.out.println(secondSquare + " (2)");
                 if (secondSquare != null && secondSquare == newSquare) {
                     // WINNER WINNER CHICKEN DINNER
-                    LogHandler.debug(secondSquare + " (WINNER)");
+                    System.out.println(secondSquare + " (WINNER)");
                     return true;
                 }
             }
@@ -412,7 +394,7 @@ public class TicTacToe extends Game {
             }
         }
 
-        TelegramBot.getChat(currentPlayer.getUserID()).sendMessage(createKeyboard().message("*It's your turn, " + StringUtil.markdownSafe(currentPlayer.getUsername()) + "*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+        getGameLobby().sendMessage(createKeyboard().message("It is your turn, " + currentPlayer.getUsername()).parseMode(ParseMode.MARKDOWN).build());
     }
 
     private void playTurn(LobbyMember currentPlayer, TelegramEmoji emoji) {
@@ -462,36 +444,13 @@ public class TicTacToe extends Game {
                 gamepad.put(squareID, character);
 
                 int tempSquareID = 1;
-                LogHandler.debug("++++++++++");
+                System.out.println("++++++++++");
                 for (TelegramEmoji telegramEmoji : gamepad.values()) {
                     if (hasMatches(telegramEmoji, tempSquareID)) {
                         winner = currentPlayer;
                         getGameLobby().stopGame();
                         return;
                     }
-
-                    tempSquareID++;
-                }
-
-                boolean hasNumberSquares = false;
-
-                for (TelegramEmoji squareEmoji : gamepad.values()) {
-                    if (squareEmoji == TelegramEmoji.NUMBER_BLOCK_ONE ||
-                            squareEmoji == TelegramEmoji.NUMBER_BLOCK_TWO ||
-                            squareEmoji == TelegramEmoji.NUMBER_BLOCK_THREE ||
-                            squareEmoji == TelegramEmoji.NUMBER_BLOCK_FOUR ||
-                            squareEmoji == TelegramEmoji.NUMBER_BLOCK_FIVE ||
-                            squareEmoji == TelegramEmoji.NUMBER_BLOCK_SIX ||
-                            squareEmoji == TelegramEmoji.NUMBER_BLOCK_SEVEN ||
-                            squareEmoji == TelegramEmoji.NUMBER_BLOCK_EIGHT ||
-                            squareEmoji == TelegramEmoji.NUMBER_BLOCK_NINE) {
-                        hasNumberSquares = true;
-                    }
-                }
-
-                if (!hasNumberSquares) {
-                    getGameLobby().stopGame();
-                    return;
                 }
 
                 if (winner == null) {
