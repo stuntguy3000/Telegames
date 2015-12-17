@@ -70,7 +70,7 @@ public class Telegames {
         LogHandler.log("======================================");
 
         connectTelegram();
-        
+
         if (this.getConfigHandler().getBotSettings().getAutoUpdater()) {
             LogHandler.log("Starting auto updater...");
             Thread updater = new Thread(new UpdateHandler(this, "Telegames-" + (DEV_MODE ? "Development" : "Master"), "Telegames.jar"));

@@ -28,7 +28,7 @@ public class UpdateHandler implements Runnable {
     @Override
     public void run() {
         File build = new File("build");
-        File jar = new File(projectName + ".new");
+        File jar = new File(fileName);
         int currentBuild = Telegames.BUILD;
         int newBuild = 0;
 
