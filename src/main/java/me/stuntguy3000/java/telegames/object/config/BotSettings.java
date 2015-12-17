@@ -20,7 +20,7 @@ public class BotSettings {
         this.telegramKey = "";
         this.telegramAdmins = new ArrayList<>();
         this.autoUpdater = true;
-        this.devMode = true;
+        this.devMode = false;
     }
 }
     
