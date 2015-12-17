@@ -33,7 +33,7 @@ public class Telegames {
     private Thread updaterThread;
 
     private void connectTelegram() {
-        LogHandler.log("Connecting to Telegram... [Test]");
+        LogHandler.log("Connecting to Telegram...");
         DEV_MODE = getConfigHandler().getBotSettings().getDevMode();
         LogHandler.log("Developer Mode is set to " + DEV_MODE);
         new TelegramHook(configHandler.getBotSettings().getTelegramKey(), this);
