@@ -452,6 +452,8 @@ public class TicTacToe extends Game {
                         getGameLobby().stopGame();
                         return;
                     }
+
+                    tempSquareID++;
                 }
 
                 if (winner == null) {
