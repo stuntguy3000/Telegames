@@ -63,7 +63,6 @@ public class Telegames {
             e.printStackTrace();
         }
 
-
         LogHandler.log("======================================");
         LogHandler.log(" Telegames build " + BUILD + " by @stuntguy3000");
         LogHandler.log("======================================");
