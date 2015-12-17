@@ -5,6 +5,7 @@ import lombok.Setter;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Game;
 import me.stuntguy3000.java.telegames.object.LobbyMember;
+import me.stuntguy3000.java.telegames.object.StringUtil;
 import me.stuntguy3000.java.telegames.util.GameState;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
@@ -488,7 +489,7 @@ public class CardsAgainstHumanity extends Game {
                     }
 
                     if (cards.size() == cardsNeeded) {
-                        getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + sender.getUsername() + " has played.*").parseMode(ParseMode.MARKDOWN).build());
+                        getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.cleanString(sender.getUsername()) + " has played.*").parseMode(ParseMode.MARKDOWN).build());
                         checkPlayers();
                     } else {
                         TelegramBot.getChat(sender.getId()).sendMessage(createUserKeyboard(getGameLobby().getLobbyMember(sender.getUsername())).message("*Please play " + (cardsNeeded - cards.size()) + " more card(s).*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
@@ -515,7 +516,7 @@ public class CardsAgainstHumanity extends Game {
                     }
 
                     if (winner != null) {
-                        getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + winner.getUsername() + " won the round!*").parseMode(ParseMode.MARKDOWN).build());
+                        getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.cleanString(winner.getUsername()) + " won the round!*").parseMode(ParseMode.MARKDOWN).build());
                         winner.setGameScore(winner.getGameScore() + 1);
 
                         LobbyMember gameWinner = null;

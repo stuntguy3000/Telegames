@@ -5,6 +5,7 @@ import lombok.Setter;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Game;
 import me.stuntguy3000.java.telegames.object.LobbyMember;
+import me.stuntguy3000.java.telegames.object.StringUtil;
 import me.stuntguy3000.java.telegames.util.GameState;
 import me.stuntguy3000.java.telegames.util.cards.Card;
 import me.stuntguy3000.java.telegames.util.cards.Deck;
@@ -243,7 +244,7 @@ public class Blackjack extends Game {
 
         if (currentPlayer.getUserID() == lobbyMember.getUserID()) {
             if (checkAces(currentPlayer)) {
-                getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + lobbyMember.getUsername() + " chose to fold.*").parseMode(ParseMode.MARKDOWN).build());
+                getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.cleanString(lobbyMember.getUsername()) + " chose to fold.*").parseMode(ParseMode.MARKDOWN).build());
 
                 calculateValue(currentPlayer);
 
@@ -311,7 +312,7 @@ public class Blackjack extends Game {
 
                 fold(user);
             } else {
-                getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + lobbyMember.getUsername() + " chose to hit.*").parseMode(ParseMode.MARKDOWN).build());
+                getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.cleanString(lobbyMember.getUsername()) + " chose to hit.*").parseMode(ParseMode.MARKDOWN).build());
 
                 giveCard(lobbyMember, 1);
                 sendHand(lobbyMember, replyMarkup);

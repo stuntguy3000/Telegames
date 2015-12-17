@@ -89,7 +89,7 @@ public class Telegames {
                     LogHandler.log("Lobby List:");
 
                     for (Lobby lobby : lobbyHandler.getActiveLobbies().values()) {
-                        LogHandler.log(String.format("ID: %s Owner: %s", lobby.getLobbyID(), lobby.getLobbyOwner().getUsername()));
+                        LogHandler.log(String.format("ID: %s Owner: %s %s", lobby.getLobbyID(), lobby.getLobbyOwner().getUsername(), lobby.getCurrentGame() != null ? "Playing " + lobby.getCurrentGame() : ""));
                     }
                     continue;
                 }
