@@ -156,11 +156,11 @@ public class TicTacToe extends Game {
 
     @Override
     public boolean tryStartGame() {
-        if (activePlayers.size() >= minPlayers) {
+        if (activePlayers.size() >= minPlayers && activePlayers.size() <= maxPlayers) {
             startGame();
             return true;
         } else {
-            getGameLobby().sendMessage("Not enough players to start!");
+            getGameLobby().sendMessage("Cannot start! Two players are required.");
             return false;
         }
     }
