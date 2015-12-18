@@ -95,7 +95,7 @@ public class TicTacToe extends Game {
 
     @Override
     public void endGame() {
-        SendableTextMessage.SendableTextMessageBuilder messageBuilder = SendableTextMessage.builder().message("The game of TicTacToe has ended!").replyMarkup(ReplyKeyboardHide.builder().build());
+        SendableTextMessage.SendableTextMessageBuilder messageBuilder = SendableTextMessage.builder().message("The game of TicTacToe has ended!").replyMarkup(new ReplyKeyboardHide());
 
         if (winner != null) {
             messageBuilder.message("\n\n*The winner is " + winner.getUsername() + "*").parseMode(ParseMode.MARKDOWN);
