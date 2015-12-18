@@ -110,7 +110,8 @@ public class TicTacToe extends Game {
             messageBuilder.message("\n");
         }
 
-        getGameLobby().sendMessage(messageBuilder.build());
+        // getGameLobby().sendMessage(messageBuilder.build());
+        getGameLobby().sendMessage("Winner winner chicken dinner");
     }
 
     @Override
