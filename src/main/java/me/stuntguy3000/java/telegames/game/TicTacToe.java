@@ -96,22 +96,22 @@ public class TicTacToe extends Game {
 
     @Override
     public void endGame() {
-        SendableTextMessage.SendableTextMessageBuilder messageBuilder = SendableTextMessage.builder().message("The game of TicTacToe has ended!");
+        StringBuilder message = new StringBuilder("The game of TicTacToe has ended!");
 
         if (winner != null) {
-            messageBuilder.message("\n\n*The winner is " + StringUtil.markdownSafe(winner.getUsername()) + "*");
+            message.append("\n\n*The winner is ").append(StringUtil.markdownSafe(winner.getUsername())).append("*");
         }
 
-        messageBuilder.message("\n\n");
+        message.append("\n\n");
 
         for (int r = 0; r < 3; r++) {
             for (int c = 0; c < 3; c++) {
-                messageBuilder.message(board[r][c].getText());
+                message.append(board[r][c].getText());
             }
-            messageBuilder.message("|\n|");
+            message.append("\n");
         }
 
-        getGameLobby().sendMessage(messageBuilder.parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
+        getGameLobby().sendMessage(SendableTextMessage.builder().message(message.toString()).parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
     }
 
     @Override
