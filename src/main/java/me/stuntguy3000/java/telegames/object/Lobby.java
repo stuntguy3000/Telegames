@@ -292,10 +292,10 @@ public class Lobby {
             for (LobbyMember lobbyMember : lobbyMembers) {
                 if (lobbyMember.getUserID() == user.getUserID()) {
                     SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.PERSON.getText() + " *" + StringUtil.markdownSafe(user.getUsername()) + " left!*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build();
-                    sendMessage(sendableTextMessage);
+                    TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(sendableTextMessage, TelegramHook.getBot());
                 } else {
                     SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.PERSON.getText() + " *" + StringUtil.markdownSafe(user.getUsername()) + " left!*").parseMode(ParseMode.MARKDOWN).build();
-                    sendMessage(sendableTextMessage);
+                    TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(sendableTextMessage, TelegramHook.getBot());
                 }
             }
         }
