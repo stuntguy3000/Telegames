@@ -4,6 +4,7 @@ import me.stuntguy3000.java.telegames.handler.LogHandler;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Game;
 import me.stuntguy3000.java.telegames.object.LobbyMember;
+import me.stuntguy3000.java.telegames.object.StringUtil;
 import me.stuntguy3000.java.telegames.util.GameState;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.TelegramBot;
@@ -95,23 +96,22 @@ public class TicTacToe extends Game {
 
     @Override
     public void endGame() {
-        SendableTextMessage.SendableTextMessageBuilder messageBuilder = SendableTextMessage.builder().message("The game of TicTacToe has ended!").replyMarkup(new ReplyKeyboardHide());
+        SendableTextMessage.SendableTextMessageBuilder messageBuilder = SendableTextMessage.builder().message("The game of TicTacToe has ended!");
 
         if (winner != null) {
-            messageBuilder.message("\n\n*The winner is " + winner.getUsername() + "*").parseMode(ParseMode.MARKDOWN);
+            messageBuilder.message("\n\n*The winner is " + StringUtil.markdownSafe(winner.getUsername()) + "*");
         }
 
         messageBuilder.message("\n\n");
 
         for (int r = 0; r < 3; r++) {
             for (int c = 0; c < 3; c++) {
-                //messageBuilder.message(board[r][c].getText());
+                messageBuilder.message(board[r][c].getText());
             }
             messageBuilder.message("|\n|");
         }
 
-        getGameLobby().sendMessage(messageBuilder.build());
-        getGameLobby().sendMessage("Winner winner chicken dinner");
+        getGameLobby().sendMessage(messageBuilder.parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
     }
 
     @Override
