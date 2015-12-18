@@ -1,6 +1,5 @@
 package me.stuntguy3000.java.telegames.game;
 
-import me.stuntguy3000.java.telegames.handler.LogHandler;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Game;
 import me.stuntguy3000.java.telegames.object.LobbyMember;
@@ -17,7 +16,6 @@ import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardMarkup;
 import pro.zackpollard.telegrambot.api.user.User;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -100,6 +98,8 @@ public class TicTacToe extends Game {
 
         if (winner != null) {
             message.append("\n\n*The winner is ").append(StringUtil.markdownSafe(winner.getUsername())).append("*");
+        } else {
+            message.append("\n\n*The match was a draw!*");
         }
 
         message.append("\n\n");
@@ -229,14 +229,26 @@ public class TicTacToe extends Game {
             }
 
             if (!checkForWin()) {
-                nextRound();
+                boolean containsNumberSquares = false;
+
+                for (int r = 0; r < 3; r++) {
+                    for (int c = 0; c < 3; c++) {
+                        if (numbers.contains(board[r][c])) {
+                            containsNumberSquares = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (containsNumberSquares) {
+                    nextRound();
+                    return;
+                }
             } else {
                 winner = currentPlayer;
-                getGameLobby().stopGame();
-                return;
             }
 
-            LogHandler.debug(Arrays.deepToString(board));
+            getGameLobby().stopGame();
         }
     }
 
