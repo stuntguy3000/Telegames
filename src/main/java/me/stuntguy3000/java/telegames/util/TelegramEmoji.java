@@ -35,7 +35,8 @@ public enum TelegramEmoji {
     HEART("❤️"),
     BOOK("\uD83D\uDCD4"),
     GHOST("\uD83D\uDC7B"),
-    END("\uD83D\uDD1A");
+    END("\uD83D\uDD1A"),
+    STAR("⭐️");
 
     @Getter
     String text;

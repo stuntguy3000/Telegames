@@ -52,6 +52,7 @@ public class Lobby {
         List<List<String>> buttonList = new ArrayList<>();
 
         buttonList.add(Collections.singletonList(TelegramEmoji.JOYSTICK.getText() + " Play a game"));
+        buttonList.add(Collections.singletonList(TelegramEmoji.STAR.getText() + "Rate this bot"));
         buttonList.add(Collections.singletonList(TelegramEmoji.END.getText() + " Leave the lobby"));
 
         return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, false, false));
@@ -160,6 +161,8 @@ public class Lobby {
                 event.getChat().sendMessage(Telegames.getInstance().getGameHandler().createGameKeyboard().message(TelegramEmoji.JOYSTICK.getText() + " *Please choose a game:*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
             } else if (message.equals(TelegramEmoji.END.getText() + " Leave the lobby")) {
                 userLeave(getLobbyMember(sender.getUsername()), false);
+            } else if (message.equals(TelegramEmoji.STAR.getText() + " Rate this bot")) {
+                event.getChat().sendMessage(createLobbyMenu().message("To rate this bot, [click this link](http://telegram.me/storebot?start=telegamesbot)!\n\nIt will take less than a minute and every rating is appreciated!").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
             } else if (message.equals(TelegramEmoji.END.getText() + " Back to menu")) {
                 event.getChat().sendMessage(createLobbyMenu().message("You have returned to the menu.").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
             } else {
