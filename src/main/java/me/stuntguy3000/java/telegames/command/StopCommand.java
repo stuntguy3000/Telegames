@@ -30,13 +30,13 @@ public class StopCommand extends Command {
                 if (lobbyGame != null) {
                     lobby.stopGame();
                 } else {
-                    respond(chat, TelegramEmoji.RED_CROSS.getText() + " No game is running!");
+                    respond(chat, TelegramEmoji.RED_CROSS.getText() + " *No game is running!*");
                 }
             } else {
-                respond(chat, TelegramEmoji.RED_CROSS.getText() + " You are not in a lobby!");
+                respond(chat, TelegramEmoji.RED_CROSS.getText() + " *You are not in a lobby!*");
             }
         } else {
-            respond(chat, TelegramEmoji.RED_CROSS.getText() + " This command can only be executed via a private message to @TelegamesBot");
+            respond(chat, TelegramEmoji.RED_CROSS.getText() + " *This command can only be executed via a private message to @TelegamesBot*");
         }
     }
 }
