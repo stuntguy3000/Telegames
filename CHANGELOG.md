@@ -1,4 +1,7 @@
 # Changelog
+#### Version 1.3
+* Added: Introduced Lobby Menu
+
 #### Version 1.2
 * Fix: Rewrote TicTacToe game checking
 
