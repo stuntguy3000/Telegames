@@ -53,8 +53,8 @@ public class Lobby {
         List<List<String>> buttonList = new ArrayList<>();
 
         buttonList.add(Collections.singletonList(TelegramEmoji.JOYSTICK.getText() + " Play a game"));
-        buttonList.add(Arrays.asList(TelegramEmoji.END.getText() + " Leave the lobby", TelegramEmoji.BOOK.getText() + " About Telegames"));
-        buttonList.add(Collections.singletonList(TelegramEmoji.STAR.getText() + " Rate this bot"));
+        buttonList.add(Collections.singletonList(TelegramEmoji.END.getText() + " Leave the lobby"));
+        buttonList.add(Arrays.asList(TelegramEmoji.STAR.getText() + " Rate this bot", TelegramEmoji.BOOK.getText() + " About Telegames"));
 
         return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, false, false));
     }
