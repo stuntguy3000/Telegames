@@ -63,7 +63,7 @@ public class UpdaterAnnouncerHandler {
                     if (oldVersion != null && !newVersion.equals(oldVersion)) {
                         //Runs if the oldVersion doesn't match the new version and isn't null.
 
-                        TelegramHook.getBot().sendMessage(TelegramBot.getChat("@telegames"), SendableTextMessage.builder().disableWebPagePreview(true).parseMode(ParseMode.MARKDOWN).message("*New release!*\n" + newVersion + "\n*Features:*\n" + changelog).build());
+                        TelegramHook.getBot().sendMessage(TelegramBot.getChat("@telegames"), SendableTextMessage.builder().disableWebPagePreview(true).parseMode(ParseMode.NONE).message("New release!\n" + newVersion + "\nFeatures:\n" + changelog).build());
 
                         LogHandler.debug(newVersion);
                         LogHandler.debug(changelog);
