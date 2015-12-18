@@ -34,7 +34,7 @@ public class GameHandler {
 
         buttonList.add(Collections.singletonList(TelegramEmoji.END.getText() + " Back to menu"));
 
-        return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false));
+        return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, false, false));
     }
 
     /**

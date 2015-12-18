@@ -213,7 +213,7 @@ public class Lobby {
                 newGame.playerJoin(lobbyMember);
             }
 
-            sendMessage(SendableTextMessage.builder().message(TelegramEmoji.JOYSTICK.getText() + " *Starting game: " + newGame.getGameName() + "*").parseMode(ParseMode.MARKDOWN).build());
+            sendMessage(SendableTextMessage.builder().message(TelegramEmoji.JOYSTICK.getText() + " *Starting game: " + newGame.getGameName() + "*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
             if (newGame.tryStartGame()) {
                 currentGame = newGame;
                 Telegames.getInstance().getLobbyHandler().startTimer(this);
