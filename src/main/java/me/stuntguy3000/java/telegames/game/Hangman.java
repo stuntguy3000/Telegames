@@ -1,9 +1,7 @@
 package me.stuntguy3000.java.telegames.game;
 
-import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Game;
-import me.stuntguy3000.java.telegames.object.Lobby;
 import me.stuntguy3000.java.telegames.object.LobbyMember;
 import me.stuntguy3000.java.telegames.util.GameState;
 import pro.zackpollard.telegrambot.api.TelegramBot;
@@ -14,11 +12,11 @@ import java.util.List;
 
 public class Hangman extends Game {
 
+    private List<LobbyMember> activePlayers = new ArrayList<>();
+    private LobbyMember chooser; //cringe
+    private List<LobbyMember> choosers = new ArrayList<>();
     private GameState gameState;
     private int minPlayers = 2;
-    private List<LobbyMember> activePlayers = new ArrayList<LobbyMember>();
-    private LobbyMember chooser; //cringe
-    private List<LobbyMember> choosers = new ArrayList<LobbyMember>();
     private int turns;
 
     public Hangman() {
@@ -26,6 +24,21 @@ public class Hangman extends Game {
         setDevModeOnly(true);
 
         gameState = GameState.WAITING_FOR_PLAYERS;
+    }
+
+    public void doChooserTurn() {
+        if (turns > 0) {
+            chooser = activePlayers.get(turns % activePlayers.size());
+            getGameLobby().sendMessage(chooser.getUsername() + " is selecting a word...");
+            TelegramBot.getChat(chooser.getUserID()).sendMessage("Please send a phrase...", TelegramHook.getBot());
+            turns--;
+        } else {
+            doGameEnd();
+        }
+    }
+
+    public void doGameEnd() {
+
     }
 
     @Override
@@ -70,23 +83,7 @@ public class Hangman extends Game {
         return false;
     }
 
-    public void doChooserTurn() {
-        if (turns > 0) {
-            chooser = activePlayers.get(turns % activePlayers.size());
-            getGameLobby().sendMessage(chooser.getUsername() + " is selecting a word...");
-            TelegramBot.getChat(chooser.getUserID()).sendMessage("Please send a phrase...", TelegramHook.getBot());
-            turns--;
-        }
-        else {
-            doGameEnd();
-        }
-    }
-
     public void goSelectorTurn() {
-
-    }
-
-    public void doGameEnd() {
 
     }
 }
