@@ -5,10 +5,7 @@ import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardMarkup;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 // @author Luke Anderson | stuntguy3000
 public class GameHandler {
@@ -34,6 +31,8 @@ public class GameHandler {
         if (row.size() > 0) {
             buttonList.add(new ArrayList<>(row));
         }
+
+        buttonList.add(Collections.singletonList(TelegramEmoji.END.getText() + " Back to menu"));
 
         return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false));
     }

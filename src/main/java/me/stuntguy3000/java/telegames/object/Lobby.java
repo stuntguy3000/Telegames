@@ -10,9 +10,11 @@ import pro.zackpollard.telegrambot.api.chat.message.send.SendableMessage;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.event.chat.message.TextMessageReceivedEvent;
 import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardHide;
+import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardMarkup;
 import pro.zackpollard.telegrambot.api.user.User;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 // @author Luke Anderson | stuntguy3000
@@ -43,7 +45,16 @@ public class Lobby {
 
         kickList = new ArrayList<>();
         lastLobbyAction = System.currentTimeMillis();
-        lobbyHeader = SendableTextMessage.builder().message("*[---------- " + owner.getUsername() + "'s Lobby ----------]*").parseMode(ParseMode.MARKDOWN).build();
+        lobbyHeader = createLobbyMenu().message("*[---------- " + owner.getUsername() + "'s Lobby ----------]*").parseMode(ParseMode.MARKDOWN).build();
+    }
+
+    private SendableTextMessage.SendableTextMessageBuilder createLobbyMenu() {
+        List<List<String>> buttonList = new ArrayList<>();
+
+        buttonList.add(Collections.singletonList(TelegramEmoji.JOYSTICK.getText() + " Play a game"));
+        buttonList.add(Collections.singletonList(TelegramEmoji.END.getText() + " Leave the lobby"));
+
+        return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, false, false));
     }
 
     /**
@@ -119,6 +130,7 @@ public class Lobby {
      */
     public void onTextMessageReceived(TextMessageReceivedEvent event) {
         lastLobbyAction = System.currentTimeMillis();
+        User sender = event.getMessage().getSender();
         String message = event.getContent().getContent();
 
         if (currentGame == null) {
@@ -144,8 +156,14 @@ public class Lobby {
                 } else {
                     event.getChat().sendMessage("Unknown game!\nUse /gamelist for help.", TelegramHook.getBot());
                 }
+            } else if (message.equals(TelegramEmoji.JOYSTICK.getText() + " Play a game")) {
+                event.getChat().sendMessage(Telegames.getInstance().getGameHandler().createGameKeyboard().message(TelegramEmoji.JOYSTICK.getText() + " *Please choose a game:*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+            } else if (message.equals(TelegramEmoji.END.getText() + " Leave the lobby")) {
+                userLeave(getLobbyMember(sender.getUsername()), false);
+            } else if (message.equals(TelegramEmoji.END.getText() + " Back to menu")) {
+                event.getChat().sendMessage(createLobbyMenu().message("You have returned to the menu.").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
             } else {
-                userChat(event.getMessage().getSender(), message);
+                userChat(sender, message);
             }
         } else {
             currentGame.onTextMessageReceived(event);
