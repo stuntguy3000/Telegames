@@ -64,6 +64,7 @@ public class UpdateHandler implements Runnable {
                     e.printStackTrace();
                     break;
                 }
+                
                 System.exit(0);
             }
             try {
