@@ -11,7 +11,7 @@ import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceived
 // @author Luke Anderson | stuntguy3000
 public class VersionCommand extends Command {
     public VersionCommand() {
-        super(Telegames.getInstance(), "/version View the bot's current version", "version");
+        super(Telegames.getInstance(), "/version View the bot's current version", "version", "about");
     }
 
     public void processCommand(CommandMessageReceivedEvent event) {
@@ -19,6 +19,7 @@ public class VersionCommand extends Command {
 
         respond(chat, SendableTextMessage.builder().message(TelegramEmoji.GHOST.getText() + " *Telegames" + (Telegames.DEV_MODE ? " Dev Mode " : " ") + "by* @stuntguy3000\n\n" +
                 "*Source:* https://github.com/stuntguy3000/telegames\n" +
+                "*Created using @zackpollard's [JavaTelegramBotAPI](https://github.com/zackpollard/JavaTelegramBot-API)*\n" +
                 "*Current version:* " + Telegames.BUILD + "\n\n" +
                 "*Stay up-to-date with new features!*\n Join https://telegram.me/telegames").parseMode(ParseMode.MARKDOWN).disableWebPagePreview(true).build());
     }

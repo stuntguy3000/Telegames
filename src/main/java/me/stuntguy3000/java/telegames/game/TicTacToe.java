@@ -363,16 +363,12 @@ public class TicTacToe extends Game {
     private boolean hasMatches(TelegramEmoji emoji, int tempSquareID) {
 
         for (GeneralDirection generalDirection : GeneralDirection.values()) {
-            System.out.println("Checking: " + generalDirection.name());
             int newSquareID = getSquareID(tempSquareID, generalDirection, 1);
             TelegramEmoji newSquare = getSquare(newSquareID);
             if (newSquare != null && newSquare == emoji) {
-                System.out.println(newSquare + " (1)");
                 TelegramEmoji secondSquare = getSquare(getSquareID(tempSquareID, generalDirection, 2));
-                System.out.println(secondSquare + " (2)");
                 if (secondSquare != null && secondSquare == newSquare) {
                     // WINNER WINNER CHICKEN DINNER
-                    System.out.println(secondSquare + " (WINNER)");
                     return true;
                 }
             }
@@ -444,7 +440,6 @@ public class TicTacToe extends Game {
                 gamepad.put(squareID, character);
 
                 int tempSquareID = 1;
-                System.out.println("++++++++++");
                 for (TelegramEmoji telegramEmoji : gamepad.values()) {
                     if (hasMatches(telegramEmoji, tempSquareID)) {
                         winner = currentPlayer;
