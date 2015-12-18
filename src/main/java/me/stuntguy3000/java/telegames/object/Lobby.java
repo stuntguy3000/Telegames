@@ -9,6 +9,7 @@ import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableMessage;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.event.chat.message.TextMessageReceivedEvent;
+import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardHide;
 import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardMarkup;
 import pro.zackpollard.telegrambot.api.user.User;
 
@@ -288,8 +289,15 @@ public class Lobby {
     public void userLeave(LobbyMember user, boolean silent) {
         lastLobbyAction = System.currentTimeMillis();
         if (!silent) {
-            SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.PERSON.getText() + " *" + StringUtil.markdownSafe(user.getUsername()) + " left!*").parseMode(ParseMode.MARKDOWN).build();
-            sendMessage(sendableTextMessage);
+            for (LobbyMember lobbyMember : lobbyMembers) {
+                if (lobbyMember.getUserID() == user.getUserID()) {
+                    SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.PERSON.getText() + " *" + StringUtil.markdownSafe(user.getUsername()) + " left!*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build();
+                    sendMessage(sendableTextMessage);
+                } else {
+                    SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.PERSON.getText() + " *" + StringUtil.markdownSafe(user.getUsername()) + " left!*").parseMode(ParseMode.MARKDOWN).build();
+                    sendMessage(sendableTextMessage);
+                }
+            }
         }
 
         String username = user.getUsername();
