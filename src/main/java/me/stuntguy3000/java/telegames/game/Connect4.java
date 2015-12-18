@@ -3,8 +3,6 @@ package me.stuntguy3000.java.telegames.game;
 import me.stuntguy3000.java.telegames.object.Game;
 import me.stuntguy3000.java.telegames.object.LobbyMember;
 import me.stuntguy3000.java.telegames.util.GameState;
-import pro.zackpollard.telegrambot.api.chat.message.send.InputFile;
-import pro.zackpollard.telegrambot.api.chat.message.send.SendablePhotoMessage;
 import pro.zackpollard.telegrambot.api.event.chat.message.TextMessageReceivedEvent;
 
 // @author Luke Anderson | stuntguy3000
@@ -30,8 +28,9 @@ public class Connect4 extends Game {
 
     @Override
     public boolean playerJoin(LobbyMember lobbyMember) {
-        InputFile baseFile = new InputFile(getClass().getResource("/connect4.jpg"));
-        getGameLobby().sendMessage(SendablePhotoMessage.builder().photo(baseFile).build());
+        //File file = new File(getClass().getResourceAsStream("/connect4.jpg"));
+        //InputFile baseFile = new InputFile();
+        //getGameLobby().sendMessage(SendablePhotoMessage.builder().photo(baseFile).build());
         return true;
     }
 

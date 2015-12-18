@@ -1,5 +1,6 @@
 package me.stuntguy3000.java.telegames.game;
 
+import me.stuntguy3000.java.telegames.handler.LogHandler;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Game;
 import me.stuntguy3000.java.telegames.object.LobbyMember;
@@ -361,7 +362,6 @@ public class TicTacToe extends Game {
     }
 
     private boolean hasMatches(TelegramEmoji emoji, int tempSquareID) {
-
         for (GeneralDirection generalDirection : GeneralDirection.values()) {
             int newSquareID = getSquareID(tempSquareID, generalDirection, 1);
             TelegramEmoji newSquare = getSquare(newSquareID);
@@ -451,6 +451,8 @@ public class TicTacToe extends Game {
                 if (winner == null) {
                     nextRound();
                 }
+
+                LogHandler.debug(gamepad.values().toString());
 
                 return;
             }
