@@ -105,12 +105,12 @@ public class TicTacToe extends Game {
 
         for (int r = 0; r < 3; r++) {
             for (int c = 0; c < 3; c++) {
-                messageBuilder.message(board[r][c].getText());
+                //messageBuilder.message(board[r][c].getText());
             }
-            messageBuilder.message("\n");
+            messageBuilder.message("|\n|");
         }
 
-        // getGameLobby().sendMessage(messageBuilder.build());
+        getGameLobby().sendMessage(messageBuilder.build());
         getGameLobby().sendMessage("Winner winner chicken dinner");
     }
 
