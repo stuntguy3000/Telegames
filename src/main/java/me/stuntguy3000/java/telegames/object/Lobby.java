@@ -6,6 +6,7 @@ import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
+import pro.zackpollard.telegrambot.api.chat.message.send.SendableMessage;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.event.chat.message.TextMessageReceivedEvent;
 import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardHide;
@@ -154,9 +155,9 @@ public class Lobby {
     /**
      * Send a message to all players in the lobby
      *
-     * @param message SendableTextMessage the message to be sent
+     * @param message SendableMessage the message to be sent
      */
-    public void sendMessage(SendableTextMessage message) {
+    public void sendMessage(SendableMessage message) {
         for (LobbyMember lobbyMember : lobbyMembers) {
             lobbyMember.getChat().sendMessage(message, getTelegramBot());
         }
