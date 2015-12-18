@@ -88,6 +88,7 @@ public class Telegames {
         if (!DEV_MODE) {
             LogHandler.log("Starting update announcer...");
             updaterAnnouncerHandler = new UpdaterAnnouncerHandler();
+            updaterAnnouncerHandler.runUpdater();
         } else {
             LogHandler.log("** Update Announcer is not running **");
         }
