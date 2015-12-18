@@ -49,21 +49,14 @@ public class UpdaterAnnouncerHandler {
                 String newVersion;
                 String changelog;
 
-                //Removes first line
                 updateContents = updateContents.substring(updateContents.indexOf('\n') + 1);
-                //Gets contents of second line
                 newVersion = updateContents.substring(updateContents.indexOf(' '), updateContents.indexOf('\n')).trim();
                 updateContents = updateContents.substring(updateContents.indexOf('\n') + 1);
-
-                //Gets the latest versions changelog
                 changelog = updateContents.substring(updateContents.indexOf('*'), updateContents.indexOf("####")).trim();
 
                 if (!newVersion.equals(cachedVersion)) {
-
                     if (oldVersion != null && !newVersion.equals(oldVersion)) {
-                        //Runs if the oldVersion doesn't match the new version and isn't null.
-
-                        TelegramHook.getBot().sendMessage(TelegramBot.getChat("@telegames"), SendableTextMessage.builder().disableWebPagePreview(true).parseMode(ParseMode.NONE).message("New release!\n" + newVersion + "\nFeatures:\n" + changelog).build());
+                        TelegramHook.getBot().sendMessage(TelegramBot.getChat("@telegames"), SendableTextMessage.builder().disableWebPagePreview(true).parseMode(ParseMode.NONE).message("New release!\n\n" + changelog).build());
 
                         LogHandler.debug(newVersion);
                         LogHandler.debug(changelog);

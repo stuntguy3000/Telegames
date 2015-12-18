@@ -1,7 +1,4 @@
 # Changelog
-#### Version 1.5
-* This should work!
-
 #### Version 1.1
 * Modified: Improved /vesion command with new aliases (about & info), and modified formatting
 
