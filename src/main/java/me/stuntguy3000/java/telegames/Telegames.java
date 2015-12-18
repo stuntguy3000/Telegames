@@ -33,6 +33,8 @@ public class Telegames {
     private LobbyHandler lobbyHandler = new LobbyHandler();
     @Getter
     private RandomString randomString = new RandomString(5);
+    @Getter
+    private UpdaterAnnouncerHandler updaterAnnouncerHandler = new UpdaterAnnouncerHandler();
     private Thread updaterThread;
 
     private void connectTelegram() {
@@ -85,8 +87,7 @@ public class Telegames {
 
         if (!DEV_MODE) {
             LogHandler.log("Starting update announcer...");
-            Thread announcer = new Thread(new UpdaterAnnouncerHandler());
-            announcer.start();
+            updaterAnnouncerHandler = new UpdaterAnnouncerHandler();
         } else {
             LogHandler.log("** Update Announcer is not running **");
         }
