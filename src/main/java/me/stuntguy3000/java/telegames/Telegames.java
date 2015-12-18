@@ -83,6 +83,14 @@ public class Telegames {
             LogHandler.log("** Auto Updater is set to false **");
         }
 
+        if (!DEV_MODE) {
+            LogHandler.log("Starting update announcer...");
+            Thread announcer = new Thread(new UpdaterAnnouncerHandler());
+            announcer.start();
+        } else {
+            LogHandler.log("** Update Announcer is not running **");
+        }
+
         LobbyTimer lobbyTimer = new LobbyTimer();
         new Timer().schedule(lobbyTimer, 0, 30 * 1000);
 

@@ -21,6 +21,6 @@ public class VersionCommand extends Command {
                 "*Current version:* " + Telegames.BUILD + "\n\n" +
                 "Source [Available on GitHub](https://github.com/stuntguy3000/telegames)\n" +
                 "Created using @zackpollard's [JavaTelegramBotAPI](https://github.com/zackpollard/JavaTelegramBot-API)\n\n" +
-                "*Stay up-to-date with new features!*\n Join https://telegram.me/telegames").parseMode(ParseMode.MARKDOWN).disableWebPagePreview(true).build());
+                "*Stay up-to-date with new features!*\nJoin https://telegram.me/telegames").parseMode(ParseMode.MARKDOWN).disableWebPagePreview(true).build());
     }
 }
