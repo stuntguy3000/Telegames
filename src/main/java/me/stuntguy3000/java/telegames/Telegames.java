@@ -32,6 +32,8 @@ public class Telegames {
     @Getter
     private LobbyHandler lobbyHandler = new LobbyHandler();
     @Getter
+    private File outputFolder;
+    @Getter
     private RandomString randomString = new RandomString(5);
     @Getter
     private UpdaterAnnouncerHandler updaterAnnouncerHandler = new UpdaterAnnouncerHandler();
@@ -68,6 +70,16 @@ public class Telegames {
             BUILD = Integer.parseInt(FileUtils.readFileToString(build));
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+        outputFolder = new File("output");
+
+        if (outputFolder.exists()) {
+            for (File file : outputFolder.listFiles()) {
+                file.delete();
+            }
+        } else {
+            outputFolder.mkdirs();
         }
 
         LogHandler.log("======================================");
