@@ -19,7 +19,7 @@ public class VersionCommand extends Command {
 
         respond(chat, SendableTextMessage.builder().message(TelegramEmoji.GHOST.getText() + " *Telegames" + (Telegames.DEV_MODE ? " Dev Mode " : " ") + "by* @stuntguy3000\n\n" +
                 "*Source:* https://github.com/stuntguy3000/telegames\n" +
-                "*Created using @zackpollard's [JavaTelegramBotAPI](https://github.com/zackpollard/JavaTelegramBot-API)*\n" +
+                "*Created using @zackpollard's* [JavaTelegramBotAPI](https://github.com/zackpollard/JavaTelegramBot-API)\n" +
                 "*Current version:* " + Telegames.BUILD + "\n\n" +
                 "*Stay up-to-date with new features!*\n Join https://telegram.me/telegames").parseMode(ParseMode.MARKDOWN).disableWebPagePreview(true).build());
     }
