@@ -18,8 +18,8 @@ public class GameHandler {
         int index = 1;
 
         for (Game game : gameList.values()) {
-            if (index > 2) {
-                index = 0;
+            if (index > 3) {
+                index = 1;
                 buttonList.add(new ArrayList<>(row));
                 row.clear();
             }
