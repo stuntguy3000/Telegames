@@ -11,7 +11,7 @@ import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceived
 // @author Luke Anderson | stuntguy3000
 public class VersionCommand extends Command {
     public VersionCommand() {
-        super(Telegames.getInstance(), "/version View the bot's current version", "version", "about");
+        super(Telegames.getInstance(), "/version View the bot's current version", "version", "about", "info");
     }
 
     public void processCommand(CommandMessageReceivedEvent event) {
