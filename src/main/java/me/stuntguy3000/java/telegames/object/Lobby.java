@@ -219,12 +219,12 @@ public class Lobby {
                 Telegames.getInstance().getLobbyHandler().startTimer(this);
                 Telegames.getInstance().getConfigHandler().getUserStatistics().addGame(newGame);
             } else {
-                sendMessage(SendableTextMessage.builder().message(TelegramEmoji.RED_CROSS.getText() + " *Unable to start game!*").parseMode(ParseMode.MARKDOWN).build());
+                sendMessage(createLobbyMenu().message(TelegramEmoji.RED_CROSS.getText() + " *Unable to start game!*").parseMode(ParseMode.MARKDOWN).build());
             }
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
 
-            sendMessage(SendableTextMessage.builder().message(TelegramEmoji.RED_CROSS.getText() + " *Unexpected Error Occurred! Contact @stuntguy3000*").parseMode(ParseMode.MARKDOWN).build());
+            sendMessage(createLobbyMenu().message(TelegramEmoji.RED_CROSS.getText() + " *Unexpected Error Occurred! Contact @stuntguy3000*").parseMode(ParseMode.MARKDOWN).build());
         }
     }
 
