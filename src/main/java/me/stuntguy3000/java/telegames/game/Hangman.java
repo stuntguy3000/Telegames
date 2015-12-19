@@ -4,6 +4,7 @@ import me.stuntguy3000.java.telegames.handler.LogHandler;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Game;
 import me.stuntguy3000.java.telegames.object.LobbyMember;
+import me.stuntguy3000.java.telegames.object.StringUtil;
 import me.stuntguy3000.java.telegames.util.GameState;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
@@ -54,7 +55,7 @@ public class Hangman extends Game {
                     LogHandler.debug("1");
                     if (isAlphaCharactersOnly(message)) {
                         char letter = message.toCharArray()[0];
-                        getGameLobby().sendMessage(SendableTextMessage.builder().message("*guessed " + letter + ".*").parseMode(ParseMode.MARKDOWN).build());
+                        getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.markdownSafe(sender.getUsername()) + " guessed " + letter + ".*").parseMode(ParseMode.MARKDOWN).build());
                         boolean guessedCorrectly = guessLetter(letter);
 
                         if (wordCompleted()) {
@@ -79,7 +80,7 @@ public class Hangman extends Game {
                     }
                     return;
                 } else {
-                    if (sender.getId() == selector.getUserID()) {
+                    if (sender.getId() == selector.getUserID() && word == null) {
                         LogHandler.debug("2");
                         if (isAlphaCharactersOnly(message)) {
                             LogHandler.debug("3");
