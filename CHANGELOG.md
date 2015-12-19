@@ -1,4 +1,17 @@
 # Changelog
+#### Version 1.4
+* Added: New Game, Multiplayer Hangman
+* Fix: Improved messages across entire platform
+* Fix: Previous scores in the same lobby were not cleared
+* Fix: CardsAgainstHumanity properly displays multiple cards
+
+Coming soon:
+  - Lobby Matchmaking
+  - Multiple Decks in Cards Against Humanity:
+  - Connect4, Monopoly and other classic board games!
+  
+If you have a game suggestion, feel free to send a message to @stuntguy3000 
+
 #### Version 1.3
 * Added: Introduced Lobby Menu
 

@@ -89,7 +89,6 @@ class CAHCardPack {
 
 // @author Luke Anderson | stuntguy3000
 public class CardsAgainstHumanity extends Game {
-
     private List<LobbyMember> activePlayers = new ArrayList<>();
     private List<CAHCard> blackCards = new ArrayList<>();
     private LobbyMember cardCzar;
@@ -215,8 +214,8 @@ public class CardsAgainstHumanity extends Game {
         int index = 1;
 
         for (CAHCard card : cards) {
-            if (index > 2) {
-                index = 0;
+            if (index > 3) {
+                index = 1;
                 buttonList.add(new ArrayList<>(row));
                 row.clear();
             }
