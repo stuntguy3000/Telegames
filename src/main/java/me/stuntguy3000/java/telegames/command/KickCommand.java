@@ -2,6 +2,7 @@ package me.stuntguy3000.java.telegames.command;
 
 import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.handler.LobbyHandler;
+import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Command;
 import me.stuntguy3000.java.telegames.object.Lobby;
 import me.stuntguy3000.java.telegames.object.LobbyMember;
@@ -44,7 +45,7 @@ public class KickCommand extends Command {
                 respond(chat, TelegramEmoji.RED_CROSS.getText() + " You are not in an lobby!");
             }
         } else {
-            respond(chat, TelegramEmoji.RED_CROSS.getText() + " This command can only be executed via a private message to @TelegamesBot");
+            respond(chat, TelegramEmoji.RED_CROSS.getText() + " This command can only be executed via a private message to @" + TelegramHook.getBot().getBotUsername());
         }
     }
 }
