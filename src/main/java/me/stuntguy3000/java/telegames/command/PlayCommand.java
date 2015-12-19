@@ -47,7 +47,7 @@ public class PlayCommand extends Command {
                             }
                         }
                     } else {
-                        respond(chat, getInstance().getGameHandler().createGameKeyboard().message(TelegramEmoji.JOYSTICK.getText() + " *Please choose a game:*").parseMode(ParseMode.MARKDOWN).build());
+                        respond(chat, getInstance().getGameHandler().createGameSelector().message(TelegramEmoji.JOYSTICK.getText() + " *Please choose a game:*").parseMode(ParseMode.MARKDOWN).build());
                     }
                 } else {
                     respond(chat, TelegramEmoji.RED_CROSS.getText() + " A game is already running!");

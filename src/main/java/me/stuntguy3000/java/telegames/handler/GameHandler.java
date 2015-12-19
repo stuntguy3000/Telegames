@@ -11,7 +11,7 @@ import java.util.*;
 public class GameHandler {
     private HashMap<String, Game> gameList = new HashMap<>();
 
-    public SendableTextMessage.SendableTextMessageBuilder createGameKeyboard() {
+    public SendableTextMessage.SendableTextMessageBuilder createGameSelector() {
         List<List<String>> buttonList = new ArrayList<>();
         List<String> row = new ArrayList<>();
 

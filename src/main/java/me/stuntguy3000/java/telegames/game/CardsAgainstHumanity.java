@@ -7,6 +7,7 @@ import me.stuntguy3000.java.telegames.object.Game;
 import me.stuntguy3000.java.telegames.object.LobbyMember;
 import me.stuntguy3000.java.telegames.object.StringUtil;
 import me.stuntguy3000.java.telegames.util.GameState;
+import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
@@ -97,7 +98,7 @@ public class CardsAgainstHumanity extends Game {
     private boolean czarChoosing = false;
     private List<CzarOption> czarOptions = new ArrayList<>();
     private GameState gameState;
-    private int maxPlayers = 10;
+    private int maxPlayers = 8;
     private int minPlayers = 3;
     private HashMap<Integer, LinkedList<CAHCard>> playedCards = new HashMap<>();
     private int playerOrderIndex = 0;
@@ -152,13 +153,13 @@ public class CardsAgainstHumanity extends Game {
 
                 Collections.shuffle(czarOptions);
 
-                int id = 1;
+                int index = 1;
                 for (CzarOption czarOption : czarOptions) {
-                    czarOption.setOptionNumber(id);
-                    options.append(id);
-                    options.append(") ");
+                    czarOption.setOptionNumber(index);
+                    options.append(TelegramEmoji.getNumberBlock(index));
+                    options.append(" ");
                     options.append(czarOption.getText());
-                    id++;
+                    index++;
                 }
 
                 for (LobbyMember lobbyMember : getGameLobby().getLobbyMembers()) {
@@ -184,12 +185,12 @@ public class CardsAgainstHumanity extends Game {
 
         for (int i = 1; i <= czarOptions.size(); i++) {
             if (index == 5) {
-                index = 0;
+                index = 1;
                 buttonList.add(new ArrayList<>(row));
                 row.clear();
             }
 
-            row.add("Option " + i);
+            row.add(TelegramEmoji.getNumberBlock(index).getText());
             index++;
         }
 

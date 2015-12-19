@@ -159,7 +159,7 @@ public class Lobby {
                     event.getChat().sendMessage("Unknown game!\nUse /gamelist for help.", TelegramHook.getBot());
                 }
             } else if (message.equals(TelegramEmoji.JOYSTICK.getText() + " Play a game")) {
-                event.getChat().sendMessage(Telegames.getInstance().getGameHandler().createGameKeyboard().message(TelegramEmoji.JOYSTICK.getText() + " *Please choose a game:*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                event.getChat().sendMessage(Telegames.getInstance().getGameHandler().createGameSelector().message(TelegramEmoji.JOYSTICK.getText() + " *Please choose a game:*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
             } else if (message.equals(TelegramEmoji.END.getText() + " Leave the lobby")) {
                 userLeave(getLobbyMember(sender.getUsername()), false);
             } else if (message.equals(TelegramEmoji.STAR.getText() + " Rate this bot")) {
@@ -205,11 +205,13 @@ public class Lobby {
      */
     public void startGame(Game targetGame) {
         lastLobbyAction = System.currentTimeMillis();
+        currentGame = null;
         try {
             Game newGame = targetGame.getClass().newInstance();
             newGame.setGameLobby(this);
 
             for (LobbyMember lobbyMember : getLobbyMembers()) {
+                lobbyMember.setGameScore(0);
                 newGame.playerJoin(lobbyMember);
             }
 

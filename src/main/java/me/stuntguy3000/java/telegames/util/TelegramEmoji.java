@@ -54,4 +54,60 @@ public enum TelegramEmoji {
 
         return null;
     }
+
+    public static int getNumber(TelegramEmoji telegramEmoji) {
+        switch (telegramEmoji) {
+            default: {
+                return -1;
+            }
+            case NUMBER_BLOCK_ZERO:
+                return 0;
+            case NUMBER_BLOCK_ONE:
+                return 1;
+            case NUMBER_BLOCK_TWO:
+                return 2;
+            case NUMBER_BLOCK_THREE:
+                return 3;
+            case NUMBER_BLOCK_FOUR:
+                return 4;
+            case NUMBER_BLOCK_FIVE:
+                return 5;
+            case NUMBER_BLOCK_SIX:
+                return 6;
+            case NUMBER_BLOCK_SEVEN:
+                return 7;
+            case NUMBER_BLOCK_EIGHT:
+                return 8;
+            case NUMBER_BLOCK_NINE:
+                return 9;
+        }
+    }
+
+    public static TelegramEmoji getNumberBlock(int index) {
+        switch (index) {
+            default: {
+                return null;
+            }
+            case 0:
+                return NUMBER_BLOCK_ZERO;
+            case 1:
+                return NUMBER_BLOCK_ONE;
+            case 2:
+                return NUMBER_BLOCK_TWO;
+            case 3:
+                return NUMBER_BLOCK_THREE;
+            case 4:
+                return NUMBER_BLOCK_FOUR;
+            case 5:
+                return NUMBER_BLOCK_FIVE;
+            case 6:
+                return NUMBER_BLOCK_SIX;
+            case 7:
+                return NUMBER_BLOCK_SEVEN;
+            case 8:
+                return NUMBER_BLOCK_EIGHT;
+            case 9:
+                return NUMBER_BLOCK_NINE;
+        }
+    }
 }
