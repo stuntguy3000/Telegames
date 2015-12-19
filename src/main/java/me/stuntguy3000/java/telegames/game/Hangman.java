@@ -64,11 +64,12 @@ public class Hangman extends Game {
                             nextRound();
                         } else {
                             if (guessedCorrectly) {
-                                getGameLobby().sendMessage(SendableTextMessage.builder().message("*Correct guess! Remaining: " + guessesLeft + "*\n\n*The word: " + getCensoredWord() + "*").parseMode(ParseMode.MARKDOWN).build());
+                                getGameLobby().sendMessage(SendableTextMessage.builder().message("*Correct guess!\nRemaining: " + guessesLeft + "*\n\n*The word: " + getCensoredWord() + "*").parseMode(ParseMode.MARKDOWN).build());
                             } else {
                                 --guessesLeft;
                                 if (guessesLeft > 0) {
-                                    getGameLobby().sendMessage(SendableTextMessage.builder().message("*Incorrect guess! Remaining: " + guessesLeft + "*\n\n*The word: " + getCensoredWord() + "*").parseMode(ParseMode.MARKDOWN).build());
+                                    guesses.add(letter);
+                                    getGameLobby().sendMessage(SendableTextMessage.builder().message("*Incorrect guess!\nRemaining: " + guessesLeft + "*\n\n*Guessed letters: " + getGuessedLetters() + "*").parseMode(ParseMode.MARKDOWN).build());
                                 } else {
                                     getGameLobby().sendMessage(SendableTextMessage.builder().message("*Out of guesses!*\n\n*The Word: " + word + "*").parseMode(ParseMode.MARKDOWN).build());
                                     nextRound();
@@ -143,6 +144,16 @@ public class Hangman extends Game {
         }
 
         return word.toString();
+    }
+
+    private String getGuessedLetters() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (char guess : guesses) {
+            stringBuilder.append(guess).append(" ");
+        }
+
+        return stringBuilder.toString();
     }
 
     private boolean guessLetter(char letter) {
