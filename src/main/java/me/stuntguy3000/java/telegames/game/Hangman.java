@@ -83,12 +83,13 @@ public class Hangman extends Game {
                         LogHandler.debug("2");
                         if (isAlphaCharactersOnly(message)) {
                             LogHandler.debug("3");
-                            getGameLobby().sendMessage(SendableTextMessage.builder().message("*The word has been chosen!\n\n" + getCensoredWord() + "*").parseMode(ParseMode.MARKDOWN).build());
                             word = message;
 
                             for (int i = 0; i < word.length(); i++) {
                                 censoredWord.add(i, '-');
                             }
+
+                            getGameLobby().sendMessage(SendableTextMessage.builder().message("*The word has been chosen!\n\n" + getCensoredWord() + "*").parseMode(ParseMode.MARKDOWN).build());
                         } else {
                             TelegramBot.getChat(selector.getUserID()).sendMessage("Only Alpha characters are valid!", TelegramHook.getBot());
                         }
