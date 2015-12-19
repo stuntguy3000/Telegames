@@ -123,6 +123,12 @@ public class CardsAgainstHumanity extends Game {
 
         if (gameState == GameState.CHOOSING) {
             if (playedCards.size() == activePlayers.size() - 1) {
+                for (Map.Entry<Integer, LinkedList<CAHCard>> cardPlay : playedCards.entrySet()) {
+                    if (cardPlay.getValue().size() < currentBlackCard.getBlanks()) {
+                        return false;
+                    }
+                }
+
                 gameState = GameState.INGAME;
 
                 String[] blackCardSplit = currentBlackCard.getRawText().split("_");
@@ -142,8 +148,8 @@ public class CardsAgainstHumanity extends Game {
                         if (segmentID < blackCardSplit.length) {
                             modifiedBlackCard.append(blackCardSplit[segmentID]);
                         }
-                        modifiedBlackCard.append("\n");
                     }
+                    modifiedBlackCard.append("\n");
 
                     czarOption.setText(modifiedBlackCard.toString());
                     czarOptions.add(czarOption);
@@ -167,7 +173,7 @@ public class CardsAgainstHumanity extends Game {
                         czarChoosing = true;
                         TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(createCzarKeyboard().message(TelegramEmoji.GREEN_BOX_TICK.getText() + " *All users have played.*\n*Please choose a winner!*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                     } else {
-                        TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(SendableTextMessage.builder().message(TelegramEmoji.GREEN_BOX_TICK.getText() + "*All users have played.*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build(), TelegramHook.getBot());
+                        TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(SendableTextMessage.builder().message(TelegramEmoji.GREEN_BOX_TICK.getText() + " *All users have played.*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build(), TelegramHook.getBot());
                     }
                 }
 
