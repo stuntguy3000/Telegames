@@ -195,6 +195,8 @@ public class Hangman extends Game {
         if (roundsLeft > 0) {
             selector = activePlayers.get(roundsLeft % activePlayers.size());
             word = null;
+            censoredWord.clear();
+            guessesLeft = 9;
             getGameLobby().sendMessage(selector.getUsername() + " is selecting a word...");
             TelegramBot.getChat(selector.getUserID()).sendMessage("Please send a phrase...", TelegramHook.getBot());
             roundsLeft--;
