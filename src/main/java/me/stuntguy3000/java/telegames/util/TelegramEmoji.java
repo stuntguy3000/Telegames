@@ -46,6 +46,16 @@ public enum TelegramEmoji {
         this.text = text;
     }
 
+    public static TelegramEmoji fromString(String message) {
+        for (TelegramEmoji telegramEmoji : TelegramEmoji.values()) {
+            if (message.equals(telegramEmoji.getText())) {
+                return telegramEmoji;
+            }
+        }
+        
+        return null;
+    }
+
     public static TelegramEmoji getMatch(String message) {
         for (TelegramEmoji emoji : TelegramEmoji.values()) {
             if (emoji.getText().equals(message)) {

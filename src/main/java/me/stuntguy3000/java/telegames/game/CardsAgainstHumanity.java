@@ -156,7 +156,7 @@ public class CardsAgainstHumanity extends Game {
                 int index = 1;
                 for (CzarOption czarOption : czarOptions) {
                     czarOption.setOptionNumber(index);
-                    options.append(TelegramEmoji.getNumberBlock(index));
+                    options.append(TelegramEmoji.getNumberBlock(index).getText());
                     options.append(" ");
                     options.append(czarOption.getText());
                     index++;
@@ -503,44 +503,37 @@ public class CardsAgainstHumanity extends Game {
 
             return true;
         } else if (czarChoosing) {
-            try {
-                if (message.startsWith("Option ")) {
-                    LobbyMember winner = null;
+            LobbyMember winner = null;
 
-                    int number = Integer.parseInt(message.split(" ")[1]);
+            int number = TelegramEmoji.getNumber(TelegramEmoji.fromString(message));
 
-                    for (CzarOption czarOption : czarOptions) {
-                        if (czarOption.getOptionNumber() == number) {
-                            winner = czarOption.getOwner();
-                        }
-                    }
-
-                    if (winner != null) {
-                        getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.markdownSafe(winner.getUsername()) + " won the round!*").parseMode(ParseMode.MARKDOWN).build());
-                        winner.setGameScore(winner.getGameScore() + 1);
-
-                        LobbyMember gameWinner = null;
-                        for (LobbyMember lobbyMember : activePlayers) {
-                            if (lobbyMember.getGameScore() >= 10) {
-                                gameWinner = lobbyMember;
-                            }
-                        }
-
-                        if (gameWinner != null) {
-                            continueGame = false;
-                            getGameLobby().stopGame();
-                        } else {
-                            nextRound();
-                        }
-                    } else {
-                        TelegramBot.getChat(sender.getId()).sendMessage("You have chosen an invalid card!", TelegramHook.getBot());
-                    }
-
-                    return true;
+            for (CzarOption czarOption : czarOptions) {
+                if (czarOption.getOptionNumber() == number) {
+                    winner = czarOption.getOwner();
                 }
-            } catch (NumberFormatException ignore) {
-
             }
+
+            if (winner != null) {
+                getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.markdownSafe(winner.getUsername()) + " won the round!*").parseMode(ParseMode.MARKDOWN).build());
+                winner.setGameScore(winner.getGameScore() + 1);
+
+                LobbyMember gameWinner = null;
+                for (LobbyMember lobbyMember : activePlayers) {
+                    if (lobbyMember.getGameScore() >= 10) {
+                        gameWinner = lobbyMember;
+                    }
+                }
+
+                if (gameWinner != null) {
+                    continueGame = false;
+                    getGameLobby().stopGame();
+                } else {
+                    nextRound();
+                }
+            } else {
+                TelegramBot.getChat(sender.getId()).sendMessage("You have chosen an invalid card!", TelegramHook.getBot());
+            }
+            return true;
         }
 
         return false;
