@@ -58,19 +58,19 @@ public class Hangman extends Game {
                         boolean guessedCorrectly = guessLetter(letter);
 
                         if (wordCompleted()) {
-                            getGameLobby().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.PARTY_POPPER.getText() + " *The word was guessed correctly!*\n\n*The word: " + word + "*").parseMode(ParseMode.MARKDOWN).build());
+                            getGameLobby().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.PARTY_POPPER.getText() + " *The word was guessed correctly!\n\nThe word: " + word + "*").parseMode(ParseMode.MARKDOWN).build());
                             nextRound();
                         } else {
                             if (guessedCorrectly) {
-                                getGameLobby().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.GREEN_BOX_TICK.getText() + "*Correct guess!\nRemaining: " + guessesLeft + "*\n\n*The word: " + getCensoredWord() + "*").parseMode(ParseMode.MARKDOWN).build());
+                                getGameLobby().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.GREEN_BOX_TICK.getText() + " *Correct guess!\nRemaining: " + guessesLeft + "\n\nThe word: " + getCensoredWord() + "*").parseMode(ParseMode.MARKDOWN).build());
                             } else {
                                 --guessesLeft;
                                 if (guessesLeft > 0) {
                                     guesses.add(letter);
-                                    getGameLobby().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.RED_CROSS.getText() + "*Incorrect guess!\nRemaining: " + guessesLeft + "*\n\n" +
-                                            "*The word: " + getCensoredWord() + "\n*Guessed letters: " + getGuessedLetters() + "*").parseMode(ParseMode.MARKDOWN).build());
+                                    getGameLobby().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.RED_CROSS.getText() + " *Incorrect guess!\nRemaining: " + guessesLeft + "\n\n" +
+                                            "The word: " + getCensoredWord() + "\nGuessed letters: " + getGuessedLetters() + "*").parseMode(ParseMode.MARKDOWN).build());
                                 } else {
-                                    getGameLobby().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.RED_CROSS.getText() + " *Out of guesses!*\n\n*The Word: " + word + "*").parseMode(ParseMode.MARKDOWN).build());
+                                    getGameLobby().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.RED_CROSS.getText() + " *Out of guesses!\n\nThe Word: " + word + "*").parseMode(ParseMode.MARKDOWN).build());
                                     nextRound();
                                     return;
                                 }
