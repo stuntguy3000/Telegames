@@ -50,31 +50,44 @@ public class Hangman extends Game {
 
             if (isPlayer(lobbyMember)) {
                 if (word != null && message.length() == 1 && sender.getId() != selector.getUserID()) {
-                    char letter = message.toCharArray()[0];
-                    getGameLobby().sendMessage(SendableTextMessage.builder().message("*guessed " + letter + ".*").parseMode(ParseMode.MARKDOWN).build());
-                    boolean guessedCorrectly = guessLetter(letter);
+                    if (isAlphaCharactersOnly(message)) {
+                        char letter = message.toCharArray()[0];
+                        getGameLobby().sendMessage(SendableTextMessage.builder().message("*guessed " + letter + ".*").parseMode(ParseMode.MARKDOWN).build());
+                        boolean guessedCorrectly = guessLetter(letter);
 
-                    if (wordCompleted()) {
-                        getGameLobby().sendMessage(SendableTextMessage.builder().message("*The word was guessed correctly!*\n\n*Word: " + word + "*").parseMode(ParseMode.MARKDOWN).build());
-                        nextRound();
-                    } else {
-                        if (guessedCorrectly) {
-                            getGameLobby().sendMessage(SendableTextMessage.builder().message("*Correct guess! Remaining: " + guessesLeft + "*\n\n*" + getCensoredWord() + "*").parseMode(ParseMode.MARKDOWN).build());
+                        if (wordCompleted()) {
+                            getGameLobby().sendMessage(SendableTextMessage.builder().message("*The word was guessed correctly!*\n\n*Word: " + word + "*").parseMode(ParseMode.MARKDOWN).build());
+                            nextRound();
                         } else {
-                            --guessesLeft;
-                            if (guessesLeft > 0) {
-                                getGameLobby().sendMessage(SendableTextMessage.builder().message("*Incorrect guess! Remaining: " + guessesLeft + "*\n\n*" + getCensoredWord() + "*").parseMode(ParseMode.MARKDOWN).build());
+                            if (guessedCorrectly) {
+                                getGameLobby().sendMessage(SendableTextMessage.builder().message("*Correct guess! Remaining: " + guessesLeft + "*\n\n*" + getCensoredWord() + "*").parseMode(ParseMode.MARKDOWN).build());
                             } else {
-                                getGameLobby().sendMessage(SendableTextMessage.builder().message("*Out of guesses!*\n\n*Word: " + word + "*").parseMode(ParseMode.MARKDOWN).build());
-                                nextRound();
-                                return;
+                                --guessesLeft;
+                                if (guessesLeft > 0) {
+                                    getGameLobby().sendMessage(SendableTextMessage.builder().message("*Incorrect guess! Remaining: " + guessesLeft + "*\n\n*" + getCensoredWord() + "*").parseMode(ParseMode.MARKDOWN).build());
+                                } else {
+                                    getGameLobby().sendMessage(SendableTextMessage.builder().message("*Out of guesses!*\n\n*Word: " + word + "*").parseMode(ParseMode.MARKDOWN).build());
+                                    nextRound();
+                                    return;
+                                }
                             }
                         }
+                    } else {
+                        TelegramBot.getChat(sender.getId()).sendMessage("Only Alpha characters are valid!", TelegramHook.getBot());
                     }
                     return;
                 } else {
                     if (sender.getId() == selector.getUserID()) {
-                        getGameLobby().sendMessage(SendableTextMessage.builder().message("*The word has been chosen!\n\n" + getCensoredWord() + "*").parseMode(ParseMode.MARKDOWN).build());
+                        if (isAlphaCharactersOnly(message)) {
+                            getGameLobby().sendMessage(SendableTextMessage.builder().message("*The word has been chosen!\n\n" + getCensoredWord() + "*").parseMode(ParseMode.MARKDOWN).build());
+                            word = message;
+
+                            for (int i = 0; i < word.length(); i++) {
+                                censoredWord[i] = '-';
+                            }
+                        } else {
+                            TelegramBot.getChat(selector.getUserID()).sendMessage("Only Alpha characters are valid!", TelegramHook.getBot());
+                        }
                         return;
                     }
                 }
@@ -139,6 +152,18 @@ public class Hangman extends Game {
         }
 
         return guessed;
+    }
+
+    private boolean isAlphaCharactersOnly(String message) {
+        char[] chars = message.toCharArray();
+
+        for (char c : chars) {
+            if (!Character.isLetter(c)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private boolean isPlayer(LobbyMember lobbyMember) {
