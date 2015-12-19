@@ -209,7 +209,7 @@ public class Hangman extends Game {
     public boolean wordCompleted() {
         for (char wordCharacter : censoredWord) {
             if (wordCharacter == censoredChar) {
-                return true;
+                return false;
             }
         }
         return true;
