@@ -235,7 +235,7 @@ public class CardsAgainstHumanity extends Game {
 
     @Override
     public String getGameHelp() {
-        return "The most fun and offensive card game ever known.\n\nMessage @TelegamesBot +help while in-game for a list of commands.";
+        return "The most fun and offensive card game ever known.\n\nMessage @" + TelegramHook.getBot().getBotUsername() + "+help while in-game for a list of commands.";
     }
 
     @Override

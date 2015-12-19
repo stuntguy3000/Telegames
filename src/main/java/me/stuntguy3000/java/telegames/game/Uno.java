@@ -139,7 +139,7 @@ public class Uno extends Game {
 
     @Override
     public String getGameHelp() {
-        return "The classic card game Uno brought to Telegram.\n\nMessage @TelegamesBot +help while in-game for a list of commands.";
+        return "The classic card game Uno brought to Telegram.\n\nMessage @" + TelegramHook.getBot().getBotUsername() + " +help while in-game for a list of commands.";
     }
 
     @Override

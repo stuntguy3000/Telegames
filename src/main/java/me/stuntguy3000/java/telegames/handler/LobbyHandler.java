@@ -2,6 +2,7 @@ package me.stuntguy3000.java.telegames.handler;
 
 import lombok.Getter;
 import me.stuntguy3000.java.telegames.Telegames;
+import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.GameSecondTimer;
 import me.stuntguy3000.java.telegames.object.Lobby;
 import pro.zackpollard.telegrambot.api.TelegramBot;
@@ -30,7 +31,7 @@ public class LobbyHandler {
         activeLobbies.put(lobby.getLobbyID(), lobby);
 
         SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message("*You have created a lobby!*\n" +
-                "[Send this link to your friends to play!](http://telegram.me/TelegamesBot?start=" + lobby.getLobbyID() + ")").parseMode(ParseMode.MARKDOWN).build();
+                "[Send this link to your friends to play!](http://telegram.me/" + TelegramHook.getBot().getBotUsername() + "?start=" + lobby.getLobbyID() + ")").parseMode(ParseMode.MARKDOWN).build();
 
         TelegramBot.getChat(user.getId()).sendMessage(sendableTextMessage, lobby.getTelegramBot());
         lobby.userJoin(user);
