@@ -165,7 +165,7 @@ public class CardsAgainstHumanity extends Game {
                 for (LobbyMember lobbyMember : getGameLobby().getLobbyMembers()) {
                     if (cardCzar.getUserID() == lobbyMember.getUserID()) {
                         czarChoosing = true;
-                        TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(createCzarKeyboard().message(TelegramEmoji.GREEN_BOX_TICK.getText() + "*All users have played.*\n*Please choose a winner!*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                        TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(createCzarKeyboard().message(TelegramEmoji.GREEN_BOX_TICK.getText() + " *All users have played.*\n*Please choose a winner!*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                     } else {
                         TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(SendableTextMessage.builder().message(TelegramEmoji.GREEN_BOX_TICK.getText() + "*All users have played.*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build(), TelegramHook.getBot());
                     }
@@ -489,7 +489,7 @@ public class CardsAgainstHumanity extends Game {
                     }
 
                     if (cards.size() == cardsNeeded) {
-                        getGameLobby().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.GREEN_BOX_TICK.getText() + "*" + StringUtil.markdownSafe(sender.getUsername()) + " has played.*").parseMode(ParseMode.MARKDOWN).build());
+                        getGameLobby().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.GREEN_BOX_TICK.getText() + " *" + StringUtil.markdownSafe(sender.getUsername()) + " has played.*").parseMode(ParseMode.MARKDOWN).build());
                         checkPlayers();
                     } else {
                         TelegramBot.getChat(sender.getId()).sendMessage(createUserKeyboard(getGameLobby().getLobbyMember(sender.getUsername())).message("*Please play " + (cardsNeeded - cards.size()) + " more card(s).*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
