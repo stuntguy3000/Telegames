@@ -20,6 +20,7 @@ import java.util.List;
 public class Hangman extends Game {
 
     private List<LobbyMember> activePlayers = new ArrayList<>();
+    private Character censoredChar = '-';
     private List<Character> censoredWord = new ArrayList<>();
     private GameState gameState;
     private List<Character> guesses = new ArrayList<>();
@@ -59,17 +60,17 @@ public class Hangman extends Game {
                         boolean guessedCorrectly = guessLetter(letter);
 
                         if (wordCompleted()) {
-                            getGameLobby().sendMessage(SendableTextMessage.builder().message("*The word was guessed correctly!*\n\n*Word: " + word + "*").parseMode(ParseMode.MARKDOWN).build());
+                            getGameLobby().sendMessage(SendableTextMessage.builder().message("*The word was guessed correctly!*\n\n*The word: " + word + "*").parseMode(ParseMode.MARKDOWN).build());
                             nextRound();
                         } else {
                             if (guessedCorrectly) {
-                                getGameLobby().sendMessage(SendableTextMessage.builder().message("*Correct guess! Remaining: " + guessesLeft + "*\n\n*" + getCensoredWord() + "*").parseMode(ParseMode.MARKDOWN).build());
+                                getGameLobby().sendMessage(SendableTextMessage.builder().message("*Correct guess! Remaining: " + guessesLeft + "*\n\n*The word: " + getCensoredWord() + "*").parseMode(ParseMode.MARKDOWN).build());
                             } else {
                                 --guessesLeft;
                                 if (guessesLeft > 0) {
-                                    getGameLobby().sendMessage(SendableTextMessage.builder().message("*Incorrect guess! Remaining: " + guessesLeft + "*\n\n*" + getCensoredWord() + "*").parseMode(ParseMode.MARKDOWN).build());
+                                    getGameLobby().sendMessage(SendableTextMessage.builder().message("*Incorrect guess! Remaining: " + guessesLeft + "*\n\n*The word: " + getCensoredWord() + "*").parseMode(ParseMode.MARKDOWN).build());
                                 } else {
-                                    getGameLobby().sendMessage(SendableTextMessage.builder().message("*Out of guesses!*\n\n*Word: " + word + "*").parseMode(ParseMode.MARKDOWN).build());
+                                    getGameLobby().sendMessage(SendableTextMessage.builder().message("*Out of guesses!*\n\n*The Word: " + word + "*").parseMode(ParseMode.MARKDOWN).build());
                                     nextRound();
                                     return;
                                 }
@@ -87,10 +88,10 @@ public class Hangman extends Game {
                             word = message;
 
                             for (int i = 0; i < word.length(); i++) {
-                                censoredWord.add(i, '-');
+                                censoredWord.add(i, censoredChar);
                             }
 
-                            getGameLobby().sendMessage(SendableTextMessage.builder().message("*The word has been chosen!\n\n" + getCensoredWord() + "*").parseMode(ParseMode.MARKDOWN).build());
+                            getGameLobby().sendMessage(SendableTextMessage.builder().message("*The word has been chosen!*\n\n*The word: " + getCensoredWord() + "*").parseMode(ParseMode.MARKDOWN).build());
                         } else {
                             TelegramBot.getChat(selector.getUserID()).sendMessage("Only Alpha characters are valid!", TelegramHook.getBot());
                         }
@@ -196,7 +197,7 @@ public class Hangman extends Game {
 
     public boolean wordCompleted() {
         for (char wordCharacter : censoredWord) {
-            if (wordCharacter == '_') {
+            if (wordCharacter == censoredChar) {
                 return true;
             }
         }
