@@ -86,7 +86,7 @@ public class Hangman extends Game {
                         LogHandler.debug("2");
                         if (isAlphaCharactersOnly(message)) {
                             LogHandler.debug("3");
-                            word = message;
+                            word = message.toLowerCase();
 
                             for (int i = 0; i < word.length(); i++) {
                                 censoredWord.add(i, censoredChar);
@@ -162,7 +162,7 @@ public class Hangman extends Game {
 
         letter = Character.toLowerCase(letter);
         for (char wordCharacter : word.toCharArray()) {
-            if (Character.toLowerCase(wordCharacter) == letter) {
+            if (wordCharacter == letter) {
                 censoredWord.add(index, letter);
                 guessed = true;
             }
