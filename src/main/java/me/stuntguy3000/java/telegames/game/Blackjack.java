@@ -390,7 +390,7 @@ public class Blackjack extends Game {
     }
 
     private void printScores() {
-        sortScores();
+        Collections.sort(activePlayers);
         StringBuilder wholeMessage = new StringBuilder();
         int playerPos = 1;
         for (int i = 0; i < getActivePlayers().size(); i++) {
@@ -421,10 +421,6 @@ public class Blackjack extends Game {
         }
 
         TelegramBot.getChat(player.getUserID()).sendMessage(SendableTextMessage.builder().message("*Here is your hand: *\n" + stringBuilder.toString()).parseMode(ParseMode.MARKDOWN).replyMarkup(replyMarkup).build(), TelegramHook.getBot());
-    }
-
-    private void sortScores() {
-        Collections.sort(activePlayers);
     }
 
     public void startGame() {

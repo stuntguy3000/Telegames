@@ -358,7 +358,7 @@ public class Uno extends Game {
         }
 
         getGameLobby().sendMessage(SendableTextMessage.builder().message("➡️ *Current Card:* " + cardText + "\n" +
-                        "\uD83D\uDC49\uD83C\uDFFB *Current Player:* " + currentPlayer).parseMode(ParseMode.MARKDOWN).build());
+                "\uD83D\uDC49\uD83C\uDFFB *Current Player:* " + currentPlayer).parseMode(ParseMode.MARKDOWN).build());
 
         round++;
 
@@ -460,7 +460,7 @@ public class Uno extends Game {
     }
 
     private void printScores() {
-        sortScores();
+        Collections.sort(activePlayers);
         StringBuilder wholeMessage = new StringBuilder();
         int playerPos = 1;
         for (int i = getActivePlayers().size() - 1; i >= 0; --i) {
@@ -523,10 +523,6 @@ public class Uno extends Game {
         buttonList.add(Arrays.asList("Draw from deck", "Your Score: " + lobbyMember.getGameScore()));
 
         TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(SendableTextMessage.builder().message("Here are your cards.").replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false)).build(), TelegramHook.getBot());
-    }
-
-    private void sortScores() {
-        Collections.sort(activePlayers);
     }
 
     public void startGame() {

@@ -546,7 +546,7 @@ public class CardsAgainstHumanity extends Game {
     }
 
     private void printScores() {
-        sortScores();
+        Collections.sort(activePlayers);
         StringBuilder wholeMessage = new StringBuilder();
         int playerPos = 1;
         for (int i = 0; i < activePlayers.size(); i++) {
@@ -564,9 +564,6 @@ public class CardsAgainstHumanity extends Game {
         }
     }
 
-    private void sortScores() {
-        Collections.sort(activePlayers);
-    }
 
     private void startGame() {
         gameState = GameState.INGAME;
