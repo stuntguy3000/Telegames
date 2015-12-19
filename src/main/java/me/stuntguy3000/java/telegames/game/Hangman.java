@@ -162,7 +162,7 @@ public class Hangman extends Game {
 
         letter = Character.toLowerCase(letter);
         for (char wordCharacter : word.toCharArray()) {
-            if (wordCharacter == letter) {
+            if (Character.toLowerCase(wordCharacter) == letter) {
                 censoredWord.add(index, letter);
                 guessed = true;
             }
