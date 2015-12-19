@@ -32,7 +32,6 @@ public class Hangman extends Game {
 
     public Hangman() {
         setGameInfo("Hangman", "The classic game of hangman. Try to guess the phrase before its too late!");
-        setDevModeOnly(true);
 
         gameState = GameState.WAITING_FOR_PLAYERS;
     }
