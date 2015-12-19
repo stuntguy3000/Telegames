@@ -1,5 +1,6 @@
 package me.stuntguy3000.java.telegames.game;
 
+import me.stuntguy3000.java.telegames.handler.LogHandler;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Game;
 import me.stuntguy3000.java.telegames.object.LobbyMember;
@@ -18,7 +19,7 @@ import java.util.List;
 public class Hangman extends Game {
 
     private List<LobbyMember> activePlayers = new ArrayList<>();
-    private char[] censoredWord;
+    private List<Character> censoredWord = new ArrayList<>();
     private GameState gameState;
     private List<Character> guesses = new ArrayList<>();
     private int guessesLeft = 9;
@@ -50,6 +51,7 @@ public class Hangman extends Game {
 
             if (isPlayer(lobbyMember)) {
                 if (word != null && message.length() == 1 && sender.getId() != selector.getUserID()) {
+                    LogHandler.debug("1");
                     if (isAlphaCharactersOnly(message)) {
                         char letter = message.toCharArray()[0];
                         getGameLobby().sendMessage(SendableTextMessage.builder().message("*guessed " + letter + ".*").parseMode(ParseMode.MARKDOWN).build());
@@ -78,12 +80,14 @@ public class Hangman extends Game {
                     return;
                 } else {
                     if (sender.getId() == selector.getUserID()) {
+                        LogHandler.debug("2");
                         if (isAlphaCharactersOnly(message)) {
+                            LogHandler.debug("3");
                             getGameLobby().sendMessage(SendableTextMessage.builder().message("*The word has been chosen!\n\n" + getCensoredWord() + "*").parseMode(ParseMode.MARKDOWN).build());
                             word = message;
 
                             for (int i = 0; i < word.length(); i++) {
-                                censoredWord[i] = '-';
+                                censoredWord.add(i, '-');
                             }
                         } else {
                             TelegramBot.getChat(selector.getUserID()).sendMessage("Only Alpha characters are valid!", TelegramHook.getBot());
@@ -145,7 +149,7 @@ public class Hangman extends Game {
         letter = Character.toLowerCase(letter);
         for (char wordCharacter : word.toCharArray()) {
             if (wordCharacter == letter) {
-                censoredWord[index] = letter;
+                censoredWord.add(index, letter);
                 guessed = true;
             }
             index++;
