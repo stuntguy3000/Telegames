@@ -1,6 +1,5 @@
 package me.stuntguy3000.java.telegames.game;
 
-import me.stuntguy3000.java.telegames.handler.LogHandler;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Game;
 import me.stuntguy3000.java.telegames.object.LobbyMember;
@@ -53,7 +52,6 @@ public class Hangman extends Game {
 
             if (isPlayer(lobbyMember)) {
                 if (word != null && message.length() == 1 && sender.getId() != selector.getUserID()) {
-                    LogHandler.debug("1");
                     if (isAlphaCharactersOnly(message)) {
                         char letter = message.toCharArray()[0];
                         getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.markdownSafe(sender.getUsername()) + " guessed " + letter + ".*").parseMode(ParseMode.MARKDOWN).build());
@@ -83,9 +81,7 @@ public class Hangman extends Game {
                     return;
                 } else {
                     if (sender.getId() == selector.getUserID() && word == null) {
-                        LogHandler.debug("2");
                         if (isAlphaCharactersOnly(message)) {
-                            LogHandler.debug("3");
                             word = message.toLowerCase();
 
                             for (int i = 0; i < word.length(); i++) {
@@ -163,6 +159,7 @@ public class Hangman extends Game {
         letter = Character.toLowerCase(letter);
         for (char wordCharacter : word.toCharArray()) {
             if (wordCharacter == letter) {
+                censoredWord.remove(index);
                 censoredWord.add(index, letter);
                 guessed = true;
             }
