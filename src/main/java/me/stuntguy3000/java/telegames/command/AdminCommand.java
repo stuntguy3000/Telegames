@@ -51,7 +51,7 @@ public class AdminCommand extends Command {
                             lobbylist.append("\n");
                         }
 
-                        respond(chat, lobbylist.toString());
+                        respond(chat, SendableTextMessage.builder().message(lobbylist.toString()).parseMode(ParseMode.MARKDOWN).build());
                         return;
                     }
                     break;
