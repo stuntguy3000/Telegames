@@ -34,9 +34,9 @@ public class AdminCommand extends Command {
             switch (args.length) {
                 case 1: {
                     if (args[0].equalsIgnoreCase("help")) {
-                        respond(chat, "*Admin subcommand help menu:" +
+                        respond(chat, SendableTextMessage.builder().message("*Admin subcommand help menu:" +
                                 "\n/admin help - Admin help menu" +
-                                "\n/admin broadcast [message] - Broadcast a message to all known users*", TelegramHook.getBot());
+                                "\n/admin broadcast [message] - Broadcast a message to all known users*").parseMode(ParseMode.MARKDOWN).build());
                         return;
                     }
                     break;
