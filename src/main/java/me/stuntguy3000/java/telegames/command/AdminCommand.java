@@ -51,7 +51,7 @@ public class AdminCommand extends Command {
                             }
 
                             for (int user : getInstance().getConfigHandler().getUserStatistics().getKnownPlayers().keySet()) {
-                                broadcast(user, broadcastMessage.toString());
+                                broadcast(user, broadcastMessage.toString().replaceAll("~", "\n"));
                             }
                             return;
                         }
