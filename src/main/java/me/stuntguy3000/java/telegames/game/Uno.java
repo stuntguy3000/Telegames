@@ -174,19 +174,19 @@ public class Uno extends Game {
                     if (getGameState() == GameState.INGAME) {
                         sendDeck(lobbyMember);
                     } else {
-                        getGameLobby().sendMessage("The game has not started!");
+                        TelegramBot.getChat(sender.getId()).sendMessage("The game has not started!", TelegramHook.getBot());
                     }
                 } else if (command.equalsIgnoreCase("scores")) {
                     if (getGameState() == GameState.INGAME) {
                         printScores();
                     } else {
-                        getGameLobby().sendMessage("The game has not started!");
+                        TelegramBot.getChat(sender.getId()).sendMessage("The game has not started!", TelegramHook.getBot());
                     }
                 } else if (command.equalsIgnoreCase("colour") || command.equalsIgnoreCase("color")) {
                     if (getGameState() == GameState.INGAME) {
                         sendColourPicker(sender);
                     } else {
-                        getGameLobby().sendMessage("The game has not started!");
+                        TelegramBot.getChat(sender.getId()).sendMessage("The game has not started!", TelegramHook.getBot());
                     }
                 }
             } else {

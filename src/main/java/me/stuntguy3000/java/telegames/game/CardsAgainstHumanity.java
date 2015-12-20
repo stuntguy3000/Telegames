@@ -264,13 +264,13 @@ public class CardsAgainstHumanity extends Game {
                     if (gameState != GameState.WAITING_FOR_PLAYERS) {
                         getGameLobby().sendMessage(createUserKeyboard(lobbyMember).message("Here are your cards:").build());
                     } else {
-                        getGameLobby().sendMessage("The game has not started!");
+                        TelegramBot.getChat(sender.getId()).sendMessage("The game has not started!", TelegramHook.getBot());
                     }
                 } else if (command.equalsIgnoreCase("score")) {
                     if (gameState != GameState.WAITING_FOR_PLAYERS) {
-                        getGameLobby().sendMessage("Your score is " + lobbyMember.getGameScore());
+                        TelegramBot.getChat(sender.getId()).sendMessage("Your score is " + lobbyMember.getGameScore(), TelegramHook.getBot());
                     } else {
-                        getGameLobby().sendMessage("The game has not started!");
+                        TelegramBot.getChat(sender.getId()).sendMessage("The game has not started!", TelegramHook.getBot());
                     }
                 }
             } else {
