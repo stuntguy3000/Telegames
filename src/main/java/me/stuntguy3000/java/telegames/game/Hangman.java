@@ -12,9 +12,15 @@ import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.event.chat.message.TextMessageReceivedEvent;
 import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardHide;
+import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardMarkup;
 import pro.zackpollard.telegrambot.api.user.User;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Hangman extends Game {
@@ -26,6 +32,7 @@ public class Hangman extends Game {
     private List<Character> guesses = new ArrayList<>();
     private int guessesLeft = 9;
     private int minPlayers = 2;
+    private List<String> predefinedWords = new ArrayList<>();
     private int roundsLeft;
     private LobbyMember selector; //cringe
     private String word;
@@ -34,6 +41,13 @@ public class Hangman extends Game {
         setGameInfo("Hangman", "The classic game of hangman. Try to guess the phrase before its too late!");
 
         gameState = GameState.WAITING_FOR_PLAYERS;
+    }
+
+    private SendableTextMessage.SendableTextMessageBuilder createChooserKeyboard() {
+        List<List<String>> buttonList = new ArrayList<>();
+        buttonList.add(new ArrayList<>(Collections.singletonList(TelegramEmoji.OPEN_BOOK.getText() + " Choose a random word")));
+
+        return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false));
     }
 
     @Override
@@ -82,6 +96,11 @@ public class Hangman extends Game {
                     return;
                 } else {
                     if (sender.getId() == selector.getUserID() && word == null) {
+                        if (message.equals(TelegramEmoji.OPEN_BOOK.getText() + " Choose a random word")) {
+                            message = predefinedWords.get(0);
+                            TelegramBot.getChat(selector.getUserID()).sendMessage(TelegramEmoji.GREEN_BOX_TICK.getText() + " Chosen random word: " + message, TelegramHook.getBot());
+                        }
+
                         if (isAlphaCharactersOnly(message)) {
                             if (message.length() >= 3) {
                                 word = message.toLowerCase();
@@ -90,7 +109,7 @@ public class Hangman extends Game {
                                     censoredWord.add(i, censoredChar);
                                 }
 
-                                getGameLobby().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.BOOK.getText() + " *The word has been chosen!\n\nTo guess, send your guess as a message!\nYou can only guess one letter at a time.\n\nThe word: " + getCensoredWord() + "*").parseMode(ParseMode.MARKDOWN).build());
+                                getGameLobby().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.BOOK.getText() + " *The word has been chosen!\n\nTo guess, send your guess as a message!\nYou can only guess one letter at a time.\n\nThe word: " + getCensoredWord() + "*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
                             } else {
                                 TelegramBot.getChat(selector.getUserID()).sendMessage(TelegramEmoji.RED_CROSS.getText() + " Words have to be longer than three characters!", TelegramHook.getBot());
                             }
@@ -134,6 +153,9 @@ public class Hangman extends Game {
         if (activePlayers.size() >= minPlayers) {
             gameState = GameState.INGAME;
             roundsLeft = activePlayers.size() * 3;
+
+            loadWords();
+
             nextRound();
             return true;
         }
@@ -199,6 +221,24 @@ public class Hangman extends Game {
         return false;
     }
 
+    private void loadWords() {
+        InputStream in = getClass().getResourceAsStream("/hangmanwords.txt");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+        String line;
+        try {
+            while ((line = reader.readLine()) != null) {
+                if (!line.isEmpty() && line.matches("[A-z][A-z]+")) {
+                    predefinedWords.add(line.toLowerCase().replace(" ", ""));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Collections.shuffle(predefinedWords);
+    }
+
     public void nextRound() {
         if (roundsLeft > 0) {
             selector = activePlayers.get(roundsLeft % activePlayers.size());
@@ -207,7 +247,7 @@ public class Hangman extends Game {
             guesses.clear();
             guessesLeft = 9;
             getGameLobby().sendMessage(StringUtil.markdownSafe(selector.getUsername()) + " is selecting a word...");
-            TelegramBot.getChat(selector.getUserID()).sendMessage("Please send a phrase...", TelegramHook.getBot());
+            TelegramBot.getChat(selector.getUserID()).sendMessage(createChooserKeyboard().message("Please choose word...").build(), TelegramHook.getBot());
             roundsLeft--;
         } else {
             getGameLobby().stopGame();
