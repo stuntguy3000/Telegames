@@ -47,7 +47,7 @@ public class AdminCommand extends Command {
                         lobbylist.append("*Lobby List:*\n");
 
                         for (Lobby lobby : getInstance().getLobbyHandler().getActiveLobbies().values()) {
-                            lobbylist.append(String.format("*ID:* %s *Owner:* %s *Members:* %s *Last Active:* %s %s", lobby.getLobbyID(), StringUtil.markdownSafe(lobby.getLobbyOwner().getUsername()), lobby.getLobbyMembers().size(), StringUtil.millisecondsToHumanReadable(System.currentTimeMillis() - lobby.getLastLobbyAction()), lobby.getCurrentGame() != null ? "Playing " + lobby.getCurrentGame() : ""));
+                            lobbylist.append(String.format("*ID:* %s *Owner:* %s *Members:* %s *Last Active:* %s %s", lobby.getLobbyID(), StringUtil.markdownSafe(lobby.getLobbyOwner().getUsername()), lobby.getLobbyMembers().size(), StringUtil.millisecondsToHumanReadable(System.currentTimeMillis() - lobby.getLastLobbyAction()), lobby.getCurrentGame() != null ? "Playing " + lobby.getCurrentGame().getGameName() : ""));
                             lobbylist.append("\n");
                         }
 
