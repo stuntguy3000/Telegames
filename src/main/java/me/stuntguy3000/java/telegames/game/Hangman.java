@@ -77,21 +77,25 @@ public class Hangman extends Game {
                             }
                         }
                     } else {
-                        TelegramBot.getChat(sender.getId()).sendMessage(TelegramEmoji.RED_CROSS.getText() + "Only Alpha characters are valid!", TelegramHook.getBot());
+                        TelegramBot.getChat(sender.getId()).sendMessage(TelegramEmoji.RED_CROSS.getText() + " Only Alpha characters are valid!", TelegramHook.getBot());
                     }
                     return;
                 } else {
                     if (sender.getId() == selector.getUserID() && word == null) {
                         if (isAlphaCharactersOnly(message)) {
-                            word = message.toLowerCase();
+                            if (message.length() >= 3) {
+                                word = message.toLowerCase();
 
-                            for (int i = 0; i < word.length(); i++) {
-                                censoredWord.add(i, censoredChar);
+                                for (int i = 0; i < word.length(); i++) {
+                                    censoredWord.add(i, censoredChar);
+                                }
+
+                                getGameLobby().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.BOOK.getText() + " *The word has been chosen!\nTo guess, send your guess as a message! You can only guess one letter at a time.\nThe word: " + getCensoredWord() + "*").parseMode(ParseMode.MARKDOWN).build());
+                            } else {
+                                TelegramBot.getChat(selector.getUserID()).sendMessage(TelegramEmoji.RED_CROSS.getText() + " Words have to be longer than three characters!", TelegramHook.getBot());
                             }
-
-                            getGameLobby().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.BOOK.getText() + "*The word has been chosen!*\n\n*The word: " + getCensoredWord() + "*").parseMode(ParseMode.MARKDOWN).build());
                         } else {
-                            TelegramBot.getChat(selector.getUserID()).sendMessage(TelegramEmoji.RED_CROSS.getText() + "Only Alpha characters are valid!", TelegramHook.getBot());
+                            TelegramBot.getChat(selector.getUserID()).sendMessage(TelegramEmoji.RED_CROSS.getText() + " Only Alpha characters are valid!", TelegramHook.getBot());
                         }
                         return;
                     }
