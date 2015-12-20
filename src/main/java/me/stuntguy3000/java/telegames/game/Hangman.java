@@ -90,7 +90,7 @@ public class Hangman extends Game {
                                     censoredWord.add(i, censoredChar);
                                 }
 
-                                getGameLobby().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.BOOK.getText() + " *The word has been chosen!\nTo guess, send your guess as a message! You can only guess one letter at a time.\nThe word: " + getCensoredWord() + "*").parseMode(ParseMode.MARKDOWN).build());
+                                getGameLobby().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.BOOK.getText() + " *The word has been chosen!\n\nTo guess, send your guess as a message!\nYou can only guess one letter at a time.\n\nThe word: " + getCensoredWord() + "*").parseMode(ParseMode.MARKDOWN).build());
                             } else {
                                 TelegramBot.getChat(selector.getUserID()).sendMessage(TelegramEmoji.RED_CROSS.getText() + " Words have to be longer than three characters!", TelegramHook.getBot());
                             }
