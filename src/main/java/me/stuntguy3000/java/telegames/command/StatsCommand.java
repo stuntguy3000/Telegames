@@ -35,13 +35,21 @@ public class StatsCommand extends Command {
         UserStatistics userStatistics = getInstance().getConfigHandler().getUserStatistics();
         gameStats = userStatistics.sortGames();
 
-        String mostPopularGame = (gameStats.size() > 0 ? gameStats.get(0).getName() : "No Game!");
-        String leastPopularGame = (gameStats.size() > 0 ? gameStats.get(gameStats.size() - 1).getName() : "No Game!");
-        int userCount = userStatistics.getKnownPlayers().size();
+        StringBuilder stringBuilder = new StringBuilder();
 
-        respond(chat, SendableTextMessage.builder().message("*Telegames Statistics:*\n" +
-                "*Most Popular Game:* " + mostPopularGame + " (Play Count: " + getCount(mostPopularGame) + ")\n" +
-                "*Least Popular Game:* " + leastPopularGame + " (Play Count: " + getCount(leastPopularGame) + ")\n" +
-                "*User Count:* " + userCount).parseMode(ParseMode.MARKDOWN).build());
+        stringBuilder.append("*Total Users:* ").append(userStatistics.getKnownPlayers().size()).append("\n");
+        stringBuilder.append("*Active Lobbys:* ").append(getInstance().getLobbyHandler().getActiveLobbies().size()).append("\n");
+
+        stringBuilder.append("\n*Games Play Count:*\n");
+
+        for (GameStatistics gameStatistics : gameStats) {
+            stringBuilder.append("* - ");
+            stringBuilder.append(gameStatistics.getName());
+            stringBuilder.append(": ");
+            stringBuilder.append(gameStatistics.getCount());
+            stringBuilder.append("*\n");
+        }
+
+        respond(chat, SendableTextMessage.builder().message("*Telegames Statistics:*\n" + stringBuilder.toString()).parseMode(ParseMode.MARKDOWN).build());
     }
 }
