@@ -97,7 +97,7 @@ public class Hangman extends Game {
                 } else {
                     if (sender.getId() == selector.getUserID() && word == null) {
                         if (message.equals(TelegramEmoji.OPEN_BOOK.getText() + " Choose a random word")) {
-                            message = predefinedWords.get(0);
+                            message = predefinedWords.remove(0);
                             TelegramBot.getChat(selector.getUserID()).sendMessage(TelegramEmoji.GREEN_BOX_TICK.getText() + " Chosen random word: " + message, TelegramHook.getBot());
                         }
 

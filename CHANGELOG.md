@@ -1,4 +1,8 @@
 # Changelog
+#### Version 1.4.1
+* Added: New to Hangman, you can now allow Telegames to choose a word for you!
+* Added: Announcement system
+
 #### Version 1.4
 * Added: New Game, Multiplayer Hangman
 * Fix: Improved messages across entire platform
