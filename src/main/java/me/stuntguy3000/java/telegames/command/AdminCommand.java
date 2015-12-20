@@ -32,7 +32,7 @@ public class AdminCommand extends Command {
             String[] args = event.getArgs();
 
             switch (args.length) {
-                case 0: {
+                case 1: {
                     if (args[0].equalsIgnoreCase("help")) {
                         respond(chat, "*Admin subcommand help menu:" +
                                 "\n/admin help - Admin help menu" +
@@ -59,7 +59,7 @@ public class AdminCommand extends Command {
                 }
             }
 
-            respond(chat, "*Unknown subcommand! Try /admin help*");
+            respond(chat, SendableTextMessage.builder().message("*Unknown subcommand! Try /admin help*").parseMode(ParseMode.MARKDOWN).build());
         }
     }
 }
