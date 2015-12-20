@@ -115,7 +115,7 @@ public class Blackjack extends Game {
     private void dealerPlay() {
         currentPlayer = roundDealer;
 
-        getGameLobby().sendMessage(SendableTextMessage.builder().message("*It's your turn, " + currentPlayer.getUsername() + "*").parseMode(ParseMode.MARKDOWN).build());
+        getGameLobby().sendMessage(SendableTextMessage.builder().message("*It's your turn, " + StringUtil.markdownSafe(currentPlayer.getUsername()) + "*").parseMode(ParseMode.MARKDOWN).build());
 
         sendHand(currentPlayer, getKeyboard(currentPlayer));
     }
@@ -137,7 +137,7 @@ public class Blackjack extends Game {
     public void onSecond() {
         secondsSincePlay++;
         if (secondsSincePlay == 20) {
-            getGameLobby().sendMessage(SendableTextMessage.builder().message("Please make a play @" + currentPlayer).build());
+            getGameLobby().sendMessage(SendableTextMessage.builder().message("Please make a play @" + StringUtil.markdownSafe(currentPlayer.getUsername())).build());
         } else if (secondsSincePlay == 30) {
             getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.markdownSafe(currentPlayer.getUsername()) + " ran out of time!*").parseMode(ParseMode.MARKDOWN).build());
             fold(currentPlayer);
@@ -331,10 +331,10 @@ public class Blackjack extends Game {
                         int score = lobbyMember.getGameScore();
 
                         if (cardScore >= dealerScore && cardScore <= 21) {
-                            playerScoreList.append("@").append(lobbyMember.getUsername()).append("'s card score was ").append(cardScore).append(". (+1 Game Points)\n");
+                            playerScoreList.append("@").append(StringUtil.markdownSafe(lobbyMember.getUsername())).append("'s card score was ").append(cardScore).append(". (+1 Game Points)\n");
                             lobbyMember.setGameScore(score + 1);
                         } else {
-                            playerScoreList.append("@").append(lobbyMember.getUsername()).append("'s card score was ").append(cardScore).append(". (0 Game Points)\n");
+                            playerScoreList.append("@").append(StringUtil.markdownSafe(lobbyMember.getUsername())).append("'s card score was ").append(cardScore).append(". (0 Game Points)\n");
                         }
                     }
                 }
@@ -347,7 +347,7 @@ public class Blackjack extends Game {
             if (toPlay.size() > 0) {
                 currentPlayer = toPlay.remove(0);
 
-                getGameLobby().sendMessage(SendableTextMessage.builder().message("*It's your turn, " + currentPlayer.getUsername() + "*").parseMode(ParseMode.MARKDOWN).build());
+                getGameLobby().sendMessage(SendableTextMessage.builder().message("*It's your turn, " + StringUtil.markdownSafe(currentPlayer.getUsername()) + "*").parseMode(ParseMode.MARKDOWN).build());
 
                 sendHand(currentPlayer, getKeyboard(currentPlayer));
             } else {
@@ -379,7 +379,7 @@ public class Blackjack extends Game {
             }
 
             getGameLobby().sendMessage(SendableTextMessage.builder().message("*Starting Round " + currentRound + "/" + maxRounds + "*\n" +
-                    "*Dealer:* " + roundDealer.getUsername()).parseMode(ParseMode.MARKDOWN).build());
+                    "*Dealer:* " + StringUtil.markdownSafe(roundDealer.getUsername())).parseMode(ParseMode.MARKDOWN).build());
 
             fillDeck();
             fillHands();
@@ -395,7 +395,7 @@ public class Blackjack extends Game {
         int playerPos = 1;
         for (int i = 0; i < getActivePlayers().size(); i++) {
             LobbyMember lobbyMember = getActivePlayers().get(i);
-            wholeMessage.append(String.format("#%d - %s (Score: %d)\n", playerPos++, lobbyMember.getUsername(), lobbyMember.getGameScore()));
+            wholeMessage.append(String.format("#%d - %s (Score: %d)\n", playerPos++, StringUtil.markdownSafe(lobbyMember.getUsername()), lobbyMember.getGameScore()));
         }
         getGameLobby().sendMessage(wholeMessage.toString());
     }
@@ -439,12 +439,6 @@ class BlackjackCard {
     private Card card;
     @Getter
     private boolean modified;
-
-    public BlackjackCard(Card card, int actualValue) {
-        this.card = card;
-        this.actualValue = actualValue;
-        modified = false;
-    }
 
     public BlackjackCard(Card card) {
         this.card = card;

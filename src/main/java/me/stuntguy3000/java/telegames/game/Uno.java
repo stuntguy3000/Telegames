@@ -358,7 +358,7 @@ public class Uno extends Game {
         }
 
         getGameLobby().sendMessage(SendableTextMessage.builder().message("➡️ *Current Card:* " + cardText + "\n" +
-                "\uD83D\uDC49\uD83C\uDFFB *Current Player:* " + currentPlayer).parseMode(ParseMode.MARKDOWN).build());
+                "\uD83D\uDC49\uD83C\uDFFB *Current Player:* " + StringUtil.markdownSafe(currentPlayer)).parseMode(ParseMode.MARKDOWN).build());
 
         round++;
 
@@ -431,7 +431,7 @@ public class Uno extends Game {
                 }
                 case DRAW4:
                 case WILD: {
-                    getGameLobby().sendMessage(sender.getUsername() + " played: " + card.getText());
+                    getGameLobby().sendMessage(StringUtil.markdownSafe(sender.getUsername()) + " played: " + card.getText());
                     activeUnoCard = card;
                     nextCardColour = card.getCardColour();
 
@@ -465,7 +465,7 @@ public class Uno extends Game {
         int playerPos = 1;
         for (int i = getActivePlayers().size() - 1; i >= 0; --i) {
             LobbyMember lobbyMember = getActivePlayers().get(i);
-            wholeMessage.append(String.format("#%d - %s (Score: %d)\n", playerPos++, lobbyMember.getUsername(), lobbyMember.getGameScore()));
+            wholeMessage.append(String.format("#%d - %s (Score: %d)\n", playerPos++, StringUtil.markdownSafe(lobbyMember.getUsername()), lobbyMember.getGameScore()));
         }
         getGameLobby().sendMessage(wholeMessage.toString());
     }

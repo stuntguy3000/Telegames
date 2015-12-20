@@ -202,7 +202,7 @@ public class Hangman extends Game {
             censoredWord.clear();
             guesses.clear();
             guessesLeft = 9;
-            getGameLobby().sendMessage(selector.getUsername() + " is selecting a word...");
+            getGameLobby().sendMessage(StringUtil.markdownSafe(selector.getUsername()) + " is selecting a word...");
             TelegramBot.getChat(selector.getUserID()).sendMessage("Please send a phrase...", TelegramHook.getBot());
             roundsLeft--;
         } else {
