@@ -19,7 +19,7 @@ public class AdminCommand extends Command {
 
     private void broadcast(int user, String message) {
         try {
-            TelegramBot.getChat(user).sendMessage(SendableTextMessage.builder().message(TelegramEmoji.GHOST.getText() + " *Broadcast*\n" + message).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+            TelegramBot.getChat(user).sendMessage(SendableTextMessage.builder().message(TelegramEmoji.GHOST.getText() + " *Broadcast*\n" + message).parseMode(ParseMode.MARKDOWN).disableWebPagePreview(true).build(), TelegramHook.getBot());
         } catch (Exception ignore) {
 
         }
