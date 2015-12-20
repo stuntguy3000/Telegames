@@ -433,7 +433,7 @@ public class CardsAgainstHumanity extends Game {
             StringBuilder extraCards = new StringBuilder();
 
             if (currentBlackCard.getBlanks() > 1) {
-                extraCards.append("\nPlease play ").append(currentBlackCard.getBlanks()).append(" white cards.");
+                extraCards.append("\n_Please play ").append(currentBlackCard.getBlanks()).append(" white cards._");
             }
 
             gameState = GameState.CHOOSING;
