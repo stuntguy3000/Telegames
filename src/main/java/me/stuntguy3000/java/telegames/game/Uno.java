@@ -507,7 +507,7 @@ public class Uno extends Game {
         int index = 1;
         for (UnoCard unoCard : deck) {
             if (index == 4) {
-                index = 0;
+                index = 1;
                 buttonList.add(new ArrayList<>(row));
                 row.clear();
             }
