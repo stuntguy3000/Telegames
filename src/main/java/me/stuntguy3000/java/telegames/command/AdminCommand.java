@@ -48,6 +48,7 @@ public class AdminCommand extends Command {
                         for (Lobby lobby : getInstance().getLobbyHandler().getActiveLobbies().values()) {
                             respond(chat, String.format("ID: %s Owner: %s Members: %s Last Active: %s %s", lobby.getLobbyID(), lobby.getLobbyOwner().getUsername(), lobby.getLobbyMembers().size(), StringUtil.millisecondsToHumanReadable(System.currentTimeMillis() - lobby.getLastLobbyAction()), lobby.getCurrentGame() != null ? "Playing " + lobby.getCurrentGame() : ""));
                         }
+                        return;
                     }
                     break;
                 }
