@@ -441,12 +441,12 @@ public class CardsAgainstHumanity extends Game {
             for (LobbyMember lobbyMember : getGameLobby().getLobbyMembers()) {
                 if (isPlaying(lobbyMember) && !(cardCzar.getUserID() == lobbyMember.getUserID())) {
                     if (extraCards.toString().isEmpty()) {
-                        TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(createUserKeyboard(lobbyMember).message(currentBlackCard.getText()).build(), TelegramHook.getBot());
+                        TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(createUserKeyboard(lobbyMember).message(TelegramEmoji.BLUE_RIGHT_ARROW.getText() + " " + currentBlackCard.getText()).build(), TelegramHook.getBot());
                     } else {
-                        TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(createUserKeyboard(lobbyMember).message(currentBlackCard.getText() + extraCards.toString()).build(), TelegramHook.getBot());
+                        TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(createUserKeyboard(lobbyMember).message(TelegramEmoji.BLUE_RIGHT_ARROW.getText() + " " + currentBlackCard.getText() + extraCards.toString()).build(), TelegramHook.getBot());
                     }
                 } else {
-                    TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(SendableTextMessage.builder().message(currentBlackCard.getText()).build(), TelegramHook.getBot());
+                    TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(SendableTextMessage.builder().message(TelegramEmoji.BLUE_RIGHT_ARROW.getText() + " " + currentBlackCard.getText()).build(), TelegramHook.getBot());
                 }
             }
 
@@ -511,36 +511,40 @@ public class CardsAgainstHumanity extends Game {
             if (sender.getId() == cardCzar.getUserID()) {
                 LobbyMember winner = null;
 
-                int number = TelegramEmoji.getNumber(TelegramEmoji.fromString(message));
+                try {
 
-                for (CzarOption czarOption : czarOptions) {
-                    if (czarOption.getOptionNumber() == number) {
-                        winner = czarOption.getOwner();
-                    }
-                }
+                    int number = TelegramEmoji.getNumber(TelegramEmoji.fromString(message));
 
-                if (winner != null) {
-                    getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.markdownSafe(winner.getUsername()) + " won the round!*").parseMode(ParseMode.MARKDOWN).build());
-                    winner.setGameScore(winner.getGameScore() + 1);
-
-                    LobbyMember gameWinner = null;
-                    for (LobbyMember lobbyMember : activePlayers) {
-                        if (lobbyMember.getGameScore() >= 10) {
-                            gameWinner = lobbyMember;
+                    for (CzarOption czarOption : czarOptions) {
+                        if (czarOption.getOptionNumber() == number) {
+                            winner = czarOption.getOwner();
                         }
                     }
 
-                    if (gameWinner != null) {
-                        continueGame = false;
-                        getGameLobby().stopGame();
+                    if (winner != null) {
+                        getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.markdownSafe(winner.getUsername()) + " won the round!*").parseMode(ParseMode.MARKDOWN).build());
+                        winner.setGameScore(winner.getGameScore() + 1);
+
+                        LobbyMember gameWinner = null;
+                        for (LobbyMember lobbyMember : activePlayers) {
+                            if (lobbyMember.getGameScore() >= 10) {
+                                gameWinner = lobbyMember;
+                            }
+                        }
+
+                        if (gameWinner != null) {
+                            continueGame = false;
+                            getGameLobby().stopGame();
+                        } else {
+                            nextRound();
+                        }
                     } else {
-                        nextRound();
+                        TelegramBot.getChat(sender.getId()).sendMessage("You have chosen an invalid card!", TelegramHook.getBot());
                     }
-                } else {
-                    TelegramBot.getChat(sender.getId()).sendMessage("You have chosen an invalid card!", TelegramHook.getBot());
+                } catch (Exception ex) {
                 }
-                return true;
             }
+            return true;
         }
 
         return false;
