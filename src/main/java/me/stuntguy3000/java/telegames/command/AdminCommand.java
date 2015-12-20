@@ -3,6 +3,7 @@ package me.stuntguy3000.java.telegames.command;
 import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Command;
+import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
@@ -18,7 +19,7 @@ public class AdminCommand extends Command {
 
     private void broadcast(int user, String message) {
         try {
-            TelegramBot.getChat(user).sendMessage(SendableTextMessage.builder().message("*[Broadcast]*\n\n" + message).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+            TelegramBot.getChat(user).sendMessage(SendableTextMessage.builder().message(TelegramEmoji.GHOST + " *Broadcast*\n" + message).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
         } catch (Exception ignore) {
 
         }
