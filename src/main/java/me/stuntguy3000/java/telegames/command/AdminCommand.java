@@ -3,6 +3,8 @@ package me.stuntguy3000.java.telegames.command;
 import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Command;
+import me.stuntguy3000.java.telegames.object.Lobby;
+import me.stuntguy3000.java.telegames.object.StringUtil;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.Chat;
@@ -37,8 +39,15 @@ public class AdminCommand extends Command {
                     if (args[0].equalsIgnoreCase("help")) {
                         respond(chat, SendableTextMessage.builder().message("*Admin subcommand help menu:" +
                                 "\n/admin help - Admin help menu" +
+                                "\n/admin list - List all lobbys" +
                                 "\n/admin broadcast [message] - Broadcast a message to all known users*").parseMode(ParseMode.MARKDOWN).build());
                         return;
+                    } else if (args[0].equalsIgnoreCase("list")) {
+                        respond(chat, ("Lobby List:"));
+
+                        for (Lobby lobby : getInstance().getLobbyHandler().getActiveLobbies().values()) {
+                            respond(chat, String.format("ID: %s Owner: %s Members: %s Last Active: %s %s", lobby.getLobbyID(), lobby.getLobbyOwner().getUsername(), lobby.getLobbyMembers().size(), StringUtil.millisecondsToHumanReadable(System.currentTimeMillis() - lobby.getLastLobbyAction()), lobby.getCurrentGame() != null ? "Playing " + lobby.getCurrentGame() : ""));
+                        }
                     }
                     break;
                 }
