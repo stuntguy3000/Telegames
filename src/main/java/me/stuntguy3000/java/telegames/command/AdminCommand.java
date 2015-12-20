@@ -43,11 +43,15 @@ public class AdminCommand extends Command {
                                 "\n/admin broadcast [message] - Broadcast a message to all known users*").parseMode(ParseMode.MARKDOWN).build());
                         return;
                     } else if (args[0].equalsIgnoreCase("list")) {
-                        respond(chat, ("Lobby List:"));
+                        StringBuilder lobbylist = new StringBuilder();
+                        lobbylist.append("*Lobby List:*\n");
 
                         for (Lobby lobby : getInstance().getLobbyHandler().getActiveLobbies().values()) {
-                            respond(chat, String.format("ID: %s Owner: %s Members: %s Last Active: %s %s", lobby.getLobbyID(), lobby.getLobbyOwner().getUsername(), lobby.getLobbyMembers().size(), StringUtil.millisecondsToHumanReadable(System.currentTimeMillis() - lobby.getLastLobbyAction()), lobby.getCurrentGame() != null ? "Playing " + lobby.getCurrentGame() : ""));
+                            lobbylist.append(String.format("*ID:* %s *Owner:* %s *Members:* %s *Last Active:* %s %s", lobby.getLobbyID(), StringUtil.markdownSafe(lobby.getLobbyOwner().getUsername()), lobby.getLobbyMembers().size(), StringUtil.millisecondsToHumanReadable(System.currentTimeMillis() - lobby.getLastLobbyAction()), lobby.getCurrentGame() != null ? "Playing " + lobby.getCurrentGame() : ""));
+                            lobbylist.append("\n");
                         }
+
+                        respond(chat, lobbylist.toString());
                         return;
                     }
                     break;
