@@ -456,24 +456,18 @@ public class CardsAgainstHumanity extends Game {
                         "*Card Czar:* " + cardCzar.getUsername()).parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
             }
 
-            StringBuilder extraCards = new StringBuilder();
-
-            if (currentBlackCard.getBlanks() > 1) {
-                extraCards.append("\n_Please play ").append(currentBlackCard.getBlanks()).append(" white cards._");
-            }
-
             gameState = GameState.CHOOSING;
 
             for (LobbyMember lobbyMember : getGameLobby().getLobbyMembers()) {
                 if (isPlaying(lobbyMember)) {
-                    if (extraCards.toString().isEmpty()) {
-                        TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(createUserKeyboard(lobbyMember).message(TelegramEmoji.BLUE_RIGHT_ARROW.getText() + " " + currentBlackCard.getText()).build(), TelegramHook.getBot());
-                    } else {
-                        TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(createUserKeyboard(lobbyMember).message(TelegramEmoji.BLUE_RIGHT_ARROW.getText() + " " + currentBlackCard.getText() + extraCards.toString()).build(), TelegramHook.getBot());
-                    }
+                    TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(createUserKeyboard(lobbyMember).message(TelegramEmoji.BLUE_RIGHT_ARROW.getText() + " " + currentBlackCard.getText()).build(), TelegramHook.getBot());
                 } else {
                     TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(SendableTextMessage.builder().message(TelegramEmoji.BLUE_RIGHT_ARROW.getText() + " " + currentBlackCard.getText()).build(), TelegramHook.getBot());
                 }
+            }
+
+            if (currentBlackCard.getBlanks() > 1) {
+                getGameLobby().sendMessage(SendableTextMessage.builder().message("_Please play " + currentBlackCard.getBlanks() + " white cards._").parseMode(ParseMode.MARKDOWN).build());
             }
 
             round++;
