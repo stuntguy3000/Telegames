@@ -54,7 +54,7 @@ public class Lobby {
 
         buttonList.add(Collections.singletonList(TelegramEmoji.JOYSTICK.getText() + " Play a game"));
         buttonList.add(Collections.singletonList(TelegramEmoji.END.getText() + " Leave the lobby"));
-        buttonList.add(Arrays.asList(TelegramEmoji.STAR.getText() + " Rate this bot", TelegramEmoji.BOOK.getText() + " About Telegames"));
+        buttonList.add(Arrays.asList(TelegramEmoji.STAR.getText() + " Rate this bot", TelegramEmoji.BOOK.getText() + " About"));
 
         return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, false, false));
     }
@@ -164,7 +164,7 @@ public class Lobby {
                 userLeave(getLobbyMember(sender.getUsername()), false);
             } else if (message.equals(TelegramEmoji.STAR.getText() + " Rate this bot")) {
                 event.getChat().sendMessage(createLobbyMenu().message("To rate this bot, [click this link](http://telegram.me/storebot?start=telegamesbot)!\n\nIt will take less than a minute and every rating is appreciated!").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
-            } else if (message.equals(TelegramEmoji.BOOK.getText() + " About Telegames")) {
+            } else if (message.equals(TelegramEmoji.BOOK.getText() + " About")) {
                 event.getChat().sendMessage(createLobbyMenu().message("Telegames is created by @stuntguy3000 to bring games to Telegram.\n\nType /version for more information.").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
             } else if (message.equals(TelegramEmoji.END.getText() + " Back to menu")) {
                 event.getChat().sendMessage(createLobbyMenu().message("You have returned to the menu.").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
@@ -217,7 +217,7 @@ public class Lobby {
 
             sendMessage(SendableTextMessage.builder().message(TelegramEmoji.JOYSTICK.getText() + " *Starting game: " + newGame.getGameName() + "*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
             String response = newGame.tryStartGame();
-            if (response != null && response.isEmpty()) {
+            if (response != null) {
                 currentGame = newGame;
                 Telegames.getInstance().getLobbyHandler().startTimer(this);
                 Telegames.getInstance().getConfigHandler().getUserStatistics().addGame(newGame);

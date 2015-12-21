@@ -432,9 +432,9 @@ public class CardsAgainstHumanity extends Game {
             currentBlackCard = blackCards.remove(0);
 
             if (robotCzar) {
-                getGameLobby().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.BOOK.getText() + "* Starting Round " + round + "*").replyMarkup(new ReplyKeyboardHide()).build());
+                getGameLobby().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.BOOK.getText() + " *Starting Round " + round + "*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
             } else {
-                getGameLobby().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.BOOK.getText() + "* Starting Round " + round + "*\n" +
+                getGameLobby().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.BOOK.getText() + " *Starting Round " + round + "*\n" +
                         "*Card Czar:* " + cardCzar.getUsername()).parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
             }
 
