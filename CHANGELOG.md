@@ -1,4 +1,7 @@
 # Changelog
+#### Version 1.4.2
+* Added: Cards Against Humanity now supports a minimum of two people, with a robot card czar choosing the winner at random.
+
 #### Version 1.4.1
 * Added: New to Hangman, you can now allow Telegames to choose a word for you!
 * Added: Announcement system
