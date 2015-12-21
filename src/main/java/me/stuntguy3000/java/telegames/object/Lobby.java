@@ -216,7 +216,8 @@ public class Lobby {
             }
 
             sendMessage(SendableTextMessage.builder().message(TelegramEmoji.JOYSTICK.getText() + " *Starting game: " + newGame.getGameName() + "*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
-            if (newGame.tryStartGame()) {
+            String response = newGame.tryStartGame();
+            if (response != null && !response.isEmpty()) {
                 currentGame = newGame;
                 Telegames.getInstance().getLobbyHandler().startTimer(this);
                 Telegames.getInstance().getConfigHandler().getUserStatistics().addGame(newGame);

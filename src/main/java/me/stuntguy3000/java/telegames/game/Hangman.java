@@ -149,7 +149,7 @@ public class Hangman extends Game {
     }
 
     @Override
-    public boolean tryStartGame() {
+    public String tryStartGame() {
         if (activePlayers.size() >= minPlayers) {
             gameState = GameState.INGAME;
             roundsLeft = activePlayers.size() * 3;
@@ -157,9 +157,9 @@ public class Hangman extends Game {
             loadWords();
 
             nextRound();
-            return true;
+            return null;
         }
-        return false;
+        return "Not enough players! Required: " + minPlayers;
     }
 
     private String getCensoredWord() {

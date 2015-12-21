@@ -78,6 +78,7 @@ public class Uno extends Game {
     private GameState gameState;
     @Getter
     private boolean increasePlayerIndex = true;
+    private int maxPlayers = 8;
     @Getter
     private int minPlayers = 2;
     @Getter
@@ -243,13 +244,16 @@ public class Uno extends Game {
     }
 
     @Override
-    public boolean tryStartGame() {
-        if (getActivePlayers().size() >= minPlayers) {
-            startGame();
-            return true;
+    public String tryStartGame() {
+        if (activePlayers.size() >= minPlayers) {
+            if (activePlayers.size() > maxPlayers) {
+                return "Too many players! Maximum: " + maxPlayers;
+            } else {
+                startGame();
+                return null;
+            }
         } else {
-            getGameLobby().sendMessage("Not enough players to start!");
-            return false;
+            return "Not enough players! Required: " + minPlayers;
         }
     }
 

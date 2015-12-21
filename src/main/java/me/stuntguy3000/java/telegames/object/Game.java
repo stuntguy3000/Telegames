@@ -37,5 +37,5 @@ public abstract class Game {
         this.gameDescription = description;
     }
 
-    public abstract boolean tryStartGame();
+    public abstract String tryStartGame();
 }

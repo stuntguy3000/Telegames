@@ -40,8 +40,8 @@ public class Connect4 extends Game {
     }
 
     @Override
-    public boolean tryStartGame() {
-        return true;
+    public String tryStartGame() {
+        return null;
     }
 }
     

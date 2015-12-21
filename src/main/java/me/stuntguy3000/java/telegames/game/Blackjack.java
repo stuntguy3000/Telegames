@@ -202,17 +202,17 @@ public class Blackjack extends Game {
 
     }
 
-    public boolean tryStartGame() {
-        if (getActivePlayers().size() >= minPlayers) {
-            if (getActivePlayers().size() > maxPlayers) {
-                getGameLobby().sendMessage("Too many players! Maximum: " + maxPlayers);
-                return false;
+    @Override
+    public String tryStartGame() {
+        if (activePlayers.size() >= minPlayers) {
+            if (activePlayers.size() > maxPlayers) {
+                return "Too many players! Maximum: " + maxPlayers;
             } else {
                 startGame();
-                return true;
+                return null;
             }
         } else {
-            return false;
+            return "Not enough players! Required: " + minPlayers;
         }
     }
 
