@@ -38,7 +38,8 @@ public enum TelegramEmoji {
     END("\uD83D\uDD1A"),
     STAR("⭐️"),
     PARTY_POPPER("\uD83C\uDF89"),
-    OPEN_BOOK("\uD83D\uDCD6");
+    OPEN_BOOK("\uD83D\uDCD6"),
+    SPACE_INVADER("\uD83D\uDC7E");
 
     @Getter
     String text;

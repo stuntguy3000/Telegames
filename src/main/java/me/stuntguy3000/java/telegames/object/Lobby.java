@@ -46,7 +46,7 @@ public class Lobby {
 
         kickList = new ArrayList<>();
         lastLobbyAction = System.currentTimeMillis();
-        lobbyHeader = createLobbyMenu().message("*[---------- " + StringUtil.markdownSafe(owner.getUsername()) + "'s Lobby ----------]*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build();
+        lobbyHeader = createLobbyMenu().message(TelegramEmoji.SPACE_INVADER.getText() + " *" + StringUtil.markdownSafe(owner.getUsername()) + "'s Lobby* " + TelegramEmoji.SPACE_INVADER.getText()).parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build();
     }
 
     private SendableTextMessage.SendableTextMessageBuilder createLobbyMenu() {
