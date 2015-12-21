@@ -46,7 +46,7 @@ public class Lobby {
 
         kickList = new ArrayList<>();
         lastLobbyAction = System.currentTimeMillis();
-        lobbyHeader = createLobbyMenu().message("*[---------- " + owner.getUsername() + "'s Lobby ----------]*").parseMode(ParseMode.MARKDOWN).build();
+        lobbyHeader = createLobbyMenu().message("*[---------- " + StringUtil.markdownSafe(owner.getUsername()) + "'s Lobby ----------]*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build();
     }
 
     private SendableTextMessage.SendableTextMessageBuilder createLobbyMenu() {
@@ -300,7 +300,7 @@ public class Lobby {
         if (!silent) {
             for (LobbyMember lobbyMember : lobbyMembers) {
                 if (lobbyMember.getUserID() == user.getUserID()) {
-                    SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.PERSON.getText() + " *" + StringUtil.markdownSafe(user.getUsername()) + " left!*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build();
+                    SendableTextMessage sendableTextMessage = Telegames.getInstance().getLobbyHandler().createMenu().message(TelegramEmoji.PERSON.getText() + " *" + StringUtil.markdownSafe(user.getUsername()) + " left!*").parseMode(ParseMode.MARKDOWN).build();
                     TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(sendableTextMessage, TelegramHook.getBot());
                 } else {
                     SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.PERSON.getText() + " *" + StringUtil.markdownSafe(user.getUsername()) + " left!*").parseMode(ParseMode.MARKDOWN).build();

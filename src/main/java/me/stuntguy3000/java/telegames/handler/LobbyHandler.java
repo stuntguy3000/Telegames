@@ -5,14 +5,14 @@ import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.GameSecondTimer;
 import me.stuntguy3000.java.telegames.object.Lobby;
+import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
+import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardMarkup;
 import pro.zackpollard.telegrambot.api.user.User;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.TimerTask;
+import java.util.*;
 
 // @author Luke Anderson | stuntguy3000
 public class LobbyHandler {
@@ -45,6 +45,19 @@ public class LobbyHandler {
     }
 
     /**
+     * Returns a Lobby creation menu
+     *
+     * @return
+     */
+    public SendableTextMessage.SendableTextMessageBuilder createMenu() {
+        List<List<String>> buttonList = new ArrayList<>();
+
+        buttonList.add(Collections.singletonList(TelegramEmoji.JOYSTICK.getText() + " Create a Lobby"));
+
+        return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, false, false));
+    }
+
+    /**
      * Destroys a Lobby
      *
      * @param lobbyID String the ID of the Lobby to destroy
@@ -68,6 +81,20 @@ public class LobbyHandler {
     }
 
     /**
+     * Returns a Lobby with the associated ID
+     *
+     * @param lobbyID String the requested lobby's ID
+     * @return Lobby the associated Lobby
+     */
+    public Lobby getLobby(String lobbyID) {
+        if (lobbyID != null) {
+            return getActiveLobbies().get(lobbyID.toUpperCase());
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Return the User's current Lobby
      *
      * @param user User the requested user
@@ -83,20 +110,6 @@ public class LobbyHandler {
         }
 
         return null;
-    }
-
-    /**
-     * Returns a Lobby with the associated ID
-     *
-     * @param lobbyID String the requested lobby's ID
-     * @return Lobby the associated Lobby
-     */
-    public Lobby getLobby(String lobbyID) {
-        if (lobbyID != null) {
-            return getActiveLobbies().get(lobbyID.toUpperCase());
-        } else {
-            return null;
-        }
     }
 
     /**

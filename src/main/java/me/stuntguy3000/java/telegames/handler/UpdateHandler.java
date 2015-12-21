@@ -4,7 +4,9 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import me.stuntguy3000.java.telegames.Telegames;
+import me.stuntguy3000.java.telegames.object.Lobby;
 import org.apache.commons.io.FileUtils;
+import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,9 +62,12 @@ public class UpdateHandler implements Runnable {
                         Telegames.getInstance().getUpdaterAnnouncerHandler().runUpdater();
                     }
                     instance.sendToAdmins("Build #" + newBuild + " downloaded. Restarting...");
-                    instance.sendToLobbies("*A new software update for the bot has been released.\nPlease re-create the lobby to continue.*");
+
+                    for (Lobby lobby : Telegames.getInstance().getLobbyHandler().getActiveLobbies().values()) {
+                        lobby.sendMessage(Telegames.getInstance().getLobbyHandler().createMenu().message("*A new software update for the bot has been released.\n" + "Please re-create the lobby to continue.*").parseMode(ParseMode.MARKDOWN).build());
+                    }
                 } catch (IOException e) {
-                    System.err.println("Updater failed!");
+                    instance.sendToAdmins("Updater failed!");
                     e.printStackTrace();
                     break;
                 }

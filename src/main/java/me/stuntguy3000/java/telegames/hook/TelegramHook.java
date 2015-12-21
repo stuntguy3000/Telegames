@@ -8,6 +8,7 @@ import me.stuntguy3000.java.telegames.object.Game;
 import me.stuntguy3000.java.telegames.object.Lobby;
 import me.stuntguy3000.java.telegames.object.config.LobbyList;
 import me.stuntguy3000.java.telegames.util.ClassGetter;
+import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.event.Listener;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
@@ -93,6 +94,8 @@ public class TelegramHook implements Listener {
 
         if (lobby != null) {
             lobby.onTextMessageReceived(event);
+        } else if (event.getContent().getContent().equals(TelegramEmoji.JOYSTICK.getText() + " Create a Lobby")) {
+            Telegames.getInstance().getLobbyHandler().createLobby(user);
         }
     }
 }
