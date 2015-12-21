@@ -87,6 +87,23 @@ class CAHCardPack {
     }
 }
 
+class CAHDelay extends TimerTask {
+
+    private CardsAgainstHumanity cardsAgainstHumanity;
+    private int options;
+
+    public CAHDelay(CardsAgainstHumanity cardsAgainstHumanity, int options) {
+        this.cardsAgainstHumanity = cardsAgainstHumanity;
+        this.options = options;
+        new Timer().schedule(this, 1000);
+    }
+
+    @Override
+    public void run() {
+        cardsAgainstHumanity.tryCzar(new Random().nextInt(options - 1) + 1);
+    }
+}
+
 // @author Luke Anderson | stuntguy3000
 public class CardsAgainstHumanity extends Game {
     private List<LobbyMember> activePlayers = new ArrayList<>();
@@ -180,7 +197,7 @@ public class CardsAgainstHumanity extends Game {
                     getGameLobby().sendMessage(SendableTextMessage.builder().message(options.toString()).parseMode(ParseMode.MARKDOWN).build());
                 } else {
                     getGameLobby().sendMessage(SendableTextMessage.builder().message(options.toString()).parseMode(ParseMode.MARKDOWN).build());
-                    tryCzar(new Random().nextInt(index - 1) + 1);
+                    new CAHDelay(this, index);
                 }
             }
         }
@@ -428,12 +445,12 @@ public class CardsAgainstHumanity extends Game {
             playedCards.clear();
             czarChoosing = false;
             blackCards.add(currentBlackCard);
-            cardCzar = activePlayers.get(playerOrderIndex);
             currentBlackCard = blackCards.remove(0);
 
             if (robotCzar) {
                 getGameLobby().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.BOOK.getText() + " *Starting Round " + round + "*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
             } else {
+                cardCzar = activePlayers.get(playerOrderIndex);
                 getGameLobby().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.BOOK.getText() + " *Starting Round " + round + "*\n" +
                         "*Card Czar:* " + cardCzar.getUsername()).parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
             }
@@ -564,7 +581,7 @@ public class CardsAgainstHumanity extends Game {
         nextRound();
     }
 
-    private boolean tryCzar(int number) {
+    boolean tryCzar(int number) {
         LobbyMember winner = null;
         for (CzarOption czarOption : czarOptions) {
             if (czarOption.getOptionNumber() == number) {
