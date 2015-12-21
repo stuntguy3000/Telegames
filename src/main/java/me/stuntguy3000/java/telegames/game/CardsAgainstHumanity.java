@@ -197,7 +197,7 @@ public class CardsAgainstHumanity extends Game {
                     }
                     getGameLobby().sendMessage(SendableTextMessage.builder().message(options.toString()).parseMode(ParseMode.MARKDOWN).build());
                 } else {
-                    getGameLobby().sendMessage(SendableTextMessage.builder().message(options.toString()).parseMode(ParseMode.MARKDOWN).build());
+                    getGameLobby().sendMessage(SendableTextMessage.builder().message("*All users have played.*\n\n" + options.toString()).parseMode(ParseMode.MARKDOWN).build());
                     new CAHDelay(this, index);
                 }
             }
