@@ -75,7 +75,7 @@ public class LobbyHandler {
      * @param lobby Lobby the Lobby to destroy
      */
     public void expireLobby(Lobby lobby) {
-        lobby.sendMessage(SendableTextMessage.builder().message("\n\n*This lobby has expired!*\n\n").parseMode(ParseMode.MARKDOWN).build());
+        lobby.sendMessage(createMenu().message("\n\n*This lobby has expired!*\n\n").parseMode(ParseMode.MARKDOWN).build());
 
         destroyLobby(lobby.getLobbyID());
     }
