@@ -95,7 +95,7 @@ class CAHDelay extends TimerTask {
     public CAHDelay(CardsAgainstHumanity cardsAgainstHumanity, int options) {
         this.cardsAgainstHumanity = cardsAgainstHumanity;
         this.options = options;
-        new Timer().schedule(this, 1000);
+        new Timer().schedule(this, 2000);
     }
 
     @Override
@@ -197,7 +197,7 @@ public class CardsAgainstHumanity extends Game {
                     }
                     getGameLobby().sendMessage(SendableTextMessage.builder().message(options.toString()).parseMode(ParseMode.MARKDOWN).build());
                 } else {
-                    getGameLobby().sendMessage(SendableTextMessage.builder().message("*All users have played.*\n\n" + options.toString()).parseMode(ParseMode.MARKDOWN).build());
+                    getGameLobby().sendMessage(SendableTextMessage.builder().message("*All users have played. A winner will be chosen shortly...*\n\n" + options.toString()).parseMode(ParseMode.MARKDOWN).build());
                     new CAHDelay(this, index);
                 }
             }
