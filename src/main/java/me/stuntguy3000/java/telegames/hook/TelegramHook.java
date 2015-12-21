@@ -94,6 +94,7 @@ public class TelegramHook implements Listener {
 
         if (lobby != null) {
             lobby.onTextMessageReceived(event);
+            LogHandler.log("[Chat] [%s] %s: %s", lobby.getLobbyID(), user.getUsername(), event.getContent().getContent());
         } else if (event.getContent().getContent().equals(TelegramEmoji.JOYSTICK.getText() + " Create a Lobby")) {
             Telegames.getInstance().getLobbyHandler().createLobby(user);
         }
