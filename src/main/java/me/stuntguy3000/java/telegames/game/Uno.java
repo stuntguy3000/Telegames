@@ -113,6 +113,7 @@ public class Uno extends Game {
 
     private void chooseColour(User sender, CardColour cardColour) {
         if (currentPlayer.equalsIgnoreCase(sender.getUsername()) && choosingColour) {
+            secondsSincePlay = 0;
             choosingColour = false;
             nextCardColour = cardColour;
             nextPlayerIndex();
@@ -146,11 +147,14 @@ public class Uno extends Game {
     @Override
     public void onSecond() {
         secondsSincePlay++;
-        if (secondsSincePlay == 20) {
-            getGameLobby().sendMessage(SendableTextMessage.builder().message("Please play a card @" + currentPlayer).build());
-        } else if (secondsSincePlay == 30) {
-            getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.markdownSafe(currentPlayer) + " ran out of time!*").parseMode(ParseMode.MARKDOWN).build());
-            drawCard(currentPlayer);
+
+        if (!choosingColour) {
+            if (secondsSincePlay == 20) {
+                getGameLobby().sendMessage(SendableTextMessage.builder().message("Please play a card @" + currentPlayer).build());
+            } else if (secondsSincePlay == 30) {
+                getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.markdownSafe(currentPlayer) + " ran out of time!*").parseMode(ParseMode.MARKDOWN).build());
+                drawCard(currentPlayer);
+            }
         }
     }
 
@@ -372,6 +376,7 @@ public class Uno extends Game {
     private void playCard(UnoCard card, User sender) {
         LobbyMember lobbyMember = getGameLobby().getLobbyMember(sender.getUsername());
         if (currentPlayer.equalsIgnoreCase(sender.getUsername())) {
+            secondsSincePlay = 0;
             if (choosingColour) {
                 lobbyMember.getChat().sendMessage("Please choose a colour.", TelegramHook.getBot());
                 return;
