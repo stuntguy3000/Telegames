@@ -33,7 +33,7 @@ public class Blackjack extends Game {
     private List<LobbyMember> activePlayers = new ArrayList<>();
     private LobbyMember currentPlayer;
     private int currentRound = 1;
-    private Boolean dealerFold = false;
+    private Boolean dealerStand = false;
     private Deck deck;
     @Getter
     @Setter
@@ -108,7 +108,7 @@ public class Blackjack extends Game {
                 aceCount.remove(lobbyMember.getUserID());
             }
 
-            fold(lobbyMember);
+            stand(lobbyMember);
         }
     }
 
@@ -140,7 +140,7 @@ public class Blackjack extends Game {
             getGameLobby().sendMessage(SendableTextMessage.builder().message("Please make a play @" + StringUtil.markdownSafe(currentPlayer.getUsername())).build());
         } else if (secondsSincePlay == 40) {
             getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.markdownSafe(currentPlayer.getUsername()) + " ran out of time!*").parseMode(ParseMode.MARKDOWN).build());
-            fold(currentPlayer);
+            stand(currentPlayer);
         }
     }
 
@@ -155,8 +155,8 @@ public class Blackjack extends Game {
                 case "Hit":
                     hit(lobbyMember, getKeyboard(getGameLobby().getLobbyMember(sender.getUsername())));
                     break;
-                case "Fold":
-                    fold(lobbyMember);
+                case "Stand":
+                    stand(lobbyMember);
                     break;
                 case "Ace is 1":
                     chooseAce(lobbyMember, 1);
@@ -227,27 +227,6 @@ public class Blackjack extends Game {
         }
     }
 
-    private void fold(LobbyMember lobbyMember) {
-        if (currentPlayer.getUserID() == lobbyMember.getUserID()) {
-            secondsSincePlay = 0;
-            if (checkAces(currentPlayer)) {
-                getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.markdownSafe(lobbyMember.getUsername()) + " chose to fold.*").parseMode(ParseMode.MARKDOWN).build());
-
-                calculateValue(currentPlayer);
-
-                TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(SendableTextMessage.builder().message("Card Score: " + playerCardValues.get(currentPlayer.getUserID()) + "\n").parseMode(ParseMode.MARKDOWN).replyMarkup(ReplyKeyboardHide.builder().build()).build(), TelegramHook.getBot());
-
-                if (roundDealer.getUserID() == lobbyMember.getUserID()) {
-                    dealerFold = true;
-                }
-
-                nextPlayer();
-            }
-        } else {
-            TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(SendableTextMessage.builder().message("*It's not your turn!*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
-        }
-    }
-
     public ReplyMarkup getKeyboard(LobbyMember lobbyMember) {
         int score = 0;
 
@@ -257,9 +236,9 @@ public class Blackjack extends Game {
         }
 
         if (score < 21) {
-            return ReplyKeyboardMarkup.builder().addRow("Hit", "Fold").oneTime(false).build();
+            return ReplyKeyboardMarkup.builder().addRow("Hit", "Stand").oneTime(false).build();
         } else {
-            return ReplyKeyboardMarkup.builder().addRow("Fold").oneTime(false).build();
+            return ReplyKeyboardMarkup.builder().addRow("Stand").oneTime(false).build();
         }
     }
 
@@ -295,7 +274,7 @@ public class Blackjack extends Game {
             if (playerCardValues.get(currentPlayer.getUserID()) >= 21) {
                 TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(SendableTextMessage.builder().message("*You have busted!*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
 
-                fold(lobbyMember);
+                stand(lobbyMember);
             } else {
                 getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.markdownSafe(lobbyMember.getUsername()) + " chose to hit.*").parseMode(ParseMode.MARKDOWN).build());
 
@@ -308,8 +287,8 @@ public class Blackjack extends Game {
     }
 
     private void nextPlayer() {
-        if (dealerFold) {
-            getGameLobby().sendMessage(SendableTextMessage.builder().message("*All players have folded!*").parseMode(ParseMode.MARKDOWN).build());
+        if (dealerStand) {
+            getGameLobby().sendMessage(SendableTextMessage.builder().message("*All players have chosen to stand!*").parseMode(ParseMode.MARKDOWN).build());
 
             calculateValue(roundDealer);
             int dealerScore = playerCardValues.get(roundDealer.getUserID());
@@ -362,7 +341,7 @@ public class Blackjack extends Game {
         if (currentRound > maxRounds) {
             getGameLobby().stopGame();
         } else {
-            dealerFold = false;
+            dealerStand = false;
             roundDealerIndex++;
 
             playerCards.clear();
@@ -425,6 +404,27 @@ public class Blackjack extends Game {
         }
 
         TelegramBot.getChat(player.getUserID()).sendMessage(SendableTextMessage.builder().message("*Here is your hand: *\n" + stringBuilder.toString()).parseMode(ParseMode.MARKDOWN).replyMarkup(replyMarkup).build(), TelegramHook.getBot());
+    }
+
+    private void stand(LobbyMember lobbyMember) {
+        if (currentPlayer.getUserID() == lobbyMember.getUserID()) {
+            secondsSincePlay = 0;
+            if (checkAces(currentPlayer)) {
+                getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.markdownSafe(lobbyMember.getUsername()) + " chose to stand.*").parseMode(ParseMode.MARKDOWN).build());
+
+                calculateValue(currentPlayer);
+
+                TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(SendableTextMessage.builder().message("Card Score: " + playerCardValues.get(currentPlayer.getUserID()) + "\n").parseMode(ParseMode.MARKDOWN).replyMarkup(ReplyKeyboardHide.builder().build()).build(), TelegramHook.getBot());
+
+                if (roundDealer.getUserID() == lobbyMember.getUserID()) {
+                    dealerStand = true;
+                }
+
+                nextPlayer();
+            }
+        } else {
+            TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(SendableTextMessage.builder().message("*It's not your turn!*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+        }
     }
 
     public void startGame() {
