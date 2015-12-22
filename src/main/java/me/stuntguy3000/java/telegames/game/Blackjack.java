@@ -311,10 +311,10 @@ public class Blackjack extends Game {
                         int score = lobbyMember.getGameScore();
 
                         if (cardScore >= dealerScore && cardScore <= 21) {
-                            playerScoreList.append("@").append(StringUtil.markdownSafe(lobbyMember.getUsername())).append("'s card score was ").append(cardScore).append(". (+1 Game Points)\n");
+                            playerScoreList.append(StringUtil.markdownSafe(lobbyMember.getUsername())).append("'s card score was ").append(cardScore).append(". (+1 Game Points)\n");
                             lobbyMember.setGameScore(score + 1);
                         } else {
-                            playerScoreList.append("@").append(StringUtil.markdownSafe(lobbyMember.getUsername())).append("'s card score was ").append(cardScore).append(". (0 Game Points)\n");
+                            playerScoreList.append(StringUtil.markdownSafe(lobbyMember.getUsername())).append("'s card score was ").append(cardScore).append(". (0 Game Points)\n");
                         }
                     }
                 }
