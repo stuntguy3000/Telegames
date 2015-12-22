@@ -149,9 +149,9 @@ public class Uno extends Game {
         secondsSincePlay++;
 
         if (!choosingColour) {
-            if (secondsSincePlay == 20) {
+            if (secondsSincePlay == 30) {
                 getGameLobby().sendMessage(SendableTextMessage.builder().message("Please play a card @" + currentPlayer).build());
-            } else if (secondsSincePlay == 30) {
+            } else if (secondsSincePlay == 40) {
                 getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.markdownSafe(currentPlayer) + " ran out of time!*").parseMode(ParseMode.MARKDOWN).build());
                 drawCard(currentPlayer);
             }

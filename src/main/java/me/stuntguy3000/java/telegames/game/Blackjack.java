@@ -136,9 +136,9 @@ public class Blackjack extends Game {
     @Override
     public void onSecond() {
         secondsSincePlay++;
-        if (secondsSincePlay == 20) {
+        if (secondsSincePlay == 30) {
             getGameLobby().sendMessage(SendableTextMessage.builder().message("Please make a play @" + StringUtil.markdownSafe(currentPlayer.getUsername())).build());
-        } else if (secondsSincePlay == 30) {
+        } else if (secondsSincePlay == 40) {
             getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.markdownSafe(currentPlayer.getUsername()) + " ran out of time!*").parseMode(ParseMode.MARKDOWN).build());
             fold(currentPlayer);
         }
@@ -229,6 +229,7 @@ public class Blackjack extends Game {
 
     private void fold(LobbyMember lobbyMember) {
         if (currentPlayer.getUserID() == lobbyMember.getUserID()) {
+            secondsSincePlay = 0;
             if (checkAces(currentPlayer)) {
                 getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.markdownSafe(lobbyMember.getUsername()) + " chose to fold.*").parseMode(ParseMode.MARKDOWN).build());
 
@@ -357,6 +358,7 @@ public class Blackjack extends Game {
     }
 
     private void nextRound() {
+        secondsSincePlay = 0;
         if (currentRound > maxRounds) {
             getGameLobby().stopGame();
         } else {
@@ -409,10 +411,12 @@ public class Blackjack extends Game {
     }
 
     private void sendAceKeyboard(LobbyMember lobbyMember) {
+        secondsSincePlay = 0;
         TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(SendableTextMessage.builder().message("*You have an Ace! Please choose its value.*").parseMode(ParseMode.MARKDOWN).replyMarkup(aceKeyboard).build(), TelegramHook.getBot());
     }
 
     private void sendHand(LobbyMember player, ReplyMarkup replyMarkup) {
+        secondsSincePlay = 0;
         StringBuilder stringBuilder = new StringBuilder();
 
         for (BlackjackCard card : playerCards.get(player.getUserID())) {
