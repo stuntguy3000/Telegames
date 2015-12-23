@@ -33,6 +33,8 @@ public class Lobby {
     private List<LobbyMember> lobbyMembers = new ArrayList<>();
     @Getter
     private LobbyMember lobbyOwner;
+    @Getter
+    private String previousGame;
 
     /**
      * Constructs a new Lobby instance
@@ -51,6 +53,10 @@ public class Lobby {
 
     private SendableTextMessage.SendableTextMessageBuilder createLobbyMenu() {
         List<List<String>> buttonList = new ArrayList<>();
+
+        if (previousGame != null) {
+            buttonList.add(Collections.singletonList(TelegramEmoji.REPLAY.getText() + " Replay previous game"));
+        }
 
         buttonList.add(Collections.singletonList(TelegramEmoji.JOYSTICK.getText() + " Play a game"));
         buttonList.add(Collections.singletonList(TelegramEmoji.END.getText() + " Leave the lobby"));
@@ -158,8 +164,14 @@ public class Lobby {
                 } else {
                     event.getChat().sendMessage("Unknown game!\nUse /gamelist for help.", TelegramHook.getBot());
                 }
+            } else if (message.equals(TelegramEmoji.REPLAY.getText() + " Replay previous game")) {
+                if (currentGame == null && previousGame != null) {
+                    startGame(Telegames.getInstance().getGameHandler().getGame(previousGame));
+                }
             } else if (message.equals(TelegramEmoji.JOYSTICK.getText() + " Play a game")) {
-                event.getChat().sendMessage(Telegames.getInstance().getGameHandler().createGameSelector().message(TelegramEmoji.JOYSTICK.getText() + " *Please choose a game:*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                if (currentGame == null) {
+                    event.getChat().sendMessage(Telegames.getInstance().getGameHandler().createGameSelector().message(TelegramEmoji.JOYSTICK.getText() + " *Please choose a game:*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                }
             } else if (message.equals(TelegramEmoji.END.getText() + " Leave the lobby")) {
                 userLeave(getLobbyMember(sender.getUsername()), false);
             } else if (message.equals(TelegramEmoji.STAR.getText() + " Rate this bot")) {
@@ -167,7 +179,9 @@ public class Lobby {
             } else if (message.equals(TelegramEmoji.BOOK.getText() + " About")) {
                 event.getChat().sendMessage(createLobbyMenu().message("Telegames is created by @stuntguy3000 to bring games to Telegram.\n\nType /version for more information.").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
             } else if (message.equals(TelegramEmoji.END.getText() + " Back to menu")) {
-                event.getChat().sendMessage(createLobbyMenu().message("You have returned to the menu.").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                if (currentGame == null) {
+                    event.getChat().sendMessage(createLobbyMenu().message("You have returned to the menu.").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                }
             } else {
                 userChat(sender, message);
             }
@@ -219,6 +233,7 @@ public class Lobby {
             String response = newGame.tryStartGame();
             if (response == null) {
                 currentGame = newGame;
+                previousGame = currentGame.getGameName();
                 Telegames.getInstance().getLobbyHandler().startTimer(this);
                 Telegames.getInstance().getConfigHandler().getUserStatistics().addGame(newGame);
             } else {
