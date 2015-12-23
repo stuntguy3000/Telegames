@@ -2,6 +2,7 @@ package me.stuntguy3000.java.telegames.object;
 
 import lombok.Getter;
 import me.stuntguy3000.java.telegames.Telegames;
+import me.stuntguy3000.java.telegames.handler.LogHandler;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.TelegramBot;
@@ -53,6 +54,8 @@ public class Lobby {
 
     private SendableTextMessage.SendableTextMessageBuilder createLobbyMenu() {
         List<List<String>> buttonList = new ArrayList<>();
+
+        LogHandler.debug("PG: " + previousGame);
 
         if (previousGame != null) {
             buttonList.add(Collections.singletonList(TelegramEmoji.REPLAY.getText() + " Replay previous game"));
@@ -233,7 +236,6 @@ public class Lobby {
             String response = newGame.tryStartGame();
             if (response == null) {
                 currentGame = newGame;
-                previousGame = currentGame.getGameName();
                 Telegames.getInstance().getLobbyHandler().startTimer(this);
                 Telegames.getInstance().getConfigHandler().getUserStatistics().addGame(newGame);
             } else {
@@ -252,6 +254,7 @@ public class Lobby {
     public void stopGame() {
         lastLobbyAction = System.currentTimeMillis();
         currentGame.endGame();
+        previousGame = currentGame.getGameName();
         currentGame = null;
 
         Telegames.getInstance().getLobbyHandler().stopTimer(this);
