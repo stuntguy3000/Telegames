@@ -2,7 +2,6 @@ package me.stuntguy3000.java.telegames.object;
 
 import lombok.Getter;
 import me.stuntguy3000.java.telegames.Telegames;
-import me.stuntguy3000.java.telegames.handler.LogHandler;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.TelegramBot;
@@ -49,13 +48,11 @@ public class Lobby {
 
         kickList = new ArrayList<>();
         lastLobbyAction = System.currentTimeMillis();
-        lobbyHeader = createLobbyMenu().message(TelegramEmoji.SPACE_INVADER.getText() + " *" + StringUtil.markdownSafe(owner.getUsername()) + "'s Lobby* " + TelegramEmoji.SPACE_INVADER.getText()).parseMode(ParseMode.MARKDOWN).build();
+        updateHeader();
     }
 
     private SendableTextMessage.SendableTextMessageBuilder createLobbyMenu() {
         List<List<String>> buttonList = new ArrayList<>();
-
-        LogHandler.debug("PG: " + previousGame);
 
         if (previousGame != null) {
             buttonList.add(Collections.singletonList(TelegramEmoji.REPLAY.getText() + " Replay previous game"));
@@ -259,7 +256,12 @@ public class Lobby {
 
         Telegames.getInstance().getLobbyHandler().stopTimer(this);
 
+        updateHeader();
         sendMessage(lobbyHeader);
+    }
+
+    private void updateHeader() {
+        lobbyHeader = createLobbyMenu().message(TelegramEmoji.SPACE_INVADER.getText() + " *" + StringUtil.markdownSafe(getLobbyOwner().getUsername()) + "'s Lobby* " + TelegramEmoji.SPACE_INVADER.getText()).parseMode(ParseMode.MARKDOWN).build();
     }
 
     /**
@@ -288,6 +290,7 @@ public class Lobby {
         LobbyMember lobbyMember = new LobbyMember(user);
         lobbyMembers.add(lobbyMember);
         Game game = getCurrentGame();
+        updateHeader();
         lobbyMember.getChat().sendMessage(lobbyHeader, getTelegramBot());
 
         if (kickList.contains(user.getId())) {
