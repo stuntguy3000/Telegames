@@ -2,10 +2,14 @@ package me.stuntguy3000.java.telegames.command;
 
 import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.handler.LobbyHandler;
+import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Command;
 import me.stuntguy3000.java.telegames.object.Lobby;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.chat.Chat;
+import pro.zackpollard.telegrambot.api.chat.ChatType;
+import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
+import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
 import pro.zackpollard.telegrambot.api.user.User;
 
@@ -32,7 +36,13 @@ public class CreateCommand extends Command {
                     targetLobby.userJoin(sender);
                 }
             } else {
-                lobbyHandler.createLobby(sender);
+                Lobby lobby = lobbyHandler.createLobby(sender);
+
+                if (!(event.getChat().getType() == ChatType.PRIVATE)) {
+                    SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message("[Click here to join the lobby!](http://telegram.me/" + TelegramHook.getBot().getBotUsername() + "?start=" + lobby.getLobbyID() + ")").parseMode(ParseMode.MARKDOWN).build();
+
+                    event.getChat().sendMessage(sendableTextMessage, TelegramHook.getBot());
+                }
             }
         } else {
             respond(chat, TelegramEmoji.RED_CROSS.getText() + " You are already in a lobby!");

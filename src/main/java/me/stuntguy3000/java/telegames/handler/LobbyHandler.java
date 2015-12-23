@@ -26,7 +26,7 @@ public class LobbyHandler {
      *
      * @param user User the owner of the Lobby
      */
-    public void createLobby(User user) {
+    public Lobby createLobby(User user) {
         Lobby lobby = new Lobby(user, Telegames.getInstance().getRandomString().nextString().toUpperCase());
         activeLobbies.put(lobby.getLobbyID(), lobby);
 
@@ -37,6 +37,7 @@ public class LobbyHandler {
         lobby.userJoin(user);
 
         //Telegames.getInstance().getConfigHandler().getLobbyList().addLobby(lobby.getLobbyID(), lobby.getLobbyMembers());
+        return lobby;
     }
 
     public void createLobby(String lobbyID, List<Integer> playerList) {
