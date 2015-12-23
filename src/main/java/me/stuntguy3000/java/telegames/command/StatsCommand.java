@@ -38,7 +38,7 @@ public class StatsCommand extends Command {
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append("*Total Users:* ").append(userStatistics.getKnownPlayers().size()).append("\n");
-        stringBuilder.append("*Active Lobbys:* ").append(getInstance().getLobbyHandler().getActiveLobbies().size()).append("\n");
+        stringBuilder.append("*Active Lobbies:* ").append(getInstance().getLobbyHandler().getActiveLobbies().size()).append("\n");
 
         stringBuilder.append("\n*Games Play Count:*\n");
 

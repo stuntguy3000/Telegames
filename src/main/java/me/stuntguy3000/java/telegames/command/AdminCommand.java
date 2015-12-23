@@ -39,7 +39,8 @@ public class AdminCommand extends Command {
                     if (args[0].equalsIgnoreCase("help")) {
                         respond(chat, SendableTextMessage.builder().message("*Admin subcommand help menu:" +
                                 "\n/admin help - Admin help menu" +
-                                "\n/admin list - List all lobbys" +
+                                "\n/admin list - List all lobbies" +
+                                "\n/admin botfather - List all commands" +
                                 "\n/admin broadcast [message] - Broadcast a message to all known users*").parseMode(ParseMode.MARKDOWN).build());
                         return;
                     } else if (args[0].equalsIgnoreCase("list")) {
@@ -52,6 +53,9 @@ public class AdminCommand extends Command {
                         }
 
                         respond(chat, SendableTextMessage.builder().message(lobbylist.toString()).parseMode(ParseMode.MARKDOWN).build());
+                        return;
+                    } else if (args[0].equalsIgnoreCase("botfather")) {
+                        respond(chat, SendableTextMessage.builder().message("*Botfather Message:*\n" + getInstance().getCommandHandler().getBotFatherString()).parseMode(ParseMode.MARKDOWN).build());
                         return;
                     }
                     break;
