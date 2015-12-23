@@ -39,7 +39,7 @@ public class CreateCommand extends Command {
                 Lobby lobby = lobbyHandler.createLobby(sender);
 
                 if (!(event.getChat().getType() == ChatType.PRIVATE)) {
-                    SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message("[Click here to join the lobby!](http://telegram.me/" + TelegramHook.getBot().getBotUsername() + "?start=" + lobby.getLobbyID() + ")").parseMode(ParseMode.MARKDOWN).build();
+                    SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.JOYSTICK.getText() + " [Click here to join the lobby!](http://telegram.me/" + TelegramHook.getBot().getBotUsername() + "?start=" + lobby.getLobbyID() + ")").parseMode(ParseMode.MARKDOWN).build();
 
                     event.getChat().sendMessage(sendableTextMessage, TelegramHook.getBot());
                 }
