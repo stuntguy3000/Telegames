@@ -37,7 +37,7 @@ public class Lobby {
     @Getter
     private List<LobbyMember> lobbyMembers = new ArrayList<>();
     @Getter
-    private LobbyOptions lobbyOptions;
+    private LobbyOptions lobbyOptions = new LobbyOptions();
     @Getter
     private LobbyMember lobbyOwner;
     @Getter
