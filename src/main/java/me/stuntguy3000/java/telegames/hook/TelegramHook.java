@@ -11,10 +11,7 @@ import me.stuntguy3000.java.telegames.util.ClassGetter;
 import me.stuntguy3000.java.telegames.util.KeyboardUtil;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.TelegramBot;
-import pro.zackpollard.telegrambot.api.chat.message.content.type.PhotoSize;
-import pro.zackpollard.telegrambot.api.chat.message.send.InputFile;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
-import pro.zackpollard.telegrambot.api.chat.message.send.SendablePhotoMessage;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.event.Listener;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
@@ -104,16 +101,7 @@ public class TelegramHook implements Listener {
         Lobby lobby = Telegames.getInstance().getLobbyHandler().getLobby(user);
 
         if (lobby != null) {
-            PhotoSize[] sizes = event.getContent().getContent();
-            PhotoSize lastPhoto = sizes[0];
-
-            for (PhotoSize size : sizes) {
-                if ((size.getWidth() * size.getHeight()) > (lastPhoto.getWidth() * lastPhoto.getHeight())) {
-                    lastPhoto = size;
-                }
-            }
-
-            lobby.sendMessage(SendablePhotoMessage.builder().photo(new InputFile(lastPhoto.getFileId())).caption("Image from " + user.getUsername()).build());
+            lobby.onPhotoMessageReceivedEvent(event);
         }
     }
 

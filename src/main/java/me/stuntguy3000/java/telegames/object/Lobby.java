@@ -8,9 +8,9 @@ import me.stuntguy3000.java.telegames.util.KeyboardUtil;
 import me.stuntguy3000.java.telegames.util.StringUtil;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.TelegramBot;
-import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
-import pro.zackpollard.telegrambot.api.chat.message.send.SendableMessage;
-import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
+import pro.zackpollard.telegrambot.api.chat.message.content.type.PhotoSize;
+import pro.zackpollard.telegrambot.api.chat.message.send.*;
+import pro.zackpollard.telegrambot.api.event.chat.message.PhotoMessageReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.TextMessageReceivedEvent;
 import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardHide;
 import pro.zackpollard.telegrambot.api.user.User;
@@ -123,6 +123,23 @@ public class Lobby {
         sendMessage(SendableTextMessage.builder().message(TelegramEmoji.RED_CROSS.getText() + " *" + StringUtil.markdownSafe(lobbyMember.getUsername()) + " was removed from the lobby!*").parseMode(ParseMode.MARKDOWN).build());
         userLeave(lobbyMember, true);
         kickList.add(lobbyMember.getUserID());
+    }
+
+    public void onPhotoMessageReceivedEvent(PhotoMessageReceivedEvent event) {
+        PhotoSize[] sizes = event.getContent().getContent();
+        PhotoSize lastPhoto = sizes[0];
+
+        for (PhotoSize size : sizes) {
+            if ((size.getWidth() * size.getHeight()) > (lastPhoto.getWidth() * lastPhoto.getHeight())) {
+                lastPhoto = size;
+            }
+        }
+
+        for (LobbyMember lobbyMember : lobbyMembers) {
+            if (lobbyMember.getUserID() != event.getMessage().getSender().getId()) {
+                lobbyMember.getChat().sendMessage(SendablePhotoMessage.builder().photo(new InputFile(lastPhoto.getFileId())).caption("Image from " + event.getMessage().getSender().getUsername()).build(), TelegramHook.getBot());
+            }
+        }
     }
 
     /**
