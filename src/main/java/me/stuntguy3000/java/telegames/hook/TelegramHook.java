@@ -109,7 +109,9 @@ public class TelegramHook implements Listener {
             Telegames.getInstance().getLobbyHandler().createLobby(user);
         } else if (message.equalsIgnoreCase(TelegramEmoji.PERSON.getText() + " Join a lobby")) {
             event.getChat().sendMessage(KeyboardUtil.createCancelMenu().message(TelegramEmoji.PENCIL.getText() + " *Enter the name or ID of the lobby:*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build(), TelegramHook.getBot());
-            enteringlobby.add(user.getUsername());
+            if (!enteringlobby.contains(user.getUsername())) {
+                enteringlobby.add(user.getUsername());
+            }
         } else {
             if (enteringlobby.contains(user.getUsername())) {
                 String name = event.getContent().getContent().replace(" ", "");
