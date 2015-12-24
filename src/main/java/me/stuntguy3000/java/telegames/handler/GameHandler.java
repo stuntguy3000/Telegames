@@ -1,5 +1,6 @@
 package me.stuntguy3000.java.telegames.handler;
 
+import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.object.Game;
 
 import java.util.ArrayList;
@@ -27,10 +28,14 @@ public class GameHandler {
      *
      * @return String a list of games
      */
-    public String getGameList() {
+    public String getGameList(boolean includeRestricted) {
         StringBuilder sb = new StringBuilder();
         sb.append("Game List:\n");
         for (Game game : gameList.values()) {
+            if ((game.isDevModeOnly() && !Telegames.DEV_MODE) || (game.isRestrictedGame() && includeRestricted)) {
+                continue;
+            }
+
             sb.append("*").append(game.getGameName()).append("*: ").append(game.getGameDescription()).append("\n");
         }
 

@@ -16,7 +16,13 @@ public class GameListCommand extends Command {
 
     public void processCommand(CommandMessageReceivedEvent event) {
         Chat chat = event.getChat();
+        String[] args = event.getArgs();
+        boolean restricted = false;
 
-        respond(chat, SendableTextMessage.builder().message(TelegramEmoji.BOOK.getText() + " " + getInstance().getGameHandler().getGameList()).parseMode(ParseMode.MARKDOWN).build());
+        if (args != null && args.length > 0 && args[0].equalsIgnoreCase("all")) {
+            restricted = true;
+        }
+
+        respond(chat, SendableTextMessage.builder().message(TelegramEmoji.BOOK.getText() + " " + getInstance().getGameHandler().getGameList(restricted)).parseMode(ParseMode.MARKDOWN).build());
     }
 }

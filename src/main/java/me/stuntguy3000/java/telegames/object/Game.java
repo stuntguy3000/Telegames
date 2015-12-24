@@ -15,6 +15,9 @@ public abstract class Game {
     private Lobby gameLobby;
     @Getter
     private String gameName;
+    @Getter
+    @Setter
+    private boolean restrictedGame = false;
 
     public abstract void endGame();
 
