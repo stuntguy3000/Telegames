@@ -5,14 +5,15 @@ import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Lobby;
 import me.stuntguy3000.java.telegames.object.timer.GameSecondTimer;
-import me.stuntguy3000.java.telegames.util.TelegramEmoji;
+import me.stuntguy3000.java.telegames.util.KeyboardUtil;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
-import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardMarkup;
 import pro.zackpollard.telegrambot.api.user.User;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.TimerTask;
 
 // @author Luke Anderson | stuntguy3000
 public class LobbyHandler {
@@ -46,20 +47,6 @@ public class LobbyHandler {
     }
 
     /**
-     * Returns a Lobby creation menu
-     *
-     * @return
-     */
-    public SendableTextMessage.SendableTextMessageBuilder createLobbyCreationMenu() {
-        List<List<String>> buttonList = new ArrayList<>();
-
-        buttonList.add(Collections.singletonList(TelegramEmoji.JOYSTICK.getText() + " Create a lobby"));
-        buttonList.add(Collections.singletonList(TelegramEmoji.PERSON.getText() + " Join a lobby"));
-
-        return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, false, false));
-    }
-
-    /**
      * Destroys a Lobby
      *
      * @param lobbyID String the ID of the Lobby to destroy
@@ -72,12 +59,12 @@ public class LobbyHandler {
     }
 
     /**
-     * Expires a lobby after 10min of inactivity
+     * Expires a lobby after about 10min of inactivity
      *
      * @param lobby Lobby the Lobby to destroy
      */
     public void expireLobby(Lobby lobby) {
-        lobby.sendMessage(createLobbyCreationMenu().message("\n\n*This lobby has expired!*\n\n").parseMode(ParseMode.MARKDOWN).build());
+        lobby.sendMessage(KeyboardUtil.createLobbyCreationMenu().message("\n\n*This lobby has expired!*\n\n").parseMode(ParseMode.MARKDOWN).build());
 
         destroyLobby(lobby.getLobbyID());
     }

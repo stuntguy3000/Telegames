@@ -6,6 +6,7 @@ import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Command;
 import me.stuntguy3000.java.telegames.object.Game;
 import me.stuntguy3000.java.telegames.object.Lobby;
+import me.stuntguy3000.java.telegames.util.KeyboardUtil;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
@@ -47,7 +48,7 @@ public class PlayCommand extends Command {
                             }
                         }
                     } else {
-                        respond(chat, getInstance().getGameHandler().createGameSelector().message(TelegramEmoji.JOYSTICK.getText() + " *Please choose a game:*").parseMode(ParseMode.MARKDOWN).build());
+                        respond(chat, KeyboardUtil.createGameSelector().message(TelegramEmoji.JOYSTICK.getText() + " *Please choose a game:*").parseMode(ParseMode.MARKDOWN).build());
                     }
                 } else {
                     respond(chat, TelegramEmoji.RED_CROSS.getText() + " A game is already running!");
