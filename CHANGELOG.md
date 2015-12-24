@@ -1,4 +1,14 @@
 # Changelog
+#### Version 1.5
+* Added: New Lobby options
+    - Lock/Unlock feature to prevent people from joining
+    - Add a custom name to be used to join the lobby (via command)
+* Added: Lobby join via name option in the main menu
+* Fix: Major code organization and cleanup 
+* Fix: Various bug fixes in games and bot
+
+Merry Christmas and Happy Holidays :)
+
 #### Version 1.4.3
 * Modified: /start is now /create (/start is still supported)
 * Modified: Introduced a replay game button to Lobby menu
