@@ -283,16 +283,20 @@ public class Lobby {
     /**
      * Stop the current game
      */
-    public void stopGame() {
-        lastLobbyAction = System.currentTimeMillis();
-        currentGame.endGame();
-        previousGame = currentGame.getGameName();
-        currentGame = null;
+    public void stopGame(User sender) {
+        if (lobbyOwner.getUserID() == sender.getId()) {
+            lastLobbyAction = System.currentTimeMillis();
+            currentGame.endGame();
+            previousGame = currentGame.getGameName();
+            currentGame = null;
 
-        Telegames.getInstance().getLobbyHandler().stopTimer(this);
+            Telegames.getInstance().getLobbyHandler().stopTimer(this);
 
-        updateHeader();
-        sendMessage(lobbyHeader);
+            updateHeader();
+            sendMessage(lobbyHeader);
+        } else {
+            TelegramBot.getChat(sender.getId()).sendMessage(SendableTextMessage.builder().message(TelegramEmoji.RED_CROSS.getText() + " *You cannot perform this action!*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+        }
     }
 
     private void updateHeader() {
