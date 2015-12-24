@@ -222,9 +222,9 @@ public class Lobby {
                     boolean isLocked = getLobbyOptions().isLocked();
 
                     if (isLocked) {
-                        event.getChat().sendMessage(createLobbyMenu().message("The lobby has been *unlocked*.").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                        event.getChat().sendMessage(createLobbyOptionsMenu().message("The lobby has been *unlocked*.").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                     } else {
-                        event.getChat().sendMessage(createLobbyMenu().message("The lobby has been *locked*.").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                        event.getChat().sendMessage(createLobbyOptionsMenu().message("The lobby has been *locked*.").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                     }
 
                     lobbyOptions.setLocked(!isLocked);
@@ -249,7 +249,7 @@ public class Lobby {
                 } else {
                     renamingLobby = false;
                     customName = newName;
-                    event.getChat().sendMessage(createCancelMenu().message(TelegramEmoji.GREEN_BOX_TICK.getText() + " *The Lobby has been renamed to \"" + StringUtil.markdownSafe(customName) + "\"*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                    event.getChat().sendMessage(createLobbyMenu().message(TelegramEmoji.GREEN_BOX_TICK.getText() + " *The Lobby has been renamed to \"" + StringUtil.markdownSafe(customName) + "\"*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                 }
             } else {
                 userChat(sender, message);
