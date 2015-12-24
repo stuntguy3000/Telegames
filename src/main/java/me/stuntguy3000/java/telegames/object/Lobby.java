@@ -322,17 +322,18 @@ public class Lobby {
      */
     public boolean userJoin(User user) {
         lastLobbyAction = System.currentTimeMillis();
+
+        if (kickList.contains(user.getId()) || lobbyOptions.isLocked()) {
+            SendableTextMessage sendableTextMessage = KeyboardUtil.createLobbyCreationMenu().message(TelegramEmoji.RED_CROSS.getText() + " *You cannot join this lobby.*").parseMode(ParseMode.MARKDOWN).build();
+            TelegramHook.getBot().sendMessage(TelegramBot.getChat(user.getId()), sendableTextMessage);
+            return false;
+        }
+
         LobbyMember lobbyMember = new LobbyMember(user);
         lobbyMembers.add(lobbyMember);
         Game game = getCurrentGame();
         updateHeader();
         lobbyMember.getChat().sendMessage(lobbyHeader, getTelegramBot());
-
-        if (kickList.contains(user.getId()) || lobbyOptions.isLocked()) {
-            SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.RED_CROSS.getText() + " *You cannot join this lobby.*").parseMode(ParseMode.MARKDOWN).build();
-            TelegramHook.getBot().sendMessage(TelegramBot.getChat(user.getId()), sendableTextMessage);
-            return false;
-        }
 
         SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.PERSON.getText() + " *" + StringUtil.markdownSafe(user.getUsername()) + " joined!*").parseMode(ParseMode.MARKDOWN).build();
         sendMessage(sendableTextMessage);
