@@ -8,8 +8,10 @@ import me.stuntguy3000.java.telegames.util.KeyboardUtil;
 import me.stuntguy3000.java.telegames.util.StringUtil;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.TelegramBot;
-import pro.zackpollard.telegrambot.api.chat.message.content.type.PhotoSize;
-import pro.zackpollard.telegrambot.api.chat.message.send.*;
+import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
+import pro.zackpollard.telegrambot.api.chat.message.send.SendableForwardMessage;
+import pro.zackpollard.telegrambot.api.chat.message.send.SendableMessage;
+import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.event.chat.message.PhotoMessageReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.TextMessageReceivedEvent;
 import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardHide;
@@ -126,7 +128,7 @@ public class Lobby {
     }
 
     public void onPhotoMessageReceivedEvent(PhotoMessageReceivedEvent event) {
-        PhotoSize[] sizes = event.getContent().getContent();
+        /**PhotoSize[] sizes = event.getContent().getContent();
         PhotoSize lastPhoto = sizes[0];
 
         for (PhotoSize size : sizes) {
@@ -138,6 +140,11 @@ public class Lobby {
         for (LobbyMember lobbyMember : lobbyMembers) {
             if (lobbyMember.getUserID() != event.getMessage().getSender().getId()) {
                 lobbyMember.getChat().sendMessage(SendablePhotoMessage.builder().photo(new InputFile(lastPhoto.getFileId())).caption("Image from " + event.getMessage().getSender().getUsername()).build(), TelegramHook.getBot());
+            }
+         }*/
+        for (LobbyMember lobbyMember : lobbyMembers) {
+            if (lobbyMember.getUserID() != event.getMessage().getSender().getId()) {
+                lobbyMember.getChat().sendMessage(SendableForwardMessage.builder().forwardedMessage(event.getMessage()).build(), TelegramHook.getBot());
             }
         }
     }
