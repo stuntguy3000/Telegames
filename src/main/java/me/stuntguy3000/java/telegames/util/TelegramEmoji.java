@@ -3,6 +3,7 @@ package me.stuntguy3000.java.telegames.util;
 import lombok.Getter;
 
 public enum TelegramEmoji {
+    BACK("\uD83D\uDD19"),
     NUMBER_BLOCK_ZERO("0⃣"),
     NUMBER_BLOCK_ONE("1⃣"),
     NUMBER_BLOCK_TWO("2⃣"),

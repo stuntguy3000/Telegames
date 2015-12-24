@@ -32,7 +32,7 @@ public class GameHandler {
             buttonList.add(new ArrayList<>(row));
         }
 
-        buttonList.add(Collections.singletonList(TelegramEmoji.END.getText() + " Back to menu"));
+        buttonList.add(Collections.singletonList(TelegramEmoji.BACK.getText() + " Back to menu"));
 
         return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, false, false));
     }

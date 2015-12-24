@@ -89,7 +89,7 @@ public class Lobby {
 
         buttonList.add(Collections.singletonList(TelegramEmoji.PADLOCK.getText() + " Lock/Unlock lobby"));
         buttonList.add(Collections.singletonList(TelegramEmoji.PENCIL.getText() + " Rename lobby"));
-        buttonList.add(Collections.singletonList(TelegramEmoji.END.getText() + " Back to menu"));
+        buttonList.add(Collections.singletonList(TelegramEmoji.BACK.getText() + " Back to menu"));
 
         return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, false, false));
     }
@@ -213,7 +213,7 @@ public class Lobby {
                 event.getChat().sendMessage(createLobbyMenu().message("To rate this bot, [click this link](http://telegram.me/storebot?start=telegamesbot)!\n\nIt will take less than a minute and every rating is appreciated!").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
             } else if (message.equals(TelegramEmoji.BOOK.getText() + " About")) {
                 event.getChat().sendMessage(createLobbyMenu().message("Telegames is created by @stuntguy3000 to bring games to Telegram.\n\nType /version for more information.").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
-            } else if (message.equals(TelegramEmoji.END.getText() + " Back to menu")) {
+            } else if (message.equals(TelegramEmoji.BACK.getText() + " Back to menu")) {
                 if (currentGame == null) {
                     event.getChat().sendMessage(createLobbyMenu().message("You have returned to the menu.").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                 }
