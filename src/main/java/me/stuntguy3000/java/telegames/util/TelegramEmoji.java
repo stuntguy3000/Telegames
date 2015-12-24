@@ -40,7 +40,10 @@ public enum TelegramEmoji {
     PARTY_POPPER("\uD83C\uDF89"),
     OPEN_BOOK("\uD83D\uDCD6"),
     SPACE_INVADER("\uD83D\uDC7E"),
-    REPLAY("\uD83D\uDD04");
+    REPLAY("\uD83D\uDD04"),
+    METAL_GEAR("⚙"),
+    PADLOCK("\uD83D\uDD12"),
+    PENCIL("✏️");
 
     @Getter
     String text;

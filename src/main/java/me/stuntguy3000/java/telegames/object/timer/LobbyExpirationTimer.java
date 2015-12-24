@@ -1,12 +1,13 @@
-package me.stuntguy3000.java.telegames.object;
+package me.stuntguy3000.java.telegames.object.timer;
 
 import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.handler.LobbyHandler;
+import me.stuntguy3000.java.telegames.object.Lobby;
 
 import java.util.ArrayList;
 import java.util.TimerTask;
 
-public class LobbyTimer extends TimerTask {
+public class LobbyExpirationTimer extends TimerTask {
 
     @Override
     public void run() {

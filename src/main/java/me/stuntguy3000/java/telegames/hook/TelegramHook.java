@@ -10,11 +10,14 @@ import me.stuntguy3000.java.telegames.object.config.LobbyList;
 import me.stuntguy3000.java.telegames.util.ClassGetter;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.TelegramBot;
+import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
+import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.event.Listener;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.TextMessageReceivedEvent;
 import pro.zackpollard.telegrambot.api.user.User;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +28,8 @@ public class TelegramHook implements Listener {
     private static TelegramBot bot;
     @Getter
     private final Telegames instance;
+    @Getter
+    private List<String> enteringlobby = new ArrayList<>();
 
     public TelegramHook(String authKey, Telegames instance) {
         this.instance = instance;
@@ -95,8 +100,24 @@ public class TelegramHook implements Listener {
         if (lobby != null) {
             lobby.onTextMessageReceived(event);
             LogHandler.log("[Chat] [%s] %s: %s", lobby.getLobbyID(), user.getUsername(), event.getContent().getContent());
-        } else if (event.getContent().getContent().equals(TelegramEmoji.JOYSTICK.getText() + " Create a Lobby")) {
+        } else if (event.getContent().getContent().equals(TelegramEmoji.JOYSTICK.getText() + " Create a lobby")) {
             Telegames.getInstance().getLobbyHandler().createLobby(user);
+        } else if (event.getContent().getContent().equals(TelegramEmoji.PERSON.getText() + " Join a lobby")) {
+            event.getChat().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.PENCIL.getText() + " *Enter the name or ID of the lobby:*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+            enteringlobby.add(user.getUsername());
+        } else {
+            if (enteringlobby.contains(user.getUsername())) {
+                String name = event.getContent().getContent().replace(" ", "");
+                Lobby targetLobby = Telegames.getInstance().getLobbyHandler().getLobby(name);
+
+                if (targetLobby != null) {
+                    if (targetLobby.userJoin(user)) {
+                        enteringlobby.remove(user.getUsername());
+                    }
+                } else {
+                    event.getChat().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.RED_CROSS.getText() + " *Unknown lobby!*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                }
+            }
         }
     }
 }

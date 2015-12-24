@@ -3,8 +3,8 @@ package me.stuntguy3000.java.telegames.handler;
 import lombok.Getter;
 import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
-import me.stuntguy3000.java.telegames.object.GameSecondTimer;
 import me.stuntguy3000.java.telegames.object.Lobby;
+import me.stuntguy3000.java.telegames.object.timer.GameSecondTimer;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
@@ -50,10 +50,11 @@ public class LobbyHandler {
      *
      * @return
      */
-    public SendableTextMessage.SendableTextMessageBuilder createMenu() {
+    public SendableTextMessage.SendableTextMessageBuilder createLobbyCreationMenu() {
         List<List<String>> buttonList = new ArrayList<>();
 
-        buttonList.add(Collections.singletonList(TelegramEmoji.JOYSTICK.getText() + " Create a Lobby"));
+        buttonList.add(Collections.singletonList(TelegramEmoji.JOYSTICK.getText() + " Create a lobby"));
+        buttonList.add(Collections.singletonList(TelegramEmoji.PERSON.getText() + " Join a lobby"));
 
         return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, false, false));
     }
@@ -76,7 +77,7 @@ public class LobbyHandler {
      * @param lobby Lobby the Lobby to destroy
      */
     public void expireLobby(Lobby lobby) {
-        lobby.sendMessage(createMenu().message("\n\n*This lobby has expired!*\n\n").parseMode(ParseMode.MARKDOWN).build());
+        lobby.sendMessage(createLobbyCreationMenu().message("\n\n*This lobby has expired!*\n\n").parseMode(ParseMode.MARKDOWN).build());
 
         destroyLobby(lobby.getLobbyID());
     }
@@ -89,10 +90,14 @@ public class LobbyHandler {
      */
     public Lobby getLobby(String lobbyID) {
         if (lobbyID != null) {
-            return getActiveLobbies().get(lobbyID.toUpperCase());
-        } else {
-            return null;
+            for (Lobby lobby : activeLobbies.values()) {
+                if (lobby.getLobbyID().equalsIgnoreCase(lobbyID) || (lobby.getCustomName() != null && lobby.getCustomName().equalsIgnoreCase(lobbyID))) {
+                    return lobby;
+                }
+            }
         }
+
+        return null;
     }
 
     /**
@@ -111,6 +116,22 @@ public class LobbyHandler {
         }
 
         return null;
+    }
+
+    /**
+     * Returns if a lobby exists
+     *
+     * @param newName String the custom name of the lobby
+     * @return true if exists
+     */
+    public boolean lobbyExists(String newName) {
+        for (Lobby lobby : getActiveLobbies().values()) {
+            if (lobby.getCustomName() != null && lobby.getCustomName().equalsIgnoreCase(newName)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

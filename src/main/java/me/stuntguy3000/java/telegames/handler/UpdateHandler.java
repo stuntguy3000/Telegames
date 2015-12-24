@@ -64,7 +64,7 @@ public class UpdateHandler implements Runnable {
                     instance.sendToAdmins("Build #" + newBuild + " downloaded. Restarting...");
 
                     for (Lobby lobby : Telegames.getInstance().getLobbyHandler().getActiveLobbies().values()) {
-                        lobby.sendMessage(Telegames.getInstance().getLobbyHandler().createMenu().message("*A new software update for the bot has been released.\n" + "Please re-create the lobby to continue.*").parseMode(ParseMode.MARKDOWN).build());
+                        lobby.sendMessage(Telegames.getInstance().getLobbyHandler().createLobbyCreationMenu().message("*A new software update for the bot has been released.\n" + "Please re-create the lobby to continue.*").parseMode(ParseMode.MARKDOWN).build());
                     }
                 } catch (IOException e) {
                     instance.sendToAdmins("Updater failed!");

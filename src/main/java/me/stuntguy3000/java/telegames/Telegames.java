@@ -4,9 +4,9 @@ import lombok.Getter;
 import me.stuntguy3000.java.telegames.handler.*;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Lobby;
-import me.stuntguy3000.java.telegames.object.LobbyTimer;
-import me.stuntguy3000.java.telegames.object.StringUtil;
+import me.stuntguy3000.java.telegames.object.timer.LobbyExpirationTimer;
 import me.stuntguy3000.java.telegames.util.RandomString;
+import me.stuntguy3000.java.telegames.util.StringUtil;
 import org.apache.commons.io.FileUtils;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
@@ -46,13 +46,13 @@ public class Telegames {
         new TelegramHook(configHandler.getBotSettings().getTelegramKey(), this);
     }
 
-    /**
-     * Crazy ideas: - Matchmaking - Private/Public Matches (Joinable via IDs, or passwords) - Computer AI
-     */
     public void main() {
         instance = this;
         configHandler = new ConfigHandler();
 
+        /**
+         * Initialize Build Number
+         */
         File build = new File("build");
 
         if (!build.exists()) {
@@ -72,6 +72,9 @@ public class Telegames {
             e.printStackTrace();
         }
 
+        /**
+         * Setup Jar Output folder
+         */
         outputFolder = new File("output");
 
         if (outputFolder.exists()) {
@@ -82,12 +85,34 @@ public class Telegames {
             outputFolder.mkdirs();
         }
 
+        /**
+         * Begin CLI for Telegames
+         */
         LogHandler.log("======================================");
         LogHandler.log(" Telegames build " + BUILD + " by @stuntguy3000");
         LogHandler.log("======================================");
 
+        /**
+         * Connect to Telegram
+         */
         connectTelegram();
 
+        /**
+         * Begin auto updater
+         */
+        if (!DEV_MODE) {
+            LogHandler.log("Starting update announcer...");
+            updaterAnnouncerHandler = new UpdaterAnnouncerHandler();
+            updaterAnnouncerHandler.runUpdater();
+        } else {
+            LogHandler.log("** Update Announcer is not running **");
+        }
+
+        /**
+         * Start various timers and threads
+         *
+         * Load the auto updater
+         */
         if (this.getConfigHandler().getBotSettings().getAutoUpdater()) {
             LogHandler.log("Starting auto updater...");
             Thread updater = new Thread(new UpdateHandler(this, "Telegames-" + (DEV_MODE ? "Development" : "Master"), "Telegames"));
@@ -97,17 +122,15 @@ public class Telegames {
             LogHandler.log("** Auto Updater is set to false **");
         }
 
-        if (!DEV_MODE) {
-            LogHandler.log("Starting update announcer...");
-            updaterAnnouncerHandler = new UpdaterAnnouncerHandler();
-            updaterAnnouncerHandler.runUpdater();
-        } else {
-            LogHandler.log("** Update Announcer is not running **");
-        }
+        /**
+         * Start Lobby timer
+         */
+        LobbyExpirationTimer lobbyExpirationTimer = new LobbyExpirationTimer();
+        new Timer().schedule(lobbyExpirationTimer, 0, 30 * 1000);
 
-        LobbyTimer lobbyTimer = new LobbyTimer();
-        new Timer().schedule(lobbyTimer, 0, 30 * 1000);
-
+        /**
+         * Keepalive
+         */
         while (true) {
             String in = System.console().readLine();
             switch (in.toLowerCase()) {

@@ -1,4 +1,6 @@
-package me.stuntguy3000.java.telegames.object;
+package me.stuntguy3000.java.telegames.object.timer;
+
+import me.stuntguy3000.java.telegames.object.Game;
 
 import java.util.Timer;
 import java.util.TimerTask;

@@ -1,4 +1,4 @@
-package me.stuntguy3000.java.telegames.object;
+package me.stuntguy3000.java.telegames.util;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
