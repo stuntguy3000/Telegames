@@ -1,7 +1,6 @@
 package me.stuntguy3000.java.telegames.game;
 
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
-import me.stuntguy3000.java.telegames.object.exception.GameStartException;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.game.GameState;
 import me.stuntguy3000.java.telegames.object.lobby.LobbyMember;
@@ -22,21 +21,18 @@ import java.util.List;
 
 // @author Luke Anderson | stuntguy3000
 public class TicTacToe extends Game {
-    private List<LobbyMember> activePlayers = new ArrayList<>();
     private TelegramEmoji[][] board = new TelegramEmoji[3][3];
     private LobbyMember cross;
     private LobbyMember currentPlayer;
-    private GameState gameState;
-    private int maxPlayers = 2;
-    private int minPlayers = 2;
     private LobbyMember naught;
     private List<TelegramEmoji> numbers = new ArrayList<>();
     private LobbyMember winner;
 
     public TicTacToe() {
         setGameInfo("TicTacToe", "First player to line three in a row wins.");
-
-        gameState = GameState.WAITING_FOR_PLAYERS;
+        setMinPlayers(2);
+        setMaxPlayers(2);
+        setGameState(GameState.WAITING_FOR_PLAYERS);
     }
 
     // Loop through columns and see if any are winners.
@@ -141,38 +137,39 @@ public class TicTacToe extends Game {
     }
 
     @Override
-    public boolean playerJoin(LobbyMember player) {
-        if (gameState == GameState.WAITING_FOR_PLAYERS) {
-            activePlayers.add(player);
-            return true;
-        } else {
-            return false;
-        }
-    }
+    public void startGame() {
+        setGameState(GameState.INGAME);
 
-    @Override
-    public void playerLeave(String username, int userID) {
-        getGameLobby().stopGame();
-    }
+        numbers.add(TelegramEmoji.NUMBER_BLOCK_ONE);
+        numbers.add(TelegramEmoji.NUMBER_BLOCK_TWO);
+        numbers.add(TelegramEmoji.NUMBER_BLOCK_THREE);
+        numbers.add(TelegramEmoji.NUMBER_BLOCK_FOUR);
+        numbers.add(TelegramEmoji.NUMBER_BLOCK_FIVE);
+        numbers.add(TelegramEmoji.NUMBER_BLOCK_SIX);
+        numbers.add(TelegramEmoji.NUMBER_BLOCK_SEVEN);
+        numbers.add(TelegramEmoji.NUMBER_BLOCK_EIGHT);
+        numbers.add(TelegramEmoji.NUMBER_BLOCK_NINE);
 
-    @Override
-    public void tryStartGame() throws GameStartException {
-        if (activePlayers.size() >= minPlayers) {
-            if (activePlayers.size() > maxPlayers) {
-                throw new GameStartException("Too many players! Maximum: " + maxPlayers);
-            } else {
-                startGame();
-            }
-        } else {
-            throw new GameStartException("Not enough players! Required: " + minPlayers);
-        }
+        board[0][0] = TelegramEmoji.NUMBER_BLOCK_ONE;
+        board[0][1] = TelegramEmoji.NUMBER_BLOCK_TWO;
+        board[0][2] = TelegramEmoji.NUMBER_BLOCK_THREE;
+        board[1][0] = TelegramEmoji.NUMBER_BLOCK_FOUR;
+        board[1][1] = TelegramEmoji.NUMBER_BLOCK_FIVE;
+        board[1][2] = TelegramEmoji.NUMBER_BLOCK_SIX;
+        board[2][0] = TelegramEmoji.NUMBER_BLOCK_SEVEN;
+        board[2][1] = TelegramEmoji.NUMBER_BLOCK_EIGHT;
+        board[2][2] = TelegramEmoji.NUMBER_BLOCK_NINE;
+
+        Collections.shuffle(getActivePlayers());
+
+        nextRound();
     }
 
     private void nextRound() {
         if (currentPlayer == null) {
-            currentPlayer = activePlayers.get(0);
+            currentPlayer = getActivePlayers().get(0);
             cross = currentPlayer;
-            naught = activePlayers.get(1);
+            naught = getActivePlayers().get(1);
         } else {
             if (naught.getUserID() == currentPlayer.getUserID()) {
                 currentPlayer = cross;
@@ -253,34 +250,6 @@ public class TicTacToe extends Game {
 
             getGameLobby().stopGame();
         }
-    }
-
-    private void startGame() {
-        gameState = GameState.INGAME;
-
-        numbers.add(TelegramEmoji.NUMBER_BLOCK_ONE);
-        numbers.add(TelegramEmoji.NUMBER_BLOCK_TWO);
-        numbers.add(TelegramEmoji.NUMBER_BLOCK_THREE);
-        numbers.add(TelegramEmoji.NUMBER_BLOCK_FOUR);
-        numbers.add(TelegramEmoji.NUMBER_BLOCK_FIVE);
-        numbers.add(TelegramEmoji.NUMBER_BLOCK_SIX);
-        numbers.add(TelegramEmoji.NUMBER_BLOCK_SEVEN);
-        numbers.add(TelegramEmoji.NUMBER_BLOCK_EIGHT);
-        numbers.add(TelegramEmoji.NUMBER_BLOCK_NINE);
-
-        board[0][0] = TelegramEmoji.NUMBER_BLOCK_ONE;
-        board[0][1] = TelegramEmoji.NUMBER_BLOCK_TWO;
-        board[0][2] = TelegramEmoji.NUMBER_BLOCK_THREE;
-        board[1][0] = TelegramEmoji.NUMBER_BLOCK_FOUR;
-        board[1][1] = TelegramEmoji.NUMBER_BLOCK_FIVE;
-        board[1][2] = TelegramEmoji.NUMBER_BLOCK_SIX;
-        board[2][0] = TelegramEmoji.NUMBER_BLOCK_SEVEN;
-        board[2][1] = TelegramEmoji.NUMBER_BLOCK_EIGHT;
-        board[2][2] = TelegramEmoji.NUMBER_BLOCK_NINE;
-
-        Collections.shuffle(activePlayers);
-
-        nextRound();
     }
 }
     

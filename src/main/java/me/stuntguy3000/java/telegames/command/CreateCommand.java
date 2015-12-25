@@ -1,13 +1,17 @@
 package me.stuntguy3000.java.telegames.command;
 
 import me.stuntguy3000.java.telegames.Telegames;
+import me.stuntguy3000.java.telegames.handler.KeyboardHandler;
 import me.stuntguy3000.java.telegames.handler.LobbyHandler;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.command.Command;
+import me.stuntguy3000.java.telegames.object.exception.LobbyLockedException;
+import me.stuntguy3000.java.telegames.object.exception.UserBannedException;
 import me.stuntguy3000.java.telegames.object.exception.UserHasLobbyException;
 import me.stuntguy3000.java.telegames.object.exception.UserIsMatchmakingException;
 import me.stuntguy3000.java.telegames.object.lobby.Lobby;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
+import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
@@ -35,7 +39,12 @@ public class CreateCommand extends Command {
                 if (targetLobby == null) {
                     respond(chat, TelegramEmoji.RED_CROSS.getText() + " No such lobby exists!");
                 } else {
-                    targetLobby.userJoin(sender);
+                    try {
+                        targetLobby.userJoin(sender);
+                    } catch (LobbyLockedException | UserBannedException e) {
+                        SendableTextMessage sendableTextMessage = KeyboardHandler.createLobbyCreationMenu().message(TelegramEmoji.RED_CROSS.getText() + " *You cannot join this lobby.*").parseMode(ParseMode.MARKDOWN).build();
+                        respond(TelegramBot.getChat(sender.getId()), sendableTextMessage);
+                    }
                 }
             } else {
                 Lobby lobby;

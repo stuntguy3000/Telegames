@@ -2,7 +2,6 @@ package me.stuntguy3000.java.telegames.game;
 
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.game.GameState;
-import me.stuntguy3000.java.telegames.object.lobby.LobbyMember;
 import pro.zackpollard.telegrambot.api.event.chat.message.TextMessageReceivedEvent;
 
 // @author Luke Anderson | stuntguy3000
@@ -17,30 +16,12 @@ public class Connect4 extends Game {
     }
 
     @Override
-    public void endGame() {
-
-    }
-
-    @Override
     public void onTextMessageReceived(TextMessageReceivedEvent event) {
 
     }
 
     @Override
-    public boolean playerJoin(LobbyMember lobbyMember) {
-        //File file = new File(getClass().getResourceAsStream("/connect4.jpg"));
-        //InputFile baseFile = new InputFile();
-        //getGameLobby().sendMessage(SendablePhotoMessage.builder().photo(baseFile).build());
-        return true;
-    }
-
-    @Override
-    public void playerLeave(String username, int userID) {
-
-    }
-
-    @Override
-    public void tryStartGame() {
+    public void startGame() {
 
     }
 }

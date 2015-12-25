@@ -19,16 +19,6 @@ public class StatsCommand extends Command {
         super(Telegames.getInstance(), "/stats View the bot's statistics", "stats", "statistics");
     }
 
-    private int getCount(String gameName) {
-        for (GameStatistics gameStatistics : gameStats) {
-            if (gameStatistics.getName().equals(gameName)) {
-                return gameStatistics.getCount();
-            }
-        }
-
-        return 0;
-    }
-
     public void processCommand(CommandMessageReceivedEvent event) {
         Chat chat = event.getChat();
 
@@ -39,7 +29,7 @@ public class StatsCommand extends Command {
 
         stringBuilder.append("*Total Users:* ").append(userStatistics.getKnownPlayers().size()).append("\n");
         stringBuilder.append("*Active Lobbies:* ").append(getInstance().getLobbyHandler().getActiveLobbies().size()).append("\n");
-        stringBuilder.append("*Matchmaking Count:* ").append(getInstance().getMatchmakingHandler().getQueueCount()).append("\n");
+        stringBuilder.append("*Matchmaking Queue:* ").append(getInstance().getMatchmakingHandler().getQueueCount()).append("\n");
 
         stringBuilder.append("\n*Games Play Count:*\n");
 

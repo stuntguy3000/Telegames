@@ -3,6 +3,8 @@ package me.stuntguy3000.java.telegames.handler;
 import lombok.Getter;
 import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
+import me.stuntguy3000.java.telegames.object.exception.LobbyLockedException;
+import me.stuntguy3000.java.telegames.object.exception.UserBannedException;
 import me.stuntguy3000.java.telegames.object.exception.UserHasLobbyException;
 import me.stuntguy3000.java.telegames.object.exception.UserIsMatchmakingException;
 import me.stuntguy3000.java.telegames.object.lobby.Lobby;
@@ -36,7 +38,11 @@ public class LobbyHandler {
                 "[Send this link to your friends to play!](http://telegram.me/" + TelegramHook.getBot().getBotUsername() + "?start=" + lobby.getLobbyID() + ")").parseMode(ParseMode.MARKDOWN).build();
 
         TelegramBot.getChat(user.getId()).sendMessage(sendableTextMessage, lobby.getTelegramBot());
-        lobby.userJoin(user);
+        try {
+            lobby.userJoin(user);
+        } catch (LobbyLockedException | UserBannedException ignore) {
+
+        }
 
         //Telegames.getInstance().getConfigHandler().getLobbyList().addLobby(lobby.getLobbyID(), lobby.getLobbyMembers());
         return lobby;

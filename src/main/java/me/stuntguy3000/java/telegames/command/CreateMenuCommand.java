@@ -25,7 +25,7 @@ public class CreateMenuCommand extends Command {
 
         if (event.getChat().getType() == ChatType.PRIVATE) {
             if (lobbyHandler.getLobby(sender) == null) {
-                chat.sendMessage(KeyboardHandler.createLobbyCreationMenu().message("*Here you go:*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                respond(chat, KeyboardHandler.createLobbyCreationMenu().message("*Here you go:*").parseMode(ParseMode.MARKDOWN).build());
             } else {
                 respond(chat, TelegramEmoji.RED_CROSS.getText() + " You are already in a lobby!");
             }

@@ -4,8 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.handler.KeyboardHandler;
+import me.stuntguy3000.java.telegames.handler.LogHandler;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
+import me.stuntguy3000.java.telegames.object.exception.GameInProgressException;
 import me.stuntguy3000.java.telegames.object.exception.GameStartException;
+import me.stuntguy3000.java.telegames.object.exception.LobbyLockedException;
+import me.stuntguy3000.java.telegames.object.exception.UserBannedException;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.util.StringUtil;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
@@ -280,7 +284,11 @@ public class Lobby {
 
             for (LobbyMember lobbyMember : getLobbyMembers()) {
                 lobbyMember.setGameScore(0);
-                newGame.playerJoin(lobbyMember);
+                try {
+                    newGame.playerJoin(lobbyMember);
+                } catch (GameInProgressException e) {
+                    LogHandler.error("GameInProgressException occurred on new game! Game: " + newGame.getGameName());
+                }
             }
 
             sendMessage(SendableTextMessage.builder().message(TelegramEmoji.JOYSTICK.getText() + " *Starting game: " + newGame.getGameName() + "*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
@@ -295,6 +303,7 @@ public class Lobby {
             Telegames.getInstance().getLobbyHandler().startTimer(this);
             Telegames.getInstance().getConfigHandler().getUserStatistics().addGame(newGame);
         } catch (InstantiationException | IllegalAccessException e) {
+            LogHandler.error("InstantiationException or IllegalAccessException occurred!");
             e.printStackTrace();
 
             sendMessage(KeyboardHandler.createLobbyMenu(previousGame).message(TelegramEmoji.RED_CROSS.getText() + " *Unexpected Error Occurred! Contact @stuntguy3000*").parseMode(ParseMode.MARKDOWN).build());
@@ -349,13 +358,15 @@ public class Lobby {
      *
      * @param user User the user who joined the Lobby
      */
-    public boolean userJoin(User user) {
+    public void userJoin(User user) throws LobbyLockedException, UserBannedException {
         lastLobbyAction = System.currentTimeMillis();
 
-        if (kickList.contains(user.getId()) || lobbyOptions.isLocked()) {
-            SendableTextMessage sendableTextMessage = KeyboardHandler.createLobbyCreationMenu().message(TelegramEmoji.RED_CROSS.getText() + " *You cannot join this lobby.*").parseMode(ParseMode.MARKDOWN).build();
-            TelegramHook.getBot().sendMessage(TelegramBot.getChat(user.getId()), sendableTextMessage);
-            return false;
+        if (kickList.contains(user.getId())) {
+            throw new UserBannedException();
+        }
+
+        if (lobbyOptions.isLocked()) {
+            throw new LobbyLockedException();
         }
 
         LobbyMember lobbyMember = new LobbyMember(user);
@@ -374,8 +385,6 @@ public class Lobby {
             sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.MONKEY_HIDING.getText() + " *You are spectating a game of " + game.getGameName() + ".*").parseMode(ParseMode.MARKDOWN).build();
             lobbyMember.getChat().sendMessage(sendableTextMessage, getTelegramBot());
         }
-
-        return true;
     }
 
     /**

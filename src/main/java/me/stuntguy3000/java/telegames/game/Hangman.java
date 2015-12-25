@@ -1,7 +1,6 @@
 package me.stuntguy3000.java.telegames.game;
 
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
-import me.stuntguy3000.java.telegames.object.exception.GameStartException;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.game.GameState;
 import me.stuntguy3000.java.telegames.object.lobby.LobbyMember;
@@ -29,10 +28,8 @@ public class Hangman extends Game {
     private List<LobbyMember> activePlayers = new ArrayList<>();
     private Character censoredChar = '-';
     private List<Character> censoredWord = new ArrayList<>();
-    private GameState gameState;
     private List<Character> guesses = new ArrayList<>();
     private int guessesLeft = 9;
-    private int minPlayers = 2;
     private List<String> predefinedWords = new ArrayList<>();
     private int roundsLeft;
     private LobbyMember selector; //cringe
@@ -40,8 +37,8 @@ public class Hangman extends Game {
 
     public Hangman() {
         setGameInfo("Hangman", "The classic game of hangman. Try to guess the phrase before its too late!");
-
-        gameState = GameState.WAITING_FOR_PLAYERS;
+        setMinPlayers(2);
+        setGameState(GameState.WAITING_FOR_PLAYERS);
     }
 
     private SendableTextMessage.SendableTextMessageBuilder createChooserKeyboard() {
@@ -127,39 +124,12 @@ public class Hangman extends Game {
     }
 
     @Override
-    public boolean playerJoin(LobbyMember lobbyMember) {
-        if (gameState == GameState.WAITING_FOR_PLAYERS) {
-            activePlayers.add(lobbyMember);
-            return true;
-        }
-        return false;
-    }
+    public void startGame() {
+        setGameState(GameState.INGAME);
+        roundsLeft = activePlayers.size() * 3;
 
-    @Override
-    public void playerLeave(String username, int userID) {
-        for (LobbyMember member : new ArrayList<>(activePlayers)) {
-            if (member.getUserID() == userID) {
-                activePlayers.remove(userID);
-                return;
-            }
-        }
-
-        if (activePlayers.size() < minPlayers) {
-            getGameLobby().stopGame();
-        }
-    }
-
-    @Override
-    public void tryStartGame() throws GameStartException {
-        if (activePlayers.size() >= minPlayers) {
-            gameState = GameState.INGAME;
-            roundsLeft = activePlayers.size() * 3;
-
-            loadWords();
-
-            nextRound();
-        }
-        throw new GameStartException("Not enough players! Required: " + minPlayers);
+        loadWords();
+        nextRound();
     }
 
     private String getCensoredWord() {

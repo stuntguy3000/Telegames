@@ -35,18 +35,11 @@ enum MonopolySquareType {
 // @author Luke Anderson | stuntguy3000
 // What am I doing with my life
 public class Monopoly extends Game {
-    private GameState gameState;
 
     public Monopoly() {
         setGameInfo("Monopoly", "Description");
         setDevModeOnly(true);
-
-        gameState = GameState.WAITING_FOR_PLAYERS;
-    }
-
-    @Override
-    public void endGame() {
-
+        setGameState(GameState.WAITING_FOR_PLAYERS);
     }
 
     @Override
@@ -55,17 +48,7 @@ public class Monopoly extends Game {
     }
 
     @Override
-    public boolean playerJoin(LobbyMember lobbyMember) {
-        return true;
-    }
-
-    @Override
-    public void playerLeave(String username, int userID) {
-
-    }
-
-    @Override
-    public void tryStartGame() {
+    public void startGame() {
 
     }
 }

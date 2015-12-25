@@ -3,7 +3,6 @@ package me.stuntguy3000.java.telegames.game;
 import lombok.Getter;
 import lombok.Setter;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
-import me.stuntguy3000.java.telegames.object.exception.GameStartException;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.game.GameState;
 import me.stuntguy3000.java.telegames.object.lobby.LobbyMember;
@@ -22,7 +21,6 @@ import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardMarkup;
 import pro.zackpollard.telegrambot.api.user.User;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -30,8 +28,6 @@ import java.util.List;
 public class Blackjack extends Game {
     private HashMap<Integer, Integer> aceCount = new HashMap<>();
     private ReplyKeyboardMarkup aceKeyboard;
-    @Getter
-    private List<LobbyMember> activePlayers = new ArrayList<>();
     private LobbyMember currentPlayer;
     private int currentRound = 1;
     private Boolean dealerStand = false;
@@ -39,9 +35,7 @@ public class Blackjack extends Game {
     @Getter
     @Setter
     private GameState gameState;
-    private int maxPlayers = 9;
     private int maxRounds = 5;
-    private int minPlayers = 2;
     private HashMap<Integer, Integer> playerCardValues = new HashMap<>();
     private HashMap<Integer, List<BlackjackCard>> playerCards = new HashMap<>();
     private LobbyMember roundDealer;
@@ -51,10 +45,10 @@ public class Blackjack extends Game {
 
     public Blackjack() {
         setGameInfo("Blackjack", "A simple card game, closest to 21 wins, but don't bust!");
+        setMinPlayers(2);
+        setGameState(GameState.WAITING_FOR_PLAYERS);
 
         aceKeyboard = ReplyKeyboardMarkup.builder().addRow("Ace is 1", "Ace is 11").oneTime(true).build();
-
-        setGameState(GameState.WAITING_FOR_PLAYERS);
     }
 
     private void calculateValue(LobbyMember lobbyMember) {
@@ -73,18 +67,6 @@ public class Blackjack extends Game {
             return false;
         } else {
             return true;
-        }
-    }
-
-    private void checkPlayers() {
-        switch (getGameState()) {
-            case INGAME: {
-                if (minPlayers > getActivePlayers().size()) {
-                    SendableTextMessage message = SendableTextMessage.builder().message("*There are not enough players to continue!*").parseMode(ParseMode.MARKDOWN).build();
-                    getGameLobby().sendMessage(message);
-                    getGameLobby().stopGame();
-                }
-            }
         }
     }
 
@@ -121,12 +103,15 @@ public class Blackjack extends Game {
         sendHand(currentPlayer, getKeyboard(currentPlayer));
     }
 
-    @Override
-    public void endGame() {
-        SendableTextMessage.SendableTextMessageBuilder messageBuilder = SendableTextMessage.builder().message("The game of Blackjack has ended!").replyMarkup(ReplyKeyboardHide.builder().build());
+    private void fillDeck() {
+        deck = new Deck();
+        deck.shuffleCards();
+    }
 
-        getGameLobby().sendMessage(messageBuilder.build());
-        printScores();
+    private void fillHands() {
+        for (LobbyMember lobbyMember : getActivePlayers()) {
+            giveCard(lobbyMember, 2);
+        }
     }
 
     @Override
@@ -173,16 +158,6 @@ public class Blackjack extends Game {
     }
 
     @Override
-    public boolean playerJoin(LobbyMember player) {
-        if (getGameState() == GameState.WAITING_FOR_PLAYERS) {
-            activePlayers.add(player);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    @Override
     public void playerLeave(String username, int userID) {
         playerCardValues.remove(userID);
         playerCards.remove(userID);
@@ -203,28 +178,12 @@ public class Blackjack extends Game {
 
     }
 
-    @Override
-    public void tryStartGame() throws GameStartException {
-        if (activePlayers.size() >= minPlayers) {
-            if (activePlayers.size() > maxPlayers) {
-                throw new GameStartException("Too many players! Maximum: " + maxPlayers);
-            } else {
-                startGame();
-            }
-        } else {
-            throw new GameStartException("Not enough players! Required: " + minPlayers);
-        }
-    }
+    public void startGame() {
+        setGameState(GameState.INGAME);
 
-    private void fillDeck() {
-        deck = new Deck();
-        deck.shuffleCards();
-    }
+        maxRounds = getActivePlayers().size() * 3;
 
-    private void fillHands() {
-        for (LobbyMember lobbyMember : getActivePlayers()) {
-            giveCard(lobbyMember, 2);
-        }
+        nextRound();
     }
 
     public ReplyMarkup getKeyboard(LobbyMember lobbyMember) {
@@ -370,25 +329,6 @@ public class Blackjack extends Game {
         }
     }
 
-    private void printScores() {
-        Collections.sort(activePlayers);
-        StringBuilder wholeMessage = new StringBuilder();
-        int playerPos = 1;
-        for (int i = 0; i < getActivePlayers().size(); i++) {
-            LobbyMember lobbyMember = getActivePlayers().get(i);
-            wholeMessage.append(String.format("#%d - %s (Score: %d)\n", playerPos++, StringUtil.markdownSafe(lobbyMember.getUsername()), lobbyMember.getGameScore()));
-        }
-        getGameLobby().sendMessage(wholeMessage.toString());
-    }
-
-    private void removePlayer(String username) {
-        for (LobbyMember lobbyMember : new ArrayList<>(activePlayers)) {
-            if (lobbyMember.getUsername().equals(username)) {
-                activePlayers.remove(lobbyMember);
-            }
-        }
-    }
-
     private void sendAceKeyboard(LobbyMember lobbyMember) {
         secondsSincePlay = 0;
         TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(SendableTextMessage.builder().message("*You have an Ace! Please choose its value.*").parseMode(ParseMode.MARKDOWN).replyMarkup(aceKeyboard).build(), TelegramHook.getBot());
@@ -425,14 +365,6 @@ public class Blackjack extends Game {
         } else {
             TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(SendableTextMessage.builder().message("*It's not your turn!*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
         }
-    }
-
-    public void startGame() {
-        setGameState(GameState.INGAME);
-
-        maxRounds = getActivePlayers().size() * 3;
-
-        nextRound();
     }
 }
 
