@@ -106,9 +106,12 @@ class MatchmakingTask implements Runnable {
 
     @Override
     public void run() {
-        matchmakingQueue = instance.getMatchmakingHandler().getMatchmakingQueue();
+        if (instance == null) {
+            LogHandler.debug("Instance is null for MatchmakingHandler");
+        } else {
+            matchmakingQueue = instance.getMatchmakingHandler().getMatchmakingQueue();
 
-
+        }
     }
 }
     
