@@ -161,10 +161,10 @@ public class TelegramHook implements Listener {
                     if (game != null) {
                         if (message.startsWith(TelegramEmoji.RED_CIRCLE.getText())) {
                             matchmakingHandler.addGame(user, game.getGameName());
-                            event.getChat().sendMessage(KeyboardHandler.createMatchmakingMenu(matchmakingHandler.getUserOptions(user)).message(TelegramEmoji.BACK.getText() + " *Included " + game.getGameName() + "*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                            event.getChat().sendMessage(KeyboardHandler.createMatchmakingMenu(matchmakingHandler.getUserOptions(user)).message(TelegramEmoji.GREEN_BOX_TICK.getText() + " *Included " + game.getGameName() + "*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                         } else if (message.startsWith(TelegramEmoji.BLUE_CIRCLE.getText())) {
                             matchmakingHandler.removeGame(user, game.getGameName());
-                            event.getChat().sendMessage(KeyboardHandler.createMatchmakingMenu(matchmakingHandler.getUserOptions(user)).message(TelegramEmoji.BACK.getText() + " *Removed " + game.getGameName() + "*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                            event.getChat().sendMessage(KeyboardHandler.createMatchmakingMenu(matchmakingHandler.getUserOptions(user)).message(TelegramEmoji.RED_CROSS.getText() + " *Removed " + game.getGameName() + "*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                         }
                     }
                 }
