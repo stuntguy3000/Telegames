@@ -18,7 +18,7 @@ public class MatchmakingHandler {
 
     public MatchmakingHandler() {
         this.instance = Telegames.getInstance();
-        thread = new Thread(new MatchmakingTask(instance));
+        thread = new Thread(new MatchmakingTask());
     }
 
     /**
@@ -45,16 +45,6 @@ public class MatchmakingHandler {
         runMatchmaking();
     }
 
-    private List<String> getGames(User user) {
-        for (MatchmakingUser matchmakingUser : matchmakingQueue.keySet()) {
-            if (matchmakingUser.getId() == user.getId()) {
-                return matchmakingUser.getGames();
-            }
-        }
-
-        return null;
-    }
-
     public int getQueueCount() {
         return matchmakingQueue.size();
     }
@@ -69,11 +59,14 @@ public class MatchmakingHandler {
         return null;
     }
 
-    /**
-     * Returns the user's matchmaking options
-     */
     public List<String> getUserOptions(User user) {
-        return matchmakingQueue.get(user);
+        for (MatchmakingUser matchmakingUser : matchmakingQueue.keySet()) {
+            if (matchmakingUser.getId() == user.getId()) {
+                return matchmakingUser.getGames();
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -134,8 +127,8 @@ public class MatchmakingHandler {
 class MatchmakingTask implements Runnable {
     private final Telegames instance;
 
-    public MatchmakingTask(Telegames instance) {
-        this.instance = instance;
+    public MatchmakingTask() {
+        this.instance = Telegames.getInstance();
     }
 
     @Override
