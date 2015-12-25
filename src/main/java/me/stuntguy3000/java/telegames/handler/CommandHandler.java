@@ -1,6 +1,6 @@
 package me.stuntguy3000.java.telegames.handler;
 
-import me.stuntguy3000.java.telegames.object.Command;
+import me.stuntguy3000.java.telegames.object.command.Command;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
 
 import java.util.HashMap;

@@ -1,9 +1,9 @@
 package me.stuntguy3000.java.telegames.command;
 
 import me.stuntguy3000.java.telegames.Telegames;
-import me.stuntguy3000.java.telegames.object.Command;
-import me.stuntguy3000.java.telegames.object.GameStatistics;
+import me.stuntguy3000.java.telegames.object.command.Command;
 import me.stuntguy3000.java.telegames.object.config.UserStatistics;
+import me.stuntguy3000.java.telegames.object.game.GameStatistics;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
@@ -39,6 +39,7 @@ public class StatsCommand extends Command {
 
         stringBuilder.append("*Total Users:* ").append(userStatistics.getKnownPlayers().size()).append("\n");
         stringBuilder.append("*Active Lobbies:* ").append(getInstance().getLobbyHandler().getActiveLobbies().size()).append("\n");
+        stringBuilder.append("*Matchmaking Count:* ").append(getInstance().getMatchmakingHandler().getQueueCount()).append("\n");
 
         stringBuilder.append("\n*Games Play Count:*\n");
 

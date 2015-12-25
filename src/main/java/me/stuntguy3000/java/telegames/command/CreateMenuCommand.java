@@ -1,10 +1,10 @@
 package me.stuntguy3000.java.telegames.command;
 
 import me.stuntguy3000.java.telegames.Telegames;
+import me.stuntguy3000.java.telegames.handler.KeyboardHandler;
 import me.stuntguy3000.java.telegames.handler.LobbyHandler;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
-import me.stuntguy3000.java.telegames.object.Command;
-import me.stuntguy3000.java.telegames.util.KeyboardUtil;
+import me.stuntguy3000.java.telegames.object.command.Command;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
@@ -25,7 +25,7 @@ public class CreateMenuCommand extends Command {
 
         if (event.getChat().getType() == ChatType.PRIVATE) {
             if (lobbyHandler.getLobby(sender) == null) {
-                chat.sendMessage(KeyboardUtil.createLobbyCreationMenu().message("*Here you go:*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                chat.sendMessage(KeyboardHandler.createLobbyCreationMenu().message("*Here you go:*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
             } else {
                 respond(chat, TelegramEmoji.RED_CROSS.getText() + " You are already in a lobby!");
             }

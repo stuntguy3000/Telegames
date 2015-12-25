@@ -1,8 +1,8 @@
 package me.stuntguy3000.java.telegames.game;
 
-import me.stuntguy3000.java.telegames.object.Game;
-import me.stuntguy3000.java.telegames.object.LobbyMember;
-import me.stuntguy3000.java.telegames.util.GameState;
+import me.stuntguy3000.java.telegames.object.game.Game;
+import me.stuntguy3000.java.telegames.object.game.GameState;
+import me.stuntguy3000.java.telegames.object.lobby.LobbyMember;
 import pro.zackpollard.telegrambot.api.event.chat.message.TextMessageReceivedEvent;
 
 // @author Luke Anderson | stuntguy3000

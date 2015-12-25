@@ -1,7 +1,8 @@
-package me.stuntguy3000.java.telegames.util;
+package me.stuntguy3000.java.telegames.handler;
 
 import me.stuntguy3000.java.telegames.Telegames;
-import me.stuntguy3000.java.telegames.object.Game;
+import me.stuntguy3000.java.telegames.object.game.Game;
+import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardMarkup;
 
@@ -11,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 // @author Luke Anderson | stuntguy3000
-public class KeyboardUtil {
+public class KeyboardHandler {
     public static SendableTextMessage.SendableTextMessageBuilder createCancelMenu() {
         List<List<String>> buttonList = new ArrayList<>();
 
@@ -27,6 +28,10 @@ public class KeyboardUtil {
         int index = 1;
 
         for (Game game : Telegames.getInstance().getGameHandler().getGameMap().values()) {
+            if ((game.isDevModeOnly() && !Telegames.DEV_MODE) || game.isRestrictedGame()) {
+                continue;
+            }
+
             if (index > 3) {
                 index = 1;
                 buttonList.add(new ArrayList<>(row));
@@ -81,8 +86,34 @@ public class KeyboardUtil {
         return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, false, false));
     }
 
-    public static SendableTextMessage.SendableTextMessageBuilder createMatchmakingMenu() {
-        return null;
+    public static SendableTextMessage.SendableTextMessageBuilder createMatchmakingMenu(List<String> includedGames) {
+        List<List<String>> buttonList = new ArrayList<>();
+        List<String> row = new ArrayList<>();
+
+        if (includedGames == null) {
+            includedGames = new ArrayList<>();
+        }
+
+        int index = 1;
+
+        for (Game game : Telegames.getInstance().getGameHandler().getGameMap().values()) {
+            if ((game.isDevModeOnly() && !Telegames.DEV_MODE) || game.isRestrictedGame()) {
+                continue;
+            }
+
+            if (index > 3) {
+                index = 1;
+                buttonList.add(new ArrayList<>(row));
+                row.clear();
+            }
+
+            row.add((includedGames.contains(game.getGameName()) ? TelegramEmoji.BLUE_CIRCLE.getText() : TelegramEmoji.RED_CIRCLE.getText()) + " " + game.getGameName());
+            index++;
+        }
+
+        buttonList.add(Collections.singletonList(TelegramEmoji.RED_CROSS.getText() + " Quit matchmaking"));
+
+        return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, false, false));
     }
 }
     

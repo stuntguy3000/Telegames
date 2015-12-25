@@ -2,7 +2,7 @@ package me.stuntguy3000.java.telegames.object.config;
 
 import lombok.Getter;
 import me.stuntguy3000.java.telegames.Telegames;
-import me.stuntguy3000.java.telegames.object.LobbyMember;
+import me.stuntguy3000.java.telegames.object.lobby.LobbyMember;
 
 import java.util.ArrayList;
 import java.util.HashMap;

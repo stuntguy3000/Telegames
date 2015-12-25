@@ -1,11 +1,12 @@
-package me.stuntguy3000.java.telegames.object;
+package me.stuntguy3000.java.telegames.object.lobby;
 
 import lombok.Getter;
 import lombok.Setter;
 import me.stuntguy3000.java.telegames.Telegames;
+import me.stuntguy3000.java.telegames.handler.KeyboardHandler;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.exception.GameStartException;
-import me.stuntguy3000.java.telegames.util.KeyboardUtil;
+import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.util.StringUtil;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.TelegramBot;
@@ -182,32 +183,32 @@ public class Lobby {
                 }
             } else if (message.equals(TelegramEmoji.JOYSTICK.getText() + " Play a game")) {
                 if (currentGame == null) {
-                    event.getChat().sendMessage(KeyboardUtil.createGameSelector().message(TelegramEmoji.JOYSTICK.getText() + " *Please choose a game:*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                    event.getChat().sendMessage(KeyboardHandler.createGameSelector().message(TelegramEmoji.JOYSTICK.getText() + " *Please choose a game:*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                 }
             } else if (message.equals(TelegramEmoji.END.getText() + " Leave the lobby")) {
                 userLeave(getLobbyMember(sender.getUsername()), false);
             } else if (message.equals(TelegramEmoji.METAL_GEAR.getText() + " Lobby options")) {
                 if (lobbyOwner.getUserID() == sender.getId()) {
-                    event.getChat().sendMessage(KeyboardUtil.createLobbyOptionsMenu().message("Lobby Options").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                    event.getChat().sendMessage(KeyboardHandler.createLobbyOptionsMenu().message("Lobby Options").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                 } else {
                     event.getChat().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.RED_CROSS.getText() + " *You cannot perform this action!*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                 }
             } else if (message.equals(TelegramEmoji.STAR.getText() + " Rate this bot")) {
-                event.getChat().sendMessage(KeyboardUtil.createLobbyMenu(previousGame).message("To rate this bot, [click this link](http://telegram.me/storebot?start=telegamesbot)!\n\nIt will take less than a minute and every rating is appreciated!").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                event.getChat().sendMessage(KeyboardHandler.createLobbyMenu(previousGame).message("To rate this bot, [click this link](http://telegram.me/storebot?start=telegamesbot)!\n\nIt will take less than a minute and every rating is appreciated!").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
             } else if (message.equals(TelegramEmoji.BOOK.getText() + " About")) {
-                event.getChat().sendMessage(KeyboardUtil.createLobbyMenu(previousGame).message("Telegames is created by @stuntguy3000 to bring games to Telegram.\n\nType /version for more information.").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                event.getChat().sendMessage(KeyboardHandler.createLobbyMenu(previousGame).message("Telegames is created by @stuntguy3000 to bring games to Telegram.\n\nType /version for more information.").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
             } else if (message.equals(TelegramEmoji.BACK.getText() + " Back to menu")) {
                 if (currentGame == null) {
-                    event.getChat().sendMessage(KeyboardUtil.createLobbyMenu(previousGame).message("You have returned to the menu.").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                    event.getChat().sendMessage(KeyboardHandler.createLobbyMenu(previousGame).message("You have returned to the menu.").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                 }
             } else if (message.equals(TelegramEmoji.PADLOCK.getText() + " Lock/Unlock lobby")) {
                 if (lobbyOwner.getUserID() == sender.getId()) {
                     boolean isLocked = getLobbyOptions().isLocked();
 
                     if (isLocked) {
-                        event.getChat().sendMessage(KeyboardUtil.createLobbyOptionsMenu().message("The lobby has been *unlocked*.").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                        event.getChat().sendMessage(KeyboardHandler.createLobbyOptionsMenu().message("The lobby has been *unlocked*.").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                     } else {
-                        event.getChat().sendMessage(KeyboardUtil.createLobbyOptionsMenu().message("The lobby has been *locked*.").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                        event.getChat().sendMessage(KeyboardHandler.createLobbyOptionsMenu().message("The lobby has been *locked*.").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                     }
 
                     lobbyOptions.setLocked(!isLocked);
@@ -216,23 +217,23 @@ public class Lobby {
                 }
             } else if (message.equals(TelegramEmoji.PENCIL.getText() + " Rename lobby")) {
                 if (lobbyOwner.getUserID() == sender.getId()) {
-                    event.getChat().sendMessage(KeyboardUtil.createCancelMenu().message("*Please enter the name of the lobby:*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                    event.getChat().sendMessage(KeyboardHandler.createCancelMenu().message("*Please enter the name of the lobby:*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                     renamingLobby = true;
                 } else {
                     event.getChat().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.RED_CROSS.getText() + " *You cannot perform this action!*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                 }
             } else if (message.equals(TelegramEmoji.RED_CROSS.getText() + " Cancel")) {
-                event.getChat().sendMessage(KeyboardUtil.createLobbyMenu(previousGame).message("*Returning to lobby menu*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                event.getChat().sendMessage(KeyboardHandler.createLobbyMenu(previousGame).message("*Returning to lobby menu*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                 renamingLobby = false;
             } else if (sender.getId() == getLobbyOwner().getUserID() && renamingLobby) {
                 String newName = message.replace(" ", "").toLowerCase();
 
                 if (Telegames.getInstance().getLobbyHandler().lobbyExists(newName)) {
-                    event.getChat().sendMessage(KeyboardUtil.createCancelMenu().message(TelegramEmoji.RED_CROSS.getText() + " *That name is already taken!*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                    event.getChat().sendMessage(KeyboardHandler.createCancelMenu().message(TelegramEmoji.RED_CROSS.getText() + " *That name is already taken!*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                 } else {
                     renamingLobby = false;
                     customName = newName;
-                    event.getChat().sendMessage(KeyboardUtil.createLobbyMenu(previousGame).message(TelegramEmoji.GREEN_BOX_TICK.getText() + " *The Lobby has been renamed to \"" + StringUtil.markdownSafe(customName) + "\"*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                    event.getChat().sendMessage(KeyboardHandler.createLobbyMenu(previousGame).message(TelegramEmoji.GREEN_BOX_TICK.getText() + " *The Lobby has been renamed to \"" + StringUtil.markdownSafe(customName) + "\"*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                 }
             } else {
                 userChat(sender, message);
@@ -286,7 +287,7 @@ public class Lobby {
             try {
                 newGame.tryStartGame();
             } catch (GameStartException ex) {
-                sendMessage(KeyboardUtil.createLobbyMenu(previousGame).message(TelegramEmoji.RED_CROSS.getText() + " *Unable to start game!\n" + ex.getReason() + "*").parseMode(ParseMode.MARKDOWN).build());
+                sendMessage(KeyboardHandler.createLobbyMenu(previousGame).message(TelegramEmoji.RED_CROSS.getText() + " *Unable to start game!\n" + ex.getReason() + "*").parseMode(ParseMode.MARKDOWN).build());
                 return;
             }
 
@@ -296,7 +297,7 @@ public class Lobby {
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
 
-            sendMessage(KeyboardUtil.createLobbyMenu(previousGame).message(TelegramEmoji.RED_CROSS.getText() + " *Unexpected Error Occurred! Contact @stuntguy3000*").parseMode(ParseMode.MARKDOWN).build());
+            sendMessage(KeyboardHandler.createLobbyMenu(previousGame).message(TelegramEmoji.RED_CROSS.getText() + " *Unexpected Error Occurred! Contact @stuntguy3000*").parseMode(ParseMode.MARKDOWN).build());
         }
     }
 
@@ -324,7 +325,7 @@ public class Lobby {
     }
 
     private void updateHeader() {
-        lobbyHeader = KeyboardUtil.createLobbyMenu(previousGame).message(TelegramEmoji.SPACE_INVADER.getText() + " *" + StringUtil.markdownSafe(getLobbyOwner().getUsername()) + "'s Lobby* " + TelegramEmoji.SPACE_INVADER.getText()).parseMode(ParseMode.MARKDOWN).build();
+        lobbyHeader = KeyboardHandler.createLobbyMenu(previousGame).message(TelegramEmoji.SPACE_INVADER.getText() + " *" + StringUtil.markdownSafe(getLobbyOwner().getUsername()) + "'s Lobby* " + TelegramEmoji.SPACE_INVADER.getText()).parseMode(ParseMode.MARKDOWN).build();
     }
 
     /**
@@ -352,7 +353,7 @@ public class Lobby {
         lastLobbyAction = System.currentTimeMillis();
 
         if (kickList.contains(user.getId()) || lobbyOptions.isLocked()) {
-            SendableTextMessage sendableTextMessage = KeyboardUtil.createLobbyCreationMenu().message(TelegramEmoji.RED_CROSS.getText() + " *You cannot join this lobby.*").parseMode(ParseMode.MARKDOWN).build();
+            SendableTextMessage sendableTextMessage = KeyboardHandler.createLobbyCreationMenu().message(TelegramEmoji.RED_CROSS.getText() + " *You cannot join this lobby.*").parseMode(ParseMode.MARKDOWN).build();
             TelegramHook.getBot().sendMessage(TelegramBot.getChat(user.getId()), sendableTextMessage);
             return false;
         }
@@ -387,7 +388,7 @@ public class Lobby {
         if (!silent) {
             for (LobbyMember lobbyMember : lobbyMembers) {
                 if (lobbyMember.getUserID() == user.getUserID()) {
-                    SendableTextMessage sendableTextMessage = KeyboardUtil.createLobbyCreationMenu().message(TelegramEmoji.PERSON.getText() + " *" + StringUtil.markdownSafe(user.getUsername()) + " left!*").parseMode(ParseMode.MARKDOWN).build();
+                    SendableTextMessage sendableTextMessage = KeyboardHandler.createLobbyCreationMenu().message(TelegramEmoji.PERSON.getText() + " *" + StringUtil.markdownSafe(user.getUsername()) + " left!*").parseMode(ParseMode.MARKDOWN).build();
                     TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(sendableTextMessage, TelegramHook.getBot());
                 } else {
                     SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.PERSON.getText() + " *" + StringUtil.markdownSafe(user.getUsername()) + " left!*").parseMode(ParseMode.MARKDOWN).build();

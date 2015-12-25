@@ -3,11 +3,10 @@ package me.stuntguy3000.java.telegames.handler;
 import lombok.Getter;
 import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
-import me.stuntguy3000.java.telegames.object.Lobby;
 import me.stuntguy3000.java.telegames.object.exception.UserHasLobbyException;
 import me.stuntguy3000.java.telegames.object.exception.UserIsMatchmakingException;
+import me.stuntguy3000.java.telegames.object.lobby.Lobby;
 import me.stuntguy3000.java.telegames.object.timer.GameSecondTimer;
-import me.stuntguy3000.java.telegames.util.KeyboardUtil;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
@@ -66,7 +65,7 @@ public class LobbyHandler {
      * @param lobby Lobby the Lobby to destroy
      */
     public void expireLobby(Lobby lobby) {
-        lobby.sendMessage(KeyboardUtil.createLobbyCreationMenu().message("\n\n*This lobby has expired!*\n\n").parseMode(ParseMode.MARKDOWN).build());
+        lobby.sendMessage(KeyboardHandler.createLobbyCreationMenu().message("\n\n*This lobby has expired!*\n\n").parseMode(ParseMode.MARKDOWN).build());
 
         destroyLobby(lobby.getLobbyID());
     }

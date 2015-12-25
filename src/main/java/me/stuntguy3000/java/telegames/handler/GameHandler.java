@@ -1,7 +1,7 @@
 package me.stuntguy3000.java.telegames.handler;
 
 import me.stuntguy3000.java.telegames.Telegames;
-import me.stuntguy3000.java.telegames.object.Game;
+import me.stuntguy3000.java.telegames.object.game.Game;
 
 import java.util.ArrayList;
 import java.util.HashMap;

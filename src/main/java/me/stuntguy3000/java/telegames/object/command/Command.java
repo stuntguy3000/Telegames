@@ -1,4 +1,4 @@
-package me.stuntguy3000.java.telegames.object;
+package me.stuntguy3000.java.telegames.object.command;
 
 import lombok.Getter;
 import me.stuntguy3000.java.telegames.Telegames;

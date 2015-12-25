@@ -2,16 +2,16 @@ package me.stuntguy3000.java.telegames.hook;
 
 import lombok.Getter;
 import me.stuntguy3000.java.telegames.Telegames;
+import me.stuntguy3000.java.telegames.handler.KeyboardHandler;
 import me.stuntguy3000.java.telegames.handler.LogHandler;
 import me.stuntguy3000.java.telegames.handler.MatchmakingHandler;
-import me.stuntguy3000.java.telegames.object.Command;
-import me.stuntguy3000.java.telegames.object.Game;
-import me.stuntguy3000.java.telegames.object.Lobby;
+import me.stuntguy3000.java.telegames.object.command.Command;
 import me.stuntguy3000.java.telegames.object.config.LobbyList;
 import me.stuntguy3000.java.telegames.object.exception.UserHasLobbyException;
 import me.stuntguy3000.java.telegames.object.exception.UserIsMatchmakingException;
+import me.stuntguy3000.java.telegames.object.game.Game;
+import me.stuntguy3000.java.telegames.object.lobby.Lobby;
 import me.stuntguy3000.java.telegames.util.ClassGetter;
-import me.stuntguy3000.java.telegames.util.KeyboardUtil;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
@@ -118,7 +118,7 @@ public class TelegramHook implements Listener {
             lobby.onTextMessageReceived(event);
             LogHandler.log("[Chat] [%s] %s: %s", lobby.getLobbyID(), user.getUsername(), event.getContent().getContent());
         } else if (message.equalsIgnoreCase(TelegramEmoji.RED_CROSS.getText() + " Cancel")) {
-            event.getChat().sendMessage(KeyboardUtil.createLobbyCreationMenu().message(TelegramEmoji.PENCIL.getText() + " *Returning to lobby menu:*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build(), TelegramHook.getBot());
+            event.getChat().sendMessage(KeyboardHandler.createLobbyCreationMenu().message(TelegramEmoji.PENCIL.getText() + " *Returning to lobby menu:*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build(), TelegramHook.getBot());
         } else if (message.equalsIgnoreCase(TelegramEmoji.JOYSTICK.getText() + " Create a lobby")) {
             try {
                 Telegames.getInstance().getLobbyHandler().tryCreateLobby(user);
@@ -128,7 +128,7 @@ public class TelegramHook implements Listener {
                 event.getChat().sendMessage(TelegramEmoji.RED_CROSS.getText() + " You are already have a lobby!", TelegramHook.getBot());
             }
         } else if (message.equalsIgnoreCase(TelegramEmoji.PERSON.getText() + " Join a lobby")) {
-            event.getChat().sendMessage(KeyboardUtil.createCancelMenu().message(TelegramEmoji.PENCIL.getText() + " *Enter the name or ID of the lobby:*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build(), TelegramHook.getBot());
+            event.getChat().sendMessage(KeyboardHandler.createCancelMenu().message(TelegramEmoji.PENCIL.getText() + " *Enter the name or ID of the lobby:*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build(), TelegramHook.getBot());
             if (!enteringlobby.contains(user.getUsername())) {
                 enteringlobby.add(user.getUsername());
             }
@@ -136,15 +136,38 @@ public class TelegramHook implements Listener {
             MatchmakingHandler matchmakingHandler = getInstance().getMatchmakingHandler();
 
             if (!matchmakingHandler.isInQueue(user)) {
-                event.getChat().sendMessage(KeyboardUtil.createMatchmakingMenu().message(TelegramEmoji.GREEN_BOX_TICK.getText() + " *Welcome to Telegames Matchmaking!*\n\n" +
+                event.getChat().sendMessage(KeyboardHandler.createMatchmakingMenu(null).message(TelegramEmoji.GREEN_BOX_TICK.getText() + " *Welcome to Telegames Matchmaking!*\n\n" +
                         "Matchmaking is a simple feature allowing players to quickly play a game with random people" +
                         "around the world, with no lobbies required.\n\n" +
                         "To begin matchmaking, simply click on a game's name in the menu below to toggle if" +
                         "you want to include that game in the matchmaking search. All games are disabled by default.\n\n" +
                         "*Players in matchmaking queue: " + matchmakingHandler.getQueueCount() + "*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
             }
+        } else if (message.equalsIgnoreCase(TelegramEmoji.RED_CROSS.getText() + " Quit matchmaking")) {
+            MatchmakingHandler matchmakingHandler = getInstance().getMatchmakingHandler();
+
+            if (matchmakingHandler.isInQueue(user)) {
+                matchmakingHandler.removeUser(user);
+                event.getChat().sendMessage(KeyboardHandler.createLobbyCreationMenu().message(TelegramEmoji.BACK.getText() + " *Returning to main menu...*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+            }
         } else {
-            if (enteringlobby.contains(user.getUsername())) {
+            MatchmakingHandler matchmakingHandler = getInstance().getMatchmakingHandler();
+
+            if (matchmakingHandler.isInQueue(user)) {
+                if (message.contains(" ")) {
+                    Game game = getInstance().getGameHandler().getGame(message.split(" ")[0]);
+
+                    if (game != null) {
+                        if (message.startsWith(TelegramEmoji.BLUE_CIRCLE.getText())) {
+                            matchmakingHandler.addGame(user, game.getGameName());
+                            event.getChat().sendMessage(KeyboardHandler.createMatchmakingMenu(matchmakingHandler.getUserOptions(user)).message(TelegramEmoji.BACK.getText() + " *Included " + game.getGameName() + "*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                        } else if (message.startsWith(TelegramEmoji.RED_CIRCLE.getText())) {
+                            matchmakingHandler.removeGame(user, game.getGameName());
+                            event.getChat().sendMessage(KeyboardHandler.createMatchmakingMenu(matchmakingHandler.getUserOptions(user)).message(TelegramEmoji.BACK.getText() + " *Removed " + game.getGameName() + "*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                        }
+                    }
+                }
+            } else if (enteringlobby.contains(user.getUsername())) {
                 String name = event.getContent().getContent().replace(" ", "");
                 Lobby targetLobby = Telegames.getInstance().getLobbyHandler().getLobby(name);
 

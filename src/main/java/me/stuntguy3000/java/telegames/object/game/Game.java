@@ -1,8 +1,10 @@
-package me.stuntguy3000.java.telegames.object;
+package me.stuntguy3000.java.telegames.object.game;
 
 import lombok.Getter;
 import lombok.Setter;
 import me.stuntguy3000.java.telegames.object.exception.GameStartException;
+import me.stuntguy3000.java.telegames.object.lobby.Lobby;
+import me.stuntguy3000.java.telegames.object.lobby.LobbyMember;
 import pro.zackpollard.telegrambot.api.event.chat.message.TextMessageReceivedEvent;
 
 public abstract class Game {

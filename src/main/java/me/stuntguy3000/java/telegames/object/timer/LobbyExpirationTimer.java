@@ -2,7 +2,7 @@ package me.stuntguy3000.java.telegames.object.timer;
 
 import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.handler.LobbyHandler;
-import me.stuntguy3000.java.telegames.object.Lobby;
+import me.stuntguy3000.java.telegames.object.lobby.Lobby;
 
 import java.util.ArrayList;
 import java.util.TimerTask;

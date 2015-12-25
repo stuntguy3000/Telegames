@@ -3,7 +3,7 @@ package me.stuntguy3000.java.telegames;
 import lombok.Getter;
 import me.stuntguy3000.java.telegames.handler.*;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
-import me.stuntguy3000.java.telegames.object.Lobby;
+import me.stuntguy3000.java.telegames.object.lobby.Lobby;
 import me.stuntguy3000.java.telegames.object.timer.LobbyExpirationTimer;
 import me.stuntguy3000.java.telegames.util.RandomString;
 import me.stuntguy3000.java.telegames.util.StringUtil;

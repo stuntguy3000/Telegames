@@ -1,8 +1,8 @@
 package me.stuntguy3000.java.telegames.object.config;
 
 import lombok.Getter;
-import me.stuntguy3000.java.telegames.object.Game;
-import me.stuntguy3000.java.telegames.object.GameStatistics;
+import me.stuntguy3000.java.telegames.object.game.Game;
+import me.stuntguy3000.java.telegames.object.game.GameStatistics;
 import pro.zackpollard.telegrambot.api.user.User;
 
 import java.util.*;

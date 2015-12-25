@@ -78,6 +78,11 @@ public class MatchmakingHandler {
         }
     }
 
+    public void removeUser(User user) {
+        matchmakingQueue.remove(user);
+        runMatchmaking();
+    }
+
     /**
      * Runs the matchmaking method
      */
@@ -97,6 +102,8 @@ class MatchmakingTask implements Runnable {
     @Override
     public void run() {
         matchmakingQueue = instance.getMatchmakingHandler().getMatchmakingQueue();
+
+
     }
 }
     
