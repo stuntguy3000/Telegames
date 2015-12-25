@@ -1,6 +1,7 @@
 package me.stuntguy3000.java.telegames.handler;
 
 import lombok.Getter;
+import lombok.Setter;
 import me.stuntguy3000.java.telegames.Telegames;
 import pro.zackpollard.telegrambot.api.user.User;
 
@@ -12,11 +13,12 @@ import java.util.List;
 public class MatchmakingHandler {
     private Telegames instance;
     @Getter
-    private HashMap<User, List<String>> matchmakingQueue = new HashMap<>();
-    private Thread thread = new Thread(new MatchmakingTask(instance));
+    private HashMap<MatchmakingUser, List<String>> matchmakingQueue = new HashMap<>();
+    private Thread thread;
 
     public MatchmakingHandler() {
         this.instance = Telegames.getInstance();
+        thread = new Thread(new MatchmakingTask(instance));
     }
 
     /**
@@ -26,26 +28,45 @@ public class MatchmakingHandler {
      * @param gameName
      */
     public void addGame(User user, String gameName) {
-        List<String> games = new ArrayList<>();
+        MatchmakingUser matchmakingUser = getUserFromQueue(user);
 
-        if (matchmakingQueue.containsKey(user)) {
-            games = matchmakingQueue.get(user);
-        }
+        if (matchmakingUser.getGames() != null) {
+            List<String> games = matchmakingUser.getGames();
 
-        if (!games.contains(gameName)) {
-            games.add(gameName);
-            matchmakingQueue.put(user, games);
-            runMatchmaking();
+            if (!games.contains(gameName)) {
+                games.add(gameName);
+                runMatchmaking();
+            }
         }
     }
 
     public void addNewUser(User user) {
-        matchmakingQueue.put(user, new ArrayList<>());
+        matchmakingQueue.put(new MatchmakingUser(user.getId(), user.getUsername(), null), new ArrayList<>());
         runMatchmaking();
+    }
+
+    private List<String> getGames(User user) {
+        for (MatchmakingUser matchmakingUser : matchmakingQueue.keySet()) {
+            if (matchmakingUser.getId() == user.getId()) {
+                return matchmakingUser.getGames();
+            }
+        }
+
+        return null;
     }
 
     public int getQueueCount() {
         return matchmakingQueue.size();
+    }
+
+    private MatchmakingUser getUserFromQueue(User user) {
+        for (MatchmakingUser matchmakingUser : matchmakingQueue.keySet()) {
+            if (matchmakingUser.getId() == user.getId()) {
+                return matchmakingUser;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -62,10 +83,13 @@ public class MatchmakingHandler {
      * @return
      */
     public boolean isInQueue(User user) {
-        LogHandler.debug("User: " + user.toString());
-        LogHandler.debug("Queue: " + matchmakingQueue.toString());
+        for (MatchmakingUser matchmakingUser : matchmakingQueue.keySet()) {
+            if (matchmakingUser.getId() == user.getId()) {
+                return true;
+            }
+        }
 
-        return matchmakingQueue.containsKey(user);
+        return false;
     }
 
     /**
@@ -75,19 +99,27 @@ public class MatchmakingHandler {
      * @param gameName
      */
     public void removeGame(User user, String gameName) {
-        if (matchmakingQueue.containsKey(user)) {
-            List<String> games = matchmakingQueue.get(user);
+        if (isInQueue(user)) {
+            MatchmakingUser matchmakingUser = getUserFromQueue(user);
 
-            if (games.contains(gameName)) {
-                games.remove(gameName);
-                matchmakingQueue.put(user, games);
-                runMatchmaking();
+            if (matchmakingUser.getGames() != null) {
+                List<String> games = matchmakingUser.getGames();
+
+                if (games.contains(gameName)) {
+                    games.remove(gameName);
+                    runMatchmaking();
+                }
             }
         }
     }
 
     public void removeUser(User user) {
-        matchmakingQueue.remove(user);
+        for (MatchmakingUser matchmakingUser : new ArrayList<>(matchmakingQueue.keySet())) {
+            if (matchmakingUser.getId() == user.getId()) {
+                matchmakingQueue.remove(matchmakingUser);
+            }
+        }
+
         runMatchmaking();
     }
 
@@ -101,7 +133,6 @@ public class MatchmakingHandler {
 
 class MatchmakingTask implements Runnable {
     private final Telegames instance;
-    private HashMap<User, List<String>> matchmakingQueue;
 
     public MatchmakingTask(Telegames instance) {
         this.instance = instance;
@@ -111,9 +142,24 @@ class MatchmakingTask implements Runnable {
     public void run() {
         if (instance == null) {
             LogHandler.debug("Instance is null for MatchmakingHandler");
-        } else {
-            matchmakingQueue = instance.getMatchmakingHandler().getMatchmakingQueue();
         }
+    }
+}
+
+class MatchmakingUser {
+
+    @Getter
+    private final int id;
+    @Getter
+    private final String username;
+    @Getter
+    @Setter
+    private List<String> games;
+
+    MatchmakingUser(int id, String username, List<String> games) {
+        this.id = id;
+        this.username = username;
+        this.games = games;
     }
 }
     
