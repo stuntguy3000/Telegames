@@ -123,12 +123,16 @@ public class TicTacToe extends Game {
             String message = event.getContent().getContent();
             LobbyMember lobbyMember = getGameLobby().getLobbyMember(sender.getUsername());
 
-            if (currentPlayer.getUserID() == lobbyMember.getUserID()) {
-                TelegramEmoji emoji = TelegramEmoji.getMatch(message);
+            TelegramEmoji emoji = TelegramEmoji.getMatch(message);
 
-                if (emoji != null) {
+            if (emoji != null) {
+                if (currentPlayer.getUserID() == lobbyMember.getUserID()) {
                     playTurn(currentPlayer, emoji);
                     return;
+                } else {
+                    if (TelegramEmoji.getNumber(emoji) > -1) {
+                        return;
+                    }
                 }
             }
 
