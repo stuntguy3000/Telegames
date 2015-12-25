@@ -124,10 +124,8 @@ public class TelegramHook implements Listener {
                 Telegames.getInstance().getLobbyHandler().tryCreateLobby(user);
             } catch (UserIsMatchmakingException e) {
                 event.getChat().sendMessage(TelegramEmoji.RED_CROSS.getText() + " You cannot create a lobby while in matchmaking!", TelegramHook.getBot());
-                return;
             } catch (UserHasLobbyException e) {
                 event.getChat().sendMessage(TelegramEmoji.RED_CROSS.getText() + " You are already have a lobby!", TelegramHook.getBot());
-                return;
             }
         } else if (message.equalsIgnoreCase(TelegramEmoji.PERSON.getText() + " Join a lobby")) {
             event.getChat().sendMessage(KeyboardUtil.createCancelMenu().message(TelegramEmoji.PENCIL.getText() + " *Enter the name or ID of the lobby:*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build(), TelegramHook.getBot());
