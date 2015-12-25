@@ -32,11 +32,14 @@ public class Telegames {
     @Getter
     private LobbyHandler lobbyHandler = new LobbyHandler();
     @Getter
+    private MatchmakingHandler matchmakingHandler = new MatchmakingHandler();
+    @Getter
     private File outputFolder;
     @Getter
     private RandomString randomString = new RandomString(5);
     @Getter
     private UpdaterAnnouncerHandler updaterAnnouncerHandler = new UpdaterAnnouncerHandler();
+    @Getter
     private Thread updaterThread;
 
     private void connectTelegram() {

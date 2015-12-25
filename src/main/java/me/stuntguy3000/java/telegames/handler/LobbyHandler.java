@@ -4,6 +4,8 @@ import lombok.Getter;
 import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Lobby;
+import me.stuntguy3000.java.telegames.object.exception.UserHasLobbyException;
+import me.stuntguy3000.java.telegames.object.exception.UserIsMatchmakingException;
 import me.stuntguy3000.java.telegames.object.timer.GameSecondTimer;
 import me.stuntguy3000.java.telegames.util.KeyboardUtil;
 import pro.zackpollard.telegrambot.api.TelegramBot;
@@ -27,7 +29,7 @@ public class LobbyHandler {
      *
      * @param user User the owner of the Lobby
      */
-    public Lobby createLobby(User user) {
+    private Lobby createLobby(User user) {
         Lobby lobby = new Lobby(user, Telegames.getInstance().getRandomString().nextString().toUpperCase());
         activeLobbies.put(lobby.getLobbyID(), lobby);
 
@@ -141,5 +143,17 @@ public class LobbyHandler {
         if (lobbyTimers.containsKey(lobby.getLobbyID().toLowerCase())) {
             lobbyTimers.remove(lobby.getLobbyID().toLowerCase()).cancel();
         }
+    }
+
+    public Lobby tryCreateLobby(User user) throws UserIsMatchmakingException, UserHasLobbyException {
+        if (getLobby(user) != null) {
+            throw new UserHasLobbyException();
+        }
+
+        if (Telegames.getInstance().getMatchmakingHandler().isInQueue(user)) {
+            throw new UserIsMatchmakingException();
+        }
+
+        return createLobby(user);
     }
 }

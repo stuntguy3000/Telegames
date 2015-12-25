@@ -2,6 +2,7 @@ package me.stuntguy3000.java.telegames.object;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.stuntguy3000.java.telegames.object.exception.GameStartException;
 import pro.zackpollard.telegrambot.api.event.chat.message.TextMessageReceivedEvent;
 
 public abstract class Game {
@@ -40,5 +41,5 @@ public abstract class Game {
         this.gameDescription = description;
     }
 
-    public abstract String tryStartGame();
+    public abstract void tryStartGame() throws GameStartException;
 }

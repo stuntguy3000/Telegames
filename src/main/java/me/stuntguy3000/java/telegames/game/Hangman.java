@@ -3,6 +3,7 @@ package me.stuntguy3000.java.telegames.game;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Game;
 import me.stuntguy3000.java.telegames.object.LobbyMember;
+import me.stuntguy3000.java.telegames.object.exception.GameStartException;
 import me.stuntguy3000.java.telegames.util.GameState;
 import me.stuntguy3000.java.telegames.util.StringUtil;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
@@ -149,7 +150,7 @@ public class Hangman extends Game {
     }
 
     @Override
-    public String tryStartGame() {
+    public void tryStartGame() throws GameStartException {
         if (activePlayers.size() >= minPlayers) {
             gameState = GameState.INGAME;
             roundsLeft = activePlayers.size() * 3;
@@ -157,9 +158,8 @@ public class Hangman extends Game {
             loadWords();
 
             nextRound();
-            return null;
         }
-        return "Not enough players! Required: " + minPlayers;
+        throw new GameStartException("Not enough players! Required: " + minPlayers);
     }
 
     private String getCensoredWord() {

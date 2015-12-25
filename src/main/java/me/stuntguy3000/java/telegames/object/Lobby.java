@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
+import me.stuntguy3000.java.telegames.object.exception.GameStartException;
 import me.stuntguy3000.java.telegames.util.KeyboardUtil;
 import me.stuntguy3000.java.telegames.util.StringUtil;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
@@ -282,14 +283,16 @@ public class Lobby {
             }
 
             sendMessage(SendableTextMessage.builder().message(TelegramEmoji.JOYSTICK.getText() + " *Starting game: " + newGame.getGameName() + "*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
-            String response = newGame.tryStartGame();
-            if (response == null) {
-                currentGame = newGame;
-                Telegames.getInstance().getLobbyHandler().startTimer(this);
-                Telegames.getInstance().getConfigHandler().getUserStatistics().addGame(newGame);
-            } else {
-                sendMessage(KeyboardUtil.createLobbyMenu(previousGame).message(TelegramEmoji.RED_CROSS.getText() + " *Unable to start game!\n" + response + "*").parseMode(ParseMode.MARKDOWN).build());
+            try {
+                newGame.tryStartGame();
+            } catch (GameStartException ex) {
+                sendMessage(KeyboardUtil.createLobbyMenu(previousGame).message(TelegramEmoji.RED_CROSS.getText() + " *Unable to start game!\n" + ex.getReason() + "*").parseMode(ParseMode.MARKDOWN).build());
+                return;
             }
+
+            currentGame = newGame;
+            Telegames.getInstance().getLobbyHandler().startTimer(this);
+            Telegames.getInstance().getConfigHandler().getUserStatistics().addGame(newGame);
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
 

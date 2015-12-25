@@ -3,10 +3,13 @@ package me.stuntguy3000.java.telegames.hook;
 import lombok.Getter;
 import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.handler.LogHandler;
+import me.stuntguy3000.java.telegames.handler.MatchmakingHandler;
 import me.stuntguy3000.java.telegames.object.Command;
 import me.stuntguy3000.java.telegames.object.Game;
 import me.stuntguy3000.java.telegames.object.Lobby;
 import me.stuntguy3000.java.telegames.object.config.LobbyList;
+import me.stuntguy3000.java.telegames.object.exception.UserHasLobbyException;
+import me.stuntguy3000.java.telegames.object.exception.UserIsMatchmakingException;
 import me.stuntguy3000.java.telegames.util.ClassGetter;
 import me.stuntguy3000.java.telegames.util.KeyboardUtil;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
@@ -117,11 +120,30 @@ public class TelegramHook implements Listener {
         } else if (message.equalsIgnoreCase(TelegramEmoji.RED_CROSS.getText() + " Cancel")) {
             event.getChat().sendMessage(KeyboardUtil.createLobbyCreationMenu().message(TelegramEmoji.PENCIL.getText() + " *Returning to lobby menu:*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build(), TelegramHook.getBot());
         } else if (message.equalsIgnoreCase(TelegramEmoji.JOYSTICK.getText() + " Create a lobby")) {
-            Telegames.getInstance().getLobbyHandler().createLobby(user);
+            try {
+                Telegames.getInstance().getLobbyHandler().tryCreateLobby(user);
+            } catch (UserIsMatchmakingException e) {
+                event.getChat().sendMessage(TelegramEmoji.RED_CROSS.getText() + " You cannot create a lobby while in matchmaking!", TelegramHook.getBot());
+                return;
+            } catch (UserHasLobbyException e) {
+                event.getChat().sendMessage(TelegramEmoji.RED_CROSS.getText() + " You are already have a lobby!", TelegramHook.getBot());
+                return;
+            }
         } else if (message.equalsIgnoreCase(TelegramEmoji.PERSON.getText() + " Join a lobby")) {
             event.getChat().sendMessage(KeyboardUtil.createCancelMenu().message(TelegramEmoji.PENCIL.getText() + " *Enter the name or ID of the lobby:*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build(), TelegramHook.getBot());
             if (!enteringlobby.contains(user.getUsername())) {
                 enteringlobby.add(user.getUsername());
+            }
+        } else if (message.equalsIgnoreCase(TelegramEmoji.BLUE_RIGHT_ARROW.getText() + " Enter matchmaking")) {
+            MatchmakingHandler matchmakingHandler = getInstance().getMatchmakingHandler();
+
+            if (!matchmakingHandler.isInQueue(user)) {
+                event.getChat().sendMessage(KeyboardUtil.createMatchmakingMenu().message(TelegramEmoji.GREEN_BOX_TICK.getText() + " *Welcome to Telegames Matchmaking!*\n\n" +
+                        "Matchmaking is a simple feature allowing players to quickly play a game with random people" +
+                        "around the world, with no lobbies required.\n\n" +
+                        "To begin matchmaking, simply click on a game's name in the menu below to toggle if" +
+                        "you want to include that game in the matchmaking search. All games are disabled by default.\n\n" +
+                        "*Players in matchmaking queue: " + matchmakingHandler.getQueueCount() + "*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
             }
         } else {
             if (enteringlobby.contains(user.getUsername())) {

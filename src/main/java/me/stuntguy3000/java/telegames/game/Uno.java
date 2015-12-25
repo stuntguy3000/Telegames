@@ -5,6 +5,7 @@ import lombok.Setter;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Game;
 import me.stuntguy3000.java.telegames.object.LobbyMember;
+import me.stuntguy3000.java.telegames.object.exception.GameStartException;
 import me.stuntguy3000.java.telegames.util.GameState;
 import me.stuntguy3000.java.telegames.util.StringUtil;
 import pro.zackpollard.telegrambot.api.TelegramBot;
@@ -248,16 +249,15 @@ public class Uno extends Game {
     }
 
     @Override
-    public String tryStartGame() {
+    public void tryStartGame() throws GameStartException {
         if (activePlayers.size() >= minPlayers) {
             if (activePlayers.size() > maxPlayers) {
-                return "Too many players! Maximum: " + maxPlayers;
+                throw new GameStartException("Too many players! Maximum: " + maxPlayers);
             } else {
                 startGame();
-                return null;
             }
         } else {
-            return "Not enough players! Required: " + minPlayers;
+            throw new GameStartException("Not enough players! Required: " + minPlayers);
         }
     }
 

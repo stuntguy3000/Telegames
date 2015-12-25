@@ -5,6 +5,8 @@ import me.stuntguy3000.java.telegames.handler.LobbyHandler;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.Command;
 import me.stuntguy3000.java.telegames.object.Lobby;
+import me.stuntguy3000.java.telegames.object.exception.UserHasLobbyException;
+import me.stuntguy3000.java.telegames.object.exception.UserIsMatchmakingException;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
@@ -36,7 +38,16 @@ public class CreateCommand extends Command {
                     targetLobby.userJoin(sender);
                 }
             } else {
-                Lobby lobby = lobbyHandler.createLobby(sender);
+                Lobby lobby;
+                try {
+                    lobby = lobbyHandler.tryCreateLobby(sender);
+                } catch (UserIsMatchmakingException e) {
+                    respond(chat, TelegramEmoji.RED_CROSS.getText() + " You cannot create a lobby while in matchmaking!");
+                    return;
+                } catch (UserHasLobbyException e) {
+                    respond(chat, TelegramEmoji.RED_CROSS.getText() + " You are already have a lobby!");
+                    return;
+                }
 
                 if (!(event.getChat().getType() == ChatType.PRIVATE)) {
                     SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.JOYSTICK.getText() + " [Click here to join the lobby!](http://telegram.me/" + TelegramHook.getBot().getBotUsername() + "?start=" + lobby.getLobbyID() + ")").parseMode(ParseMode.MARKDOWN).build();

@@ -51,6 +51,7 @@ public class KeyboardUtil {
 
         buttonList.add(Collections.singletonList(TelegramEmoji.JOYSTICK.getText() + " Create a lobby"));
         buttonList.add(Collections.singletonList(TelegramEmoji.PERSON.getText() + " Join a lobby"));
+        buttonList.add(Collections.singletonList(TelegramEmoji.BLUE_RIGHT_ARROW.getText() + " Enter matchmaking"));
 
         return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, false, false));
     }
@@ -78,6 +79,10 @@ public class KeyboardUtil {
         buttonList.add(Collections.singletonList(TelegramEmoji.BACK.getText() + " Back to menu"));
 
         return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, false, false));
+    }
+
+    public static SendableTextMessage.SendableTextMessageBuilder createMatchmakingMenu() {
+        return null;
     }
 }
     

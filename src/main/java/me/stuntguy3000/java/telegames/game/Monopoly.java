@@ -65,8 +65,8 @@ public class Monopoly extends Game {
     }
 
     @Override
-    public String tryStartGame() {
-        return null;
+    public void tryStartGame() {
+
     }
 }
 
