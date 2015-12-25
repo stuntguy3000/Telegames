@@ -149,8 +149,9 @@ public class TelegramHook implements Listener {
 
             if (matchmakingHandler.isInQueue(user)) {
                 matchmakingHandler.removeUser(user);
-                event.getChat().sendMessage(KeyboardHandler.createLobbyCreationMenu().message(TelegramEmoji.BACK.getText() + " *Returning to main menu...*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
             }
+
+            event.getChat().sendMessage(KeyboardHandler.createLobbyCreationMenu().message(TelegramEmoji.BACK.getText() + " *Returning to main menu...*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
         } else {
             MatchmakingHandler matchmakingHandler = getInstance().getMatchmakingHandler();
 

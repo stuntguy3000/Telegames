@@ -29,14 +29,15 @@ public class MatchmakingHandler {
      */
     public void addGame(User user, String gameName) {
         MatchmakingUser matchmakingUser = getUserFromQueue(user);
+        List<String> games = new ArrayList<>();
 
         if (matchmakingUser.getGames() != null) {
-            List<String> games = matchmakingUser.getGames();
+            games = matchmakingUser.getGames();
+        }
 
-            if (!games.contains(gameName)) {
-                games.add(gameName);
-                runMatchmaking();
-            }
+        if (!games.contains(gameName)) {
+            games.add(gameName);
+            runMatchmaking();
         }
     }
 
@@ -94,14 +95,14 @@ public class MatchmakingHandler {
     public void removeGame(User user, String gameName) {
         if (isInQueue(user)) {
             MatchmakingUser matchmakingUser = getUserFromQueue(user);
+            List<String> games = new ArrayList<>();
 
             if (matchmakingUser.getGames() != null) {
-                List<String> games = matchmakingUser.getGames();
+                games = matchmakingUser.getGames();
+            }
 
-                if (games.contains(gameName)) {
-                    games.remove(gameName);
-                    runMatchmaking();
-                }
+            if (games.remove(gameName)) {
+                runMatchmaking();
             }
         }
     }
