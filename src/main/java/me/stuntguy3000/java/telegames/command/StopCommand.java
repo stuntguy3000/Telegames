@@ -29,7 +29,11 @@ public class StopCommand extends Command {
                 Game lobbyGame = lobby.getCurrentGame();
 
                 if (lobbyGame != null) {
-                    lobby.stopGame();
+                    if (lobby.getLobbyOwner().getUserID() == sender.getId()) {
+                        lobby.stopGame();
+                    } else {
+                        respond(chat, TelegramEmoji.RED_CROSS.getText() + " You cannot perform this action!");
+                    }
                 } else {
                     respond(chat, TelegramEmoji.RED_CROSS.getText() + " No game is running!");
                 }

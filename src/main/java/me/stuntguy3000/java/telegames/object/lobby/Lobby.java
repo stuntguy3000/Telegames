@@ -233,7 +233,7 @@ public class Lobby {
                 String newName = message.replace(" ", "").toLowerCase();
 
                 if (Telegames.getInstance().getLobbyHandler().lobbyExists(newName)) {
-                    event.getChat().sendMessage(KeyboardHandler.createCancelMenu().message(TelegramEmoji.RED_CROSS.getText() + " *That name is already taken!*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                    event.getChat().sendMessage(KeyboardHandler.createCancelMenu().message(TelegramEmoji.RED_CROSS.getText() + " *That name is already taken!\n\nPlease enter a different name.*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                 } else {
                     renamingLobby = false;
                     customName = newName;
