@@ -39,6 +39,11 @@ public class MatchmakingHandler {
         }
     }
 
+    public void addNewUser(User user) {
+        matchmakingQueue.put(user, new ArrayList<>());
+        runMatchmaking();
+    }
+
     public int getQueueCount() {
         return matchmakingQueue.size();
     }

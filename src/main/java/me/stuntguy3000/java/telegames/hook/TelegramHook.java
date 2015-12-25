@@ -136,12 +136,13 @@ public class TelegramHook implements Listener {
             MatchmakingHandler matchmakingHandler = getInstance().getMatchmakingHandler();
 
             if (!matchmakingHandler.isInQueue(user)) {
-                event.getChat().sendMessage(KeyboardHandler.createMatchmakingMenu(null).message(TelegramEmoji.GREEN_BOX_TICK.getText() + " *Welcome to Telegames Matchmaking!*\n\n" +
-                        "Matchmaking is a simple feature allowing players to quickly play a game with random people" +
+                event.getChat().sendMessage(KeyboardHandler.createMatchmakingMenu(null).message(TelegramEmoji.PERSON.getText() + " *Welcome to Telegames Matchmaking!*\n\n" +
+                        "Matchmaking is a simple feature allowing players to quickly play a game with random people " +
                         "around the world, with no lobbies required.\n\n" +
-                        "To begin matchmaking, simply click on a game's name in the menu below to toggle if" +
+                        "To begin matchmaking, simply click on a game's name in the menu below to toggle if " +
                         "you want to include that game in the matchmaking search. All games are disabled by default.\n\n" +
                         "*Players in matchmaking queue: " + matchmakingHandler.getQueueCount() + "*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                matchmakingHandler.addNewUser(user);
             }
         } else if (message.equalsIgnoreCase(TelegramEmoji.RED_CROSS.getText() + " Quit matchmaking")) {
             MatchmakingHandler matchmakingHandler = getInstance().getMatchmakingHandler();
