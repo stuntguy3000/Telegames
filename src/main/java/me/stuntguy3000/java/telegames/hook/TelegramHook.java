@@ -156,10 +156,7 @@ public class TelegramHook implements Listener {
 
             if (matchmakingHandler.isInQueue(user)) {
                 if (message.contains(" ")) {
-                    Game game = getInstance().getGameHandler().getGame(message.split(" ")[0]);
-
-                    LogHandler.debug("Message: " + message);
-                    LogHandler.debug("Game: " + message.split(" ")[0]);
+                    Game game = getInstance().getGameHandler().getGame(message.split(" ")[1]);
 
                     if (game != null) {
                         if (message.startsWith(TelegramEmoji.BLUE_CIRCLE.getText())) {

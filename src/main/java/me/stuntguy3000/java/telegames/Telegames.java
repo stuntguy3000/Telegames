@@ -24,15 +24,15 @@ public class Telegames {
     @Getter
     public static Telegames instance;
     @Getter
-    private CommandHandler commandHandler = new CommandHandler();
+    private CommandHandler commandHandler;
     @Getter
     private ConfigHandler configHandler;
     @Getter
-    private GameHandler gameHandler = new GameHandler();
+    private GameHandler gameHandler;
     @Getter
-    private LobbyHandler lobbyHandler = new LobbyHandler();
+    private LobbyHandler lobbyHandler;
     @Getter
-    private MatchmakingHandler matchmakingHandler = new MatchmakingHandler();
+    private MatchmakingHandler matchmakingHandler;
     @Getter
     private File outputFolder;
     @Getter
@@ -94,6 +94,14 @@ public class Telegames {
         LogHandler.log("======================================");
         LogHandler.log(" Telegames build " + BUILD + " by @stuntguy3000");
         LogHandler.log("======================================");
+
+        /**
+         * Initialize handlers
+         */
+        commandHandler = new CommandHandler();
+        gameHandler = new GameHandler();
+        lobbyHandler = new LobbyHandler();
+        matchmakingHandler = new MatchmakingHandler();
 
         /**
          * Connect to Telegram
