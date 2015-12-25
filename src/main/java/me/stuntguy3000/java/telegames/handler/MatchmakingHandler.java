@@ -37,6 +37,7 @@ public class MatchmakingHandler {
 
         if (!games.contains(gameName)) {
             games.add(gameName);
+            matchmakingUser.setGames(games);
             runMatchmaking();
         }
     }
@@ -102,6 +103,7 @@ public class MatchmakingHandler {
             }
 
             if (games.remove(gameName)) {
+                matchmakingUser.setGames(games);
                 runMatchmaking();
             }
         }
