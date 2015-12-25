@@ -62,6 +62,9 @@ public class MatchmakingHandler {
      * @return
      */
     public boolean isInQueue(User user) {
+        LogHandler.debug("User: " + user.toString());
+        LogHandler.debug("Queue: " + matchmakingQueue.toString());
+
         return matchmakingQueue.containsKey(user);
     }
 
@@ -110,7 +113,6 @@ class MatchmakingTask implements Runnable {
             LogHandler.debug("Instance is null for MatchmakingHandler");
         } else {
             matchmakingQueue = instance.getMatchmakingHandler().getMatchmakingQueue();
-
         }
     }
 }
