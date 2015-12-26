@@ -6,10 +6,7 @@ import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.handler.KeyboardHandler;
 import me.stuntguy3000.java.telegames.handler.LogHandler;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
-import me.stuntguy3000.java.telegames.object.exception.GameInProgressException;
-import me.stuntguy3000.java.telegames.object.exception.GameStartException;
-import me.stuntguy3000.java.telegames.object.exception.LobbyLockedException;
-import me.stuntguy3000.java.telegames.object.exception.UserBannedException;
+import me.stuntguy3000.java.telegames.object.exception.*;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.util.StringUtil;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
@@ -32,6 +29,9 @@ public class Lobby {
     @Setter
     private String customName;
     @Getter
+    @Setter
+    private boolean isMatchmaking = false;
+    @Getter
     private List<Integer> kickList;
     @Getter
     private long lastLobbyAction;
@@ -44,6 +44,12 @@ public class Lobby {
     private LobbyOptions lobbyOptions = new LobbyOptions();
     @Getter
     private LobbyMember lobbyOwner;
+    @Getter
+    @Setter
+    private Game matchmakingGame;
+    @Getter
+    @Setter
+    private int maxPlayers = 0;
     @Getter
     private String previousGame;
     @Getter
@@ -63,6 +69,15 @@ public class Lobby {
         kickList = new ArrayList<>();
         lastLobbyAction = System.currentTimeMillis();
         updateHeader();
+    }
+
+    /**
+     * Constructs a new Lobby instance <p>Used for Matchmaking</p>
+     */
+    public Lobby(Game game) {
+        setMatchmaking(true);
+        setMatchmakingGame(game);
+        setMaxPlayers(game.getMaxPlayers());
     }
 
     /**
@@ -158,7 +173,7 @@ public class Lobby {
         User sender = event.getMessage().getSender();
         String message = event.getContent().getContent();
 
-        if (currentGame == null) {
+        if (currentGame == null && !isMatchmaking) {
             if (message.startsWith("▶️ ")) {
                 int indexToRemove = 0;
 
@@ -322,8 +337,16 @@ public class Lobby {
 
             Telegames.getInstance().getLobbyHandler().stopTimer(this);
 
-            updateHeader();
-            sendMessage(lobbyHeader);
+            if (!isMatchmaking) {
+                for (LobbyMember lobbyMember : getLobbyMembers()) {
+                    SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.PERSON.getText() + " *Returned to the main menu!*").parseMode(ParseMode.MARKDOWN).build();
+                    TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(sendableTextMessage, TelegramHook.getBot());
+                    userLeave(lobbyMember, true);
+                }
+            } else {
+                updateHeader();
+                sendMessage(lobbyHeader);
+            }
         } else {
             TelegramBot.getChat(sender.getId()).sendMessage(SendableTextMessage.builder().message(TelegramEmoji.RED_CROSS.getText() + " *You cannot perform this action!*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
         }
@@ -358,7 +381,7 @@ public class Lobby {
      *
      * @param user User the user who joined the Lobby
      */
-    public void userJoin(User user) throws LobbyLockedException, UserBannedException {
+    public void userJoin(User user) throws LobbyLockedException, UserBannedException, LobbyFullException {
         lastLobbyAction = System.currentTimeMillis();
 
         if (kickList.contains(user.getId())) {
@@ -367,6 +390,10 @@ public class Lobby {
 
         if (lobbyOptions.isLocked()) {
             throw new LobbyLockedException();
+        }
+
+        if (maxPlayers > 0 && getLobbyMembers().size() == maxPlayers) {
+            throw new LobbyFullException();
         }
 
         LobbyMember lobbyMember = new LobbyMember(user);

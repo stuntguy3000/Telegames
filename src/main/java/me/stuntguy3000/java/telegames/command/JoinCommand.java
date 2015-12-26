@@ -5,6 +5,7 @@ import me.stuntguy3000.java.telegames.handler.KeyboardHandler;
 import me.stuntguy3000.java.telegames.handler.LobbyHandler;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.command.Command;
+import me.stuntguy3000.java.telegames.object.exception.LobbyFullException;
 import me.stuntguy3000.java.telegames.object.exception.LobbyLockedException;
 import me.stuntguy3000.java.telegames.object.exception.UserBannedException;
 import me.stuntguy3000.java.telegames.object.lobby.Lobby;
@@ -39,7 +40,7 @@ public class JoinCommand extends Command {
                     } else {
                         try {
                             targetLobby.userJoin(sender);
-                        } catch (LobbyLockedException | UserBannedException e) {
+                        } catch (LobbyLockedException | UserBannedException | LobbyFullException e) {
                             SendableTextMessage sendableTextMessage = KeyboardHandler.createLobbyCreationMenu().message(TelegramEmoji.RED_CROSS.getText() + " *You cannot join this lobby.*").parseMode(ParseMode.MARKDOWN).build();
                             respond(chat, sendableTextMessage);
                         }

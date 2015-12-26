@@ -3,10 +3,8 @@ package me.stuntguy3000.java.telegames.handler;
 import lombok.Getter;
 import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
-import me.stuntguy3000.java.telegames.object.exception.LobbyLockedException;
-import me.stuntguy3000.java.telegames.object.exception.UserBannedException;
-import me.stuntguy3000.java.telegames.object.exception.UserHasLobbyException;
-import me.stuntguy3000.java.telegames.object.exception.UserIsMatchmakingException;
+import me.stuntguy3000.java.telegames.object.exception.*;
+import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.lobby.Lobby;
 import me.stuntguy3000.java.telegames.object.timer.GameSecondTimer;
 import pro.zackpollard.telegrambot.api.TelegramBot;
@@ -40,7 +38,7 @@ public class LobbyHandler {
         TelegramBot.getChat(user.getId()).sendMessage(sendableTextMessage, lobby.getTelegramBot());
         try {
             lobby.userJoin(user);
-        } catch (LobbyLockedException | UserBannedException ignore) {
+        } catch (LobbyLockedException | UserBannedException | LobbyFullException ignore) {
 
         }
 
@@ -51,6 +49,16 @@ public class LobbyHandler {
     public void createLobby(String lobbyID, List<Integer> playerList) {
         // TODO: Need a way to get a User [specifically a username]
         // Feature was intended for on bot reboot, reconnect users.
+    }
+
+    /**
+     * Creates a Lobby used for matchmaking
+     *
+     * @param game
+     * @return
+     */
+    public Lobby createMatchmakingLobby(Game game) {
+        return null;
     }
 
     /**
