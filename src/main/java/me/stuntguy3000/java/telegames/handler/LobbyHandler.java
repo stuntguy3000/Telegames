@@ -58,7 +58,9 @@ public class LobbyHandler {
      * @return
      */
     public Lobby createMatchmakingLobby(Game game) {
-        return null;
+        Lobby lobby = new Lobby(game);
+        activeLobbies.put(lobby.getLobbyID(), lobby);
+        return lobby;
     }
 
     /**
