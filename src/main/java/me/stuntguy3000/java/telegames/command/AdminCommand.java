@@ -4,8 +4,9 @@ import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.command.Command;
 import me.stuntguy3000.java.telegames.object.lobby.Lobby;
-import me.stuntguy3000.java.telegames.util.StringUtil;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
+import me.stuntguy3000.java.telegames.util.string.Lang;
+import me.stuntguy3000.java.telegames.util.string.StringUtil;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
@@ -37,25 +38,22 @@ public class AdminCommand extends Command {
             switch (args.length) {
                 case 1: {
                     if (args[0].equalsIgnoreCase("help")) {
-                        respond(chat, SendableTextMessage.builder().message("*Admin subcommand help menu:" +
-                                "\n/admin help - Admin help menu" +
-                                "\n/admin list - List all lobbies" +
-                                "\n/admin botfather - List all commands" +
-                                "\n/admin broadcast [message] - Broadcast a message to all known users*").parseMode(ParseMode.MARKDOWN).build());
+                        respond(chat, SendableTextMessage.builder().message(Lang.COMMAND_ADMIN_HELP).parseMode(ParseMode.MARKDOWN).build());
                         return;
                     } else if (args[0].equalsIgnoreCase("list")) {
                         StringBuilder lobbylist = new StringBuilder();
-                        lobbylist.append("*Lobby List:*\n");
+                        lobbylist.append(Lang.MISC_HEADER_LOBBYLIST);
+                        lobbylist.append("\n");
 
                         for (Lobby lobby : getInstance().getLobbyHandler().getActiveLobbies().values()) {
-                            lobbylist.append(String.format("*ID:* %s *Owner:* %s *Members:* %s *Last Active:* %s %s", lobby.getLobbyID(), StringUtil.markdownSafe(lobby.getLobbyOwner().getUsername()), lobby.getLobbyMembers().size(), StringUtil.millisecondsToHumanReadable(System.currentTimeMillis() - lobby.getLastLobbyAction()), lobby.getCurrentGame() != null ? "Playing " + lobby.getCurrentGame().getGameName() : ""));
+                            lobbylist.append(String.format(Lang.COMMAND_ADMIN_LOBBY, lobby.getLobbyID(), StringUtil.markdownSafe(lobby.getLobbyOwner().getUsername()), lobby.getTelegramUsers().size(), StringUtil.millisecondsToHumanReadable(System.currentTimeMillis() - lobby.getLastLobbyAction()), lobby.getCurrentGame() != null ? "Playing " + lobby.getCurrentGame().getGameName() : ""));
                             lobbylist.append("\n");
                         }
 
                         respond(chat, SendableTextMessage.builder().message(lobbylist.toString()).parseMode(ParseMode.MARKDOWN).build());
                         return;
                     } else if (args[0].equalsIgnoreCase("botfather")) {
-                        respond(chat, SendableTextMessage.builder().message("*Botfather Message:*\n" + getInstance().getCommandHandler().getBotFatherString()).parseMode(ParseMode.MARKDOWN).build());
+                        respond(chat, SendableTextMessage.builder().message(Lang.MISC_HEADER_BOTFATHER + "\n" + getInstance().getCommandHandler().getBotFatherString()).parseMode(ParseMode.MARKDOWN).build());
                         return;
                     }
                     break;
@@ -78,7 +76,7 @@ public class AdminCommand extends Command {
                 }
             }
 
-            respond(chat, SendableTextMessage.builder().message("*Unknown subcommand! Try /admin help*").parseMode(ParseMode.MARKDOWN).build());
+            respond(chat, SendableTextMessage.builder().message(Lang.COMMAND_ADMIN_UNKNOWN_SUBCOMMAND).parseMode(ParseMode.MARKDOWN).build());
         }
     }
 }

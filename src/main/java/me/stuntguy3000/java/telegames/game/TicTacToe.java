@@ -3,8 +3,8 @@ package me.stuntguy3000.java.telegames.game;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.game.GameState;
-import me.stuntguy3000.java.telegames.object.lobby.LobbyMember;
-import me.stuntguy3000.java.telegames.util.StringUtil;
+import me.stuntguy3000.java.telegames.object.user.TelegramUser;
+import me.stuntguy3000.java.telegames.util.string.StringUtil;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
@@ -22,11 +22,11 @@ import java.util.List;
 // @author Luke Anderson | stuntguy3000
 public class TicTacToe extends Game {
     private TelegramEmoji[][] board = new TelegramEmoji[3][3];
-    private LobbyMember cross;
-    private LobbyMember currentPlayer;
-    private LobbyMember naught;
+    private TelegramUser cross;
+    private TelegramUser currentPlayer;
+    private TelegramUser naught;
     private List<TelegramEmoji> numbers = new ArrayList<>();
-    private LobbyMember winner;
+    private TelegramUser winner;
 
     public TicTacToe() {
         setGameInfo("TicTacToe", "First player to line three in a row wins.");
@@ -121,12 +121,12 @@ public class TicTacToe extends Game {
         if (event.getChat().getType() == ChatType.PRIVATE) {
             User sender = event.getMessage().getSender();
             String message = event.getContent().getContent();
-            LobbyMember lobbyMember = getGameLobby().getLobbyMember(sender.getUsername());
+            TelegramUser telegramUser = getGameLobby().getLobbyMember(sender.getUsername());
 
             TelegramEmoji emoji = TelegramEmoji.getMatch(message);
 
             if (emoji != null) {
-                if (currentPlayer.getUserID() == lobbyMember.getUserID()) {
+                if (currentPlayer.getUserID() == telegramUser.getUserID()) {
                     playTurn(currentPlayer, emoji);
                     return;
                 } else {
@@ -185,7 +185,7 @@ public class TicTacToe extends Game {
         getGameLobby().sendMessage(createKeyboard().message("It is your turn, " + StringUtil.markdownSafe(currentPlayer.getUsername())).parseMode(ParseMode.MARKDOWN).build());
     }
 
-    private void playTurn(LobbyMember currentPlayer, TelegramEmoji emoji) {
+    private void playTurn(TelegramUser currentPlayer, TelegramEmoji emoji) {
         if (emoji != null) {
             TelegramEmoji character = (currentPlayer.getUserID() == naught.getUserID() ? TelegramEmoji.RED_CIRCLE : TelegramEmoji.RED_CROSS);
 

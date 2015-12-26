@@ -4,8 +4,8 @@ import lombok.Getter;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.game.GameState;
-import me.stuntguy3000.java.telegames.object.lobby.LobbyMember;
-import me.stuntguy3000.java.telegames.util.StringUtil;
+import me.stuntguy3000.java.telegames.object.user.TelegramUser;
+import me.stuntguy3000.java.telegames.util.string.StringUtil;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
@@ -145,7 +145,7 @@ public class Uno extends Game {
         if (event.getChat().getType() == ChatType.PRIVATE) {
             User sender = event.getMessage().getSender();
             String message = event.getContent().getContent();
-            LobbyMember lobbyMember = getGameLobby().getLobbyMember(sender.getUsername());
+            TelegramUser telegramUser = getGameLobby().getLobbyMember(sender.getUsername());
 
             if (message.startsWith("+")) {
                 String[] allArgs = message.substring(1).split(" ");
@@ -159,7 +159,7 @@ public class Uno extends Game {
                             "+colour - View the colour picker");
                 } else if (command.equalsIgnoreCase("deck")) {
                     if (getGameState() == GameState.INGAME) {
-                        sendDeck(lobbyMember);
+                        sendDeck(telegramUser);
                     } else {
                         TelegramBot.getChat(sender.getId()).sendMessage("The game has not started!", TelegramHook.getBot());
                     }
@@ -199,8 +199,8 @@ public class Uno extends Game {
                     }
 
                     if (message.startsWith("Your Score:")) {
-                        lobbyMember.getChat().sendMessage("Please choose a card.", TelegramHook.getBot());
-                        sendDeck(lobbyMember);
+                        telegramUser.getChat().sendMessage("Please choose a card.", TelegramHook.getBot());
+                        sendDeck(telegramUser);
                         return;
                     }
 
@@ -225,8 +225,8 @@ public class Uno extends Game {
         StringBuilder wholeMessage = new StringBuilder();
         int playerPos = 1;
         for (int i = getActivePlayers().size() - 1; i >= 0; --i) {
-            LobbyMember lobbyMember = getActivePlayers().get(i);
-            wholeMessage.append(String.format("#%d - %s (Score: %d)\n", playerPos++, StringUtil.markdownSafe(lobbyMember.getUsername()), lobbyMember.getGameScore()));
+            TelegramUser telegramUser = getActivePlayers().get(i);
+            wholeMessage.append(String.format("#%d - %s (Score: %d)\n", playerPos++, StringUtil.markdownSafe(telegramUser.getUsername()), telegramUser.getGameScore()));
         }
         getGameLobby().sendMessage(wholeMessage.toString());
     }
@@ -234,7 +234,7 @@ public class Uno extends Game {
     public void startGame() {
         setGameState(GameState.INGAME);
 
-        playerOrder.addAll(getActivePlayers().stream().map(LobbyMember::getUsername).collect(Collectors.toList()));
+        playerOrder.addAll(getActivePlayers().stream().map(TelegramUser::getUsername).collect(Collectors.toList()));
         Collections.shuffle(playerOrder);
 
         fillDeck();
@@ -286,17 +286,17 @@ public class Uno extends Game {
     }
 
     private void fillHands() {
-        for (LobbyMember LobbyMember : getActivePlayers()) {
+        for (TelegramUser TelegramUser : getActivePlayers()) {
             List<UnoCard> deck = new ArrayList<>();
             for (int i = 0; i < 7; i++) {
                 deck.add(entireDeck.remove(0));
             }
-            playerDecks.put(LobbyMember.getUserID(), deck);
-            updateScore(LobbyMember);
+            playerDecks.put(TelegramUser.getUserID(), deck);
+            updateScore(TelegramUser);
         }
     }
 
-    private void giveCardsFromDeck(LobbyMember lobbyMember, int amount) {
+    private void giveCardsFromDeck(TelegramUser telegramUser, int amount) {
         List<UnoCard> givenUnoCards = new ArrayList<>();
         for (int i = 1; i <= amount; i++) {
             if (entireDeck.size() == 0) {
@@ -312,10 +312,10 @@ public class Uno extends Game {
         StringBuilder givenCardsMessage = new StringBuilder();
         for (UnoCard unoCard : givenUnoCards) {
             givenCardsMessage.append(unoCard.getText()).append(" | ");
-            playerDecks.get(lobbyMember.getUserID()).add(unoCard);
+            playerDecks.get(telegramUser.getUserID()).add(unoCard);
         }
 
-        lobbyMember.getChat().sendMessage("Picked up cards: " + givenCardsMessage.toString().substring(0, givenCardsMessage.length() - 3), TelegramHook.getBot());
+        telegramUser.getChat().sendMessage("Picked up cards: " + givenCardsMessage.toString().substring(0, givenCardsMessage.length() - 3), TelegramHook.getBot());
     }
 
     public String nextPlayerIndex() {
@@ -339,10 +339,10 @@ public class Uno extends Game {
     public void nextRound() {
         secondsSincePlay = 0;
 
-        for (LobbyMember lobbyMember : getActivePlayers()) {
-            if (playerDecks.get(lobbyMember.getUserID()).size() == 0) {
+        for (TelegramUser telegramUser : getActivePlayers()) {
+            if (playerDecks.get(telegramUser.getUserID()).size() == 0) {
                 // WINNER WINNER CHICKEN DINNER
-                winner(lobbyMember.getUsername());
+                winner(telegramUser.getUsername());
                 return;
             }
         }
@@ -364,11 +364,11 @@ public class Uno extends Game {
     }
 
     private void playCard(UnoCard card, User sender) {
-        LobbyMember lobbyMember = getGameLobby().getLobbyMember(sender.getUsername());
+        TelegramUser telegramUser = getGameLobby().getLobbyMember(sender.getUsername());
         if (currentPlayer.equalsIgnoreCase(sender.getUsername())) {
             secondsSincePlay = 0;
             if (choosingColour) {
-                lobbyMember.getChat().sendMessage("Please choose a colour.", TelegramHook.getBot());
+                telegramUser.getChat().sendMessage("Please choose a colour.", TelegramHook.getBot());
                 return;
             }
 
@@ -423,7 +423,7 @@ public class Uno extends Game {
                             nextRound();
                         }
                     } else {
-                        lobbyMember.getChat().sendMessage("You have chosen an invalid card!", TelegramHook.getBot());
+                        telegramUser.getChat().sendMessage("You have chosen an invalid card!", TelegramHook.getBot());
                         sendDeck(getGameLobby().getLobbyMember(sender.getUsername()));
                     }
                     return;
@@ -454,7 +454,7 @@ public class Uno extends Game {
                 }
             }
         } else {
-            lobbyMember.getChat().sendMessage("It's not your turn.", TelegramHook.getBot());
+            telegramUser.getChat().sendMessage("It's not your turn.", TelegramHook.getBot());
         }
     }
 
@@ -479,10 +479,10 @@ public class Uno extends Game {
         TelegramBot.getChat(sender.getId()).sendMessage(SendableTextMessage.builder().message("Please choose a colour.").replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false)).build(), TelegramHook.getBot());
     }
 
-    private void sendDeck(LobbyMember lobbyMember) {
+    private void sendDeck(TelegramUser telegramUser) {
         List<List<String>> buttonList = new ArrayList<>();
         List<String> row = new ArrayList<>();
-        List<UnoCard> deck = playerDecks.get(lobbyMember.getUserID());
+        List<UnoCard> deck = playerDecks.get(telegramUser.getUserID());
 
         int index = 1;
         for (UnoCard unoCard : deck) {
@@ -500,19 +500,19 @@ public class Uno extends Game {
             buttonList.add(new ArrayList<>(row));
         }
 
-        buttonList.add(Arrays.asList("Draw from deck", "Your Score: " + lobbyMember.getGameScore()));
+        buttonList.add(Arrays.asList("Draw from deck", "Your Score: " + telegramUser.getGameScore()));
 
-        TelegramBot.getChat(lobbyMember.getUserID()).sendMessage(SendableTextMessage.builder().message("Here are your cards.").replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false)).build(), TelegramHook.getBot());
+        TelegramBot.getChat(telegramUser.getUserID()).sendMessage(SendableTextMessage.builder().message("Here are your cards.").replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false)).build(), TelegramHook.getBot());
     }
 
-    private void updateScore(LobbyMember lobbyMember) {
+    private void updateScore(TelegramUser telegramUser) {
         int score = 0;
 
-        for (UnoCard unoCard : playerDecks.get(lobbyMember.getUserID())) {
+        for (UnoCard unoCard : playerDecks.get(telegramUser.getUserID())) {
             score += unoCard.getCardValue().getScoreValue();
         }
 
-        lobbyMember.setGameScore(score);
+        telegramUser.setGameScore(score);
     }
 
     private void winner(String username) {

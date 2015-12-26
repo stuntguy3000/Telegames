@@ -5,8 +5,9 @@ import me.stuntguy3000.java.telegames.handler.LobbyHandler;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.command.Command;
 import me.stuntguy3000.java.telegames.object.lobby.Lobby;
-import me.stuntguy3000.java.telegames.object.lobby.LobbyMember;
+import me.stuntguy3000.java.telegames.object.user.TelegramUser;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
+import me.stuntguy3000.java.telegames.util.string.Lang;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
@@ -28,24 +29,24 @@ public class KickCommand extends Command {
             Lobby lobby = lobbyHandler.getLobby(sender);
             if (lobby != null) {
                 if (args.length > 0) {
-                    LobbyMember lobbyMember = lobby.getLobbyMember(args[0]);
-                    if (lobbyMember != null) {
-                        if (lobby.getLobbyOwner().getUserID() == sender.getId() && lobbyMember.getUserID() != sender.getId()) {
-                            lobby.kickPlayer(lobbyMember);
+                    TelegramUser telegramUser = lobby.getLobbyMember(args[0]);
+                    if (telegramUser != null) {
+                        if (lobby.getLobbyOwner().getUserID() == sender.getId() && telegramUser.getUserID() != sender.getId()) {
+                            lobby.kickPlayer(telegramUser);
                         } else {
-                            respond(chat, TelegramEmoji.RED_CROSS.getText() + " You cannot kick this player!");
+                            respond(chat, Lang.COMMAND_KICK_UNKICKABLE);
                         }
                     } else {
-                        respond(chat, TelegramEmoji.RED_CROSS.getText() + " Player not found!");
+                        respond(chat, Lang.ERROR_PLAYER_NOT_FOUND);
                     }
                 } else {
-                    respond(chat, TelegramEmoji.RED_CROSS.getText() + " Please specify a username!\nUsage: /kick <name>");
+                    respond(chat, String.format(Lang.ERROR_SYNTAX_INVALID, "kick", "<name>"));
                 }
             } else {
-                respond(chat, TelegramEmoji.RED_CROSS.getText() + " You are not in an lobby!");
+                respond(chat, Lang.ERROR_USER_NOT_IN_LOBBY);
             }
         } else {
-            respond(chat, TelegramEmoji.RED_CROSS.getText() + " This command can only be executed via a private message to @" + TelegramHook.getBot().getBotUsername());
+            respond(chat, Lang.ERROR_COMMAND_PM_ONLY);
         }
     }
 }

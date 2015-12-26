@@ -6,11 +6,11 @@ import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.exception.*;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.lobby.Lobby;
+import me.stuntguy3000.java.telegames.object.user.TelegramUser;
 import me.stuntguy3000.java.telegames.object.timer.GameSecondTimer;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
-import pro.zackpollard.telegrambot.api.user.User;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +28,7 @@ public class LobbyHandler {
      *
      * @param user User the owner of the Lobby
      */
-    private Lobby createLobby(User user) {
+    private Lobby createLobby(TelegramUser user) {
         Lobby lobby = new Lobby(user, Telegames.getInstance().getRandomString().nextString().toUpperCase());
         activeLobbies.put(lobby.getLobbyID(), lobby);
 
@@ -110,7 +110,7 @@ public class LobbyHandler {
      * @param user User the requested user
      * @return Lobby the Lobby the user is in
      */
-    public Lobby getLobby(User user) {
+    public Lobby getLobby(TelegramUser user) {
         if (user != null) {
             for (Lobby lobby : activeLobbies.values()) {
                 if (lobby.isInLobby(user.getUsername())) {
@@ -160,7 +160,7 @@ public class LobbyHandler {
         }
     }
 
-    public Lobby tryCreateLobby(User user) throws UserIsMatchmakingException, UserHasLobbyException {
+    public Lobby tryCreateLobby(TelegramUser user) throws UserIsMatchmakingException, UserHasLobbyException {
         if (getLobby(user) != null) {
             throw new UserHasLobbyException();
         }

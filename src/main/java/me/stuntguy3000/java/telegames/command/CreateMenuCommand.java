@@ -6,6 +6,7 @@ import me.stuntguy3000.java.telegames.handler.LobbyHandler;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.command.Command;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
+import me.stuntguy3000.java.telegames.util.string.Lang;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
@@ -25,12 +26,12 @@ public class CreateMenuCommand extends Command {
 
         if (event.getChat().getType() == ChatType.PRIVATE) {
             if (lobbyHandler.getLobby(sender) == null) {
-                respond(chat, KeyboardHandler.createLobbyCreationMenu().message("*Here you go:*").parseMode(ParseMode.MARKDOWN).build());
+                respond(chat, KeyboardHandler.createLobbyCreationMenu().message(Lang.COMMAND_CREATEMENU).parseMode(ParseMode.MARKDOWN).build());
             } else {
-                respond(chat, TelegramEmoji.RED_CROSS.getText() + " You are already in a lobby!");
+                respond(chat, Lang.ERROR_USER_IN_LOBBY);
             }
         } else {
-            respond(chat, TelegramEmoji.RED_CROSS.getText() + " This command can only be executed via a private message to @" + TelegramHook.getBot().getBotUsername());
+            respond(chat, Lang.ERROR_COMMAND_PM_ONLY);
         }
     }
 }

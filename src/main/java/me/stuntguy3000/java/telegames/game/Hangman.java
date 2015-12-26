@@ -3,8 +3,8 @@ package me.stuntguy3000.java.telegames.game;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.game.GameState;
-import me.stuntguy3000.java.telegames.object.lobby.LobbyMember;
-import me.stuntguy3000.java.telegames.util.StringUtil;
+import me.stuntguy3000.java.telegames.object.user.TelegramUser;
+import me.stuntguy3000.java.telegames.util.string.StringUtil;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
@@ -25,14 +25,14 @@ import java.util.List;
 
 public class Hangman extends Game {
 
-    private List<LobbyMember> activePlayers = new ArrayList<>();
+    private List<TelegramUser> activePlayers = new ArrayList<>();
     private Character censoredChar = '-';
     private List<Character> censoredWord = new ArrayList<>();
     private List<Character> guesses = new ArrayList<>();
     private int guessesLeft = 9;
     private List<String> predefinedWords = new ArrayList<>();
     private int roundsLeft;
-    private LobbyMember selector; //cringe
+    private TelegramUser selector; //cringe
     private String word;
 
     public Hangman() {
@@ -60,9 +60,9 @@ public class Hangman extends Game {
         if (event.getChat().getType() == ChatType.PRIVATE) {
             User sender = event.getMessage().getSender();
             String message = event.getContent().getContent();
-            LobbyMember lobbyMember = getGameLobby().getLobbyMember(sender.getUsername());
+            TelegramUser telegramUser = getGameLobby().getLobbyMember(sender.getUsername());
 
-            if (isPlayer(lobbyMember)) {
+            if (isPlayer(telegramUser)) {
                 if (word != null && message.length() == 1 && sender.getId() != selector.getUserID()) {
                     if (isAlphaCharactersOnly(message)) {
                         char letter = message.toCharArray()[0];
@@ -181,9 +181,9 @@ public class Hangman extends Game {
         return true;
     }
 
-    private boolean isPlayer(LobbyMember lobbyMember) {
-        for (LobbyMember player : activePlayers) {
-            if (lobbyMember.getUserID() == player.getUserID()) {
+    private boolean isPlayer(TelegramUser telegramUser) {
+        for (TelegramUser player : activePlayers) {
+            if (telegramUser.getUserID() == player.getUserID()) {
                 return true;
             }
         }

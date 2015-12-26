@@ -5,7 +5,7 @@ import me.stuntguy3000.java.telegames.handler.LobbyHandler;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.command.Command;
 import me.stuntguy3000.java.telegames.object.lobby.Lobby;
-import me.stuntguy3000.java.telegames.object.lobby.LobbyMember;
+import me.stuntguy3000.java.telegames.object.user.TelegramUser;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
@@ -30,9 +30,9 @@ public class LobbyCommand extends Command {
             if (lobby != null) {
                 StringBuilder playersList = new StringBuilder();
 
-                for (LobbyMember lobbyMember : lobby.getLobbyMembers()) {
+                for (TelegramUser telegramUser : lobby.getTelegramUsers()) {
                     playersList.append("@");
-                    playersList.append(lobbyMember.getUsername());
+                    playersList.append(telegramUser.getUsername());
                     playersList.append(", ");
                 }
 

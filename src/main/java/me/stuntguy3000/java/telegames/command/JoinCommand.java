@@ -10,6 +10,7 @@ import me.stuntguy3000.java.telegames.object.exception.LobbyLockedException;
 import me.stuntguy3000.java.telegames.object.exception.UserBannedException;
 import me.stuntguy3000.java.telegames.object.lobby.Lobby;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
+import me.stuntguy3000.java.telegames.util.string.Lang;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
@@ -36,7 +37,7 @@ public class JoinCommand extends Command {
                     Lobby targetLobby = lobbyHandler.getLobby(id);
 
                     if (targetLobby == null) {
-                        respond(chat, TelegramEmoji.RED_CROSS.getText() + " No such lobby exists!");
+                        respond(chat, Lang.ERROR_LOBBY_NOT_FOUND);
                     } else {
                         try {
                             targetLobby.userJoin(sender);
@@ -46,13 +47,13 @@ public class JoinCommand extends Command {
                         }
                     }
                 } else {
-                    respond(chat, TelegramEmoji.RED_CROSS.getText() + " Please specify a lobby ID!\nUsage: /joinlobby <ID>");
+                    respond(chat, String.format(Lang.ERROR_SYNTAX_INVALID, "joinlobby", "<ID>"));
                 }
             } else {
-                respond(chat, TelegramEmoji.RED_CROSS.getText() + " You are already in a lobby!");
+                respond(chat, Lang.ERROR_USER_IN_LOBBY);
             }
         } else {
-            respond(chat, TelegramEmoji.RED_CROSS.getText() + " This command can only be executed via a private message to @" + TelegramHook.getBot().getBotUsername());
+            respond(chat, Lang.ERROR_COMMAND_PM_ONLY);
         }
     }
 }

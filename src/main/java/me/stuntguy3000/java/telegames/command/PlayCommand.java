@@ -8,6 +8,7 @@ import me.stuntguy3000.java.telegames.object.command.Command;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.lobby.Lobby;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
+import me.stuntguy3000.java.telegames.util.string.Lang;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
@@ -34,7 +35,7 @@ public class PlayCommand extends Command {
                 if (lobbyGame == null) {
                     if (args.length > 0) {
                         if (args[0].equalsIgnoreCase("random")) {
-                            respond(chat, TelegramEmoji.JOYSTICK.getText() + " Choosing a random game!");
+                            respond(chat, Lang.COMMAND_PLAY_RANDOM);
 
                             Game game = getInstance().getGameHandler().getRandomGame();
                             lobby.startGame(game);
@@ -44,20 +45,20 @@ public class PlayCommand extends Command {
                             if (targetGame != null) {
                                 lobby.startGame(targetGame);
                             } else {
-                                respond(chat, TelegramEmoji.RED_CROSS.getText() + " Unknown game!\nUse /gamelist for help.");
+                                respond(chat, Lang.ERROR_GAME_NOT_FOUND);
                             }
                         }
                     } else {
-                        respond(chat, KeyboardHandler.createGameSelector().message(TelegramEmoji.JOYSTICK.getText() + " *Please choose a game:*").parseMode(ParseMode.MARKDOWN).build());
+                        respond(chat, KeyboardHandler.createGameSelector().message(Lang.COMMAND_PLAY).parseMode(ParseMode.MARKDOWN).build());
                     }
                 } else {
-                    respond(chat, TelegramEmoji.RED_CROSS.getText() + " A game is already running!");
+                    respond(chat, Lang.ERROR_GAME_RUNNING);
                 }
             } else {
-                respond(chat, TelegramEmoji.RED_CROSS.getText() + " You are not in a Lobby!");
+                respond(chat, Lang.ERROR_USER_NOT_IN_LOBBY);
             }
         } else {
-            respond(chat, TelegramEmoji.RED_CROSS.getText() + " This command can only be executed via a private message to @" + TelegramHook.getBot().getBotUsername());
+            respond(chat, Lang.ERROR_COMMAND_PM_ONLY);
         }
     }
 }

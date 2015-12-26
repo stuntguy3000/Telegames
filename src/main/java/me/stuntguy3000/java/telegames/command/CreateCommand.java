@@ -8,6 +8,7 @@ import me.stuntguy3000.java.telegames.object.command.Command;
 import me.stuntguy3000.java.telegames.object.exception.*;
 import me.stuntguy3000.java.telegames.object.lobby.Lobby;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
+import me.stuntguy3000.java.telegames.util.string.Lang;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
@@ -34,7 +35,7 @@ public class CreateCommand extends Command {
                 Lobby targetLobby = lobbyHandler.getLobby(id);
 
                 if (targetLobby == null) {
-                    respond(chat, TelegramEmoji.RED_CROSS.getText() + " No such lobby exists!");
+                    respond(chat, Lang.ERROR_LOBBY_NOT_FOUND);
                 } else {
                     try {
                         targetLobby.userJoin(sender);
@@ -48,21 +49,20 @@ public class CreateCommand extends Command {
                 try {
                     lobby = lobbyHandler.tryCreateLobby(sender);
                 } catch (UserIsMatchmakingException e) {
-                    respond(chat, TelegramEmoji.RED_CROSS.getText() + " You cannot create a lobby while in matchmaking!");
+                    respond(chat, Lang.ERROR_LOBBY_CREATE_MATCHMAKING);
                     return;
                 } catch (UserHasLobbyException e) {
-                    respond(chat, TelegramEmoji.RED_CROSS.getText() + " You are already have a lobby!");
+                    respond(chat, Lang.ERROR_USER_IN_LOBBY);
                     return;
                 }
 
                 if (!(event.getChat().getType() == ChatType.PRIVATE)) {
                     SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.JOYSTICK.getText() + " [Click here to join the lobby!](http://telegram.me/" + TelegramHook.getBot().getBotUsername() + "?start=" + lobby.getLobbyID() + ")").parseMode(ParseMode.MARKDOWN).build();
-
-                    event.getChat().sendMessage(sendableTextMessage, TelegramHook.getBot());
+                    respond(chat, sendableTextMessage);
                 }
             }
         } else {
-            respond(chat, TelegramEmoji.RED_CROSS.getText() + " You are already in a lobby!");
+            respond(chat, Lang.ERROR_USER_IN_LOBBY);
         }
     }
 }

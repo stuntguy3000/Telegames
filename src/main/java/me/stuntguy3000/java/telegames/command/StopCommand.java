@@ -7,6 +7,7 @@ import me.stuntguy3000.java.telegames.object.command.Command;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.lobby.Lobby;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
+import me.stuntguy3000.java.telegames.util.string.Lang;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
@@ -32,16 +33,16 @@ public class StopCommand extends Command {
                     if (lobby.getLobbyOwner().getUserID() == sender.getId()) {
                         lobby.stopGame();
                     } else {
-                        respond(chat, TelegramEmoji.RED_CROSS.getText() + " You cannot perform this action!");
+                        respond(chat, Lang.ERROR_NOT_AUTHORIZIED);
                     }
                 } else {
-                    respond(chat, TelegramEmoji.RED_CROSS.getText() + " No game is running!");
+                    respond(chat, Lang.ERROR_GAME_NOT_RUNNING);
                 }
             } else {
-                respond(chat, TelegramEmoji.RED_CROSS.getText() + " You are not in a lobby!");
+                respond(chat, Lang.ERROR_USER_NOT_IN_LOBBY);
             }
         } else {
-            respond(chat, TelegramEmoji.RED_CROSS.getText() + " This command can only be executed via a private message to @" + TelegramHook.getBot().getBotUsername());
+            respond(chat, Lang.ERROR_COMMAND_PM_ONLY);
         }
     }
 }

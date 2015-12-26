@@ -3,7 +3,7 @@ package me.stuntguy3000.java.telegames.command;
 import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.object.command.Command;
 import me.stuntguy3000.java.telegames.object.game.Game;
-import me.stuntguy3000.java.telegames.util.TelegramEmoji;
+import me.stuntguy3000.java.telegames.util.string.Lang;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
 
@@ -17,14 +17,14 @@ public class GameHelpCommand extends Command {
         Chat chat = event.getChat();
 
         if (event.getArgs().length < 1) {
-            respond(chat, TelegramEmoji.RED_CROSS.getText() + " Correct Syntax: /gamehelp <game>");
+            respond(chat, String.format(Lang.ERROR_SYNTAX_INVALID, "gamehelp", "<name>"));
         } else {
             Game game = getInstance().getGameHandler().getGame(event.getArgs()[0]);
 
             if (game != null) {
-                respond(chat, TelegramEmoji.BOOK.getText() + " Help for " + game.getGameName() + ":\n" + game.getGameHelp());
+                respond(chat, Lang.COMMAND_GAMEHELP + "\n" + game.getGameHelp());
             } else {
-                respond(chat, TelegramEmoji.RED_CROSS.getText() + " Game \"" + event.getArgs()[0] + "\" could not be found.\nUse /gamelist for help.");
+                respond(chat, Lang.ERROR_GAME_NOT_FOUND);
             }
         }
     }

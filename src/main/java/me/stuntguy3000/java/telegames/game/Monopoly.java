@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.game.GameState;
-import me.stuntguy3000.java.telegames.object.lobby.LobbyMember;
+import me.stuntguy3000.java.telegames.object.user.TelegramUser;
 import pro.zackpollard.telegrambot.api.event.chat.message.TextMessageReceivedEvent;
 
 import java.util.HashMap;
@@ -99,7 +99,7 @@ class MonopolySquare {
      */
     @Getter
     @Setter
-    private LobbyMember owner = null;
+    private TelegramUser owner = null;
 
     /**
      * @param monopolySquareType

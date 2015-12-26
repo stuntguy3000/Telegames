@@ -5,8 +5,8 @@ import lombok.Setter;
 import me.stuntguy3000.java.telegames.object.exception.GameInProgressException;
 import me.stuntguy3000.java.telegames.object.exception.GameStartException;
 import me.stuntguy3000.java.telegames.object.lobby.Lobby;
-import me.stuntguy3000.java.telegames.object.lobby.LobbyMember;
-import me.stuntguy3000.java.telegames.util.StringUtil;
+import me.stuntguy3000.java.telegames.object.user.TelegramUser;
+import me.stuntguy3000.java.telegames.util.string.StringUtil;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.event.chat.message.TextMessageReceivedEvent;
@@ -19,7 +19,7 @@ import java.util.List;
 public abstract class Game {
     @Getter
     @Setter
-    private List<LobbyMember> activePlayers = new ArrayList<>();
+    private List<TelegramUser> activePlayers = new ArrayList<>();
     @Getter
     @Setter
     private boolean devModeOnly = false;
@@ -70,7 +70,7 @@ public abstract class Game {
 
     public abstract void onTextMessageReceived(TextMessageReceivedEvent event);
 
-    public void playerJoin(LobbyMember player) throws GameInProgressException {
+    public void playerJoin(TelegramUser player) throws GameInProgressException {
         if (gameState == GameState.WAITING_FOR_PLAYERS) {
             getActivePlayers().add(player);
         } else {
@@ -79,7 +79,7 @@ public abstract class Game {
     }
 
     public void playerLeave(String username, int userID) {
-        for (LobbyMember member : new ArrayList<>(activePlayers)) {
+        for (TelegramUser member : new ArrayList<>(activePlayers)) {
             if (member.getUserID() == userID) {
                 activePlayers.remove(userID);
                 return;
@@ -96,16 +96,16 @@ public abstract class Game {
         StringBuilder wholeMessage = new StringBuilder();
         int playerPos = 1;
         for (int i = 0; i < getActivePlayers().size(); i++) {
-            LobbyMember lobbyMember = getActivePlayers().get(i);
-            wholeMessage.append(String.format("#%d - %s (Score: %d)\n", playerPos++, StringUtil.markdownSafe(lobbyMember.getUsername()), lobbyMember.getGameScore()));
+            TelegramUser telegramUser = getActivePlayers().get(i);
+            wholeMessage.append(String.format("#%d - %s (Score: %d)\n", playerPos++, StringUtil.markdownSafe(telegramUser.getUsername()), telegramUser.getGameScore()));
         }
         getGameLobby().sendMessage(wholeMessage.toString());
     }
 
     public void removePlayer(String username) {
-        for (LobbyMember lobbyMember : new ArrayList<>(getActivePlayers())) {
-            if (lobbyMember.getUsername().equals(username)) {
-                getActivePlayers().remove(lobbyMember);
+        for (TelegramUser telegramUser : new ArrayList<>(getActivePlayers())) {
+            if (telegramUser.getUsername().equals(username)) {
+                getActivePlayers().remove(telegramUser);
             }
         }
     }

@@ -2,7 +2,7 @@ package me.stuntguy3000.java.telegames.object.config;
 
 import lombok.Getter;
 import me.stuntguy3000.java.telegames.Telegames;
-import me.stuntguy3000.java.telegames.object.lobby.LobbyMember;
+import me.stuntguy3000.java.telegames.object.user.TelegramUser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,11 +17,11 @@ public class LobbyList {
         this.activeLobbies = new HashMap<>();
     }
 
-    public void addLobby(String id, List<LobbyMember> people) {
+    public void addLobby(String id, List<TelegramUser> people) {
         List<Integer> members = new ArrayList<>();
 
-        for (LobbyMember lobbyMember : people) {
-            members.add(lobbyMember.getUserID());
+        for (TelegramUser telegramUser : people) {
+            members.add(telegramUser.getUserID());
         }
 
         this.activeLobbies.put(id, members);

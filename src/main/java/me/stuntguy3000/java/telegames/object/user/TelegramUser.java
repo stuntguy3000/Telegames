@@ -1,4 +1,4 @@
-package me.stuntguy3000.java.telegames.object.lobby;
+package me.stuntguy3000.java.telegames.object.user;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +7,7 @@ import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.user.User;
 
 // @author Luke Anderson | stuntguy3000
-public class LobbyMember implements Comparable {
+public class TelegramUser implements Comparable {
     @Getter
     private String firstName;
     @Getter
@@ -22,7 +22,7 @@ public class LobbyMember implements Comparable {
     @Getter
     private String username;
 
-    public LobbyMember(User user) {
+    public TelegramUser(User user) {
         this.username = user.getUsername();
         this.userID = user.getId();
         this.firstName = user.getFirstName();
@@ -32,18 +32,18 @@ public class LobbyMember implements Comparable {
 
     @Override
     public int compareTo(Object o) {
-        if (o instanceof LobbyMember) {
-            LobbyMember lobbyMember = (LobbyMember) o;
+        if (o instanceof TelegramUser) {
+            TelegramUser telegramUser = (TelegramUser) o;
 
-            if (lobbyMember.getGameScore() == getGameScore()) {
+            if (telegramUser.getGameScore() == getGameScore()) {
                 return 0;
             }
 
-            if (lobbyMember.getGameScore() > getGameScore()) {
+            if (telegramUser.getGameScore() > getGameScore()) {
                 return 1;
             }
 
-            if (lobbyMember.getGameScore() < getGameScore()) {
+            if (telegramUser.getGameScore() < getGameScore()) {
                 return -1;
             }
         } else {
