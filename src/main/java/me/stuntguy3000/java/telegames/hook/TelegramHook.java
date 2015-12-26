@@ -157,6 +157,7 @@ public class TelegramHook implements Listener {
         } else {
             MatchmakingHandler matchmakingHandler = getInstance().getMatchmakingHandler();
 
+
             if (matchmakingHandler.isInQueue(user)) {
                 if (message.contains(" ")) {
                     Game game = getInstance().getGameHandler().getGame(message.split(" ")[1]);

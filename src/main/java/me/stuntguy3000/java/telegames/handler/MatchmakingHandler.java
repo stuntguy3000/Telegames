@@ -175,7 +175,7 @@ class MatchmakingTask implements Runnable {
                         }
                     }
 
-                    gameCounter.put(correctGameName, (gameCounter.containsKey(correctGameName) ? 1 : gameCounter.get(correctGameName) + 1));
+                    gameCounter.put(correctGameName, (gameCounter.containsKey(correctGameName) ? gameCounter.get(correctGameName) + 1 : 1));
                 }
             }
         }
