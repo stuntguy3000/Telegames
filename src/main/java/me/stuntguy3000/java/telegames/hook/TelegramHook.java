@@ -7,10 +7,7 @@ import me.stuntguy3000.java.telegames.handler.LogHandler;
 import me.stuntguy3000.java.telegames.handler.MatchmakingHandler;
 import me.stuntguy3000.java.telegames.object.command.Command;
 import me.stuntguy3000.java.telegames.object.config.LobbyList;
-import me.stuntguy3000.java.telegames.object.exception.LobbyLockedException;
-import me.stuntguy3000.java.telegames.object.exception.UserBannedException;
-import me.stuntguy3000.java.telegames.object.exception.UserHasLobbyException;
-import me.stuntguy3000.java.telegames.object.exception.UserIsMatchmakingException;
+import me.stuntguy3000.java.telegames.object.exception.*;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.lobby.Lobby;
 import me.stuntguy3000.java.telegames.util.ClassGetter;
@@ -180,7 +177,7 @@ public class TelegramHook implements Listener {
                     try {
                         targetLobby.userJoin(user);
                         enteringlobby.remove(user.getUsername());
-                    } catch (LobbyLockedException | UserBannedException e) {
+                    } catch (LobbyLockedException | UserBannedException | LobbyFullException e) {
                         SendableTextMessage sendableTextMessage = KeyboardHandler.createLobbyCreationMenu().message(TelegramEmoji.RED_CROSS.getText() + " *You cannot join this lobby.*").parseMode(ParseMode.MARKDOWN).build();
                         event.getChat().sendMessage(sendableTextMessage, TelegramHook.getBot());
                     }
