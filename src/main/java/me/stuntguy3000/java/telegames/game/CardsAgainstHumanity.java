@@ -158,6 +158,7 @@ public class CardsAgainstHumanity extends Game {
             return false;
         }
 
+        LogHandler.debug("Checking");
         if (getGameState() == GameState.CHOOSING || forcePlay) {
             int toPlay = (robotCzar ? getActivePlayers().size() : getActivePlayers().size() - 1);
             LogHandler.debug("count: " + toPlay);
