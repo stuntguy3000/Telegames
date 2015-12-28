@@ -463,7 +463,7 @@ public class CardsAgainstHumanity extends Game {
                     if (!tryCzar(number)) {
                         TelegramBot.getChat(sender.getId()).sendMessage(Lang.ERROR_INVALID_SELECTION, TelegramHook.getBot());
                     }
-                } catch (Exception ex) {
+                } catch (Exception ignored) {
                 }
                 return true;
             }
@@ -513,7 +513,7 @@ public class CardsAgainstHumanity extends Game {
                 }
 
                 if (cards.size() == cardsNeeded) {
-                    getGameLobby().sendMessage(SendableTextMessage.builder().message(Lang.GAME_CAH_USERPLAY).parseMode(ParseMode.MARKDOWN).build());
+                    getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_CAH_USERPLAY, StringUtil.markdownSafe(sender.getUsername()))).parseMode(ParseMode.MARKDOWN).build());
                     checkPlayers();
                 } else {
                     TelegramBot.getChat(sender.getId()).sendMessage(createUserKeyboard(getGameLobby().getTelegramUser(sender.getUsername())).message(String.format(Lang.GAME_CAH_PLAY_MORE, cardsNeeded - cards.size())).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
