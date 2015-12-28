@@ -2,6 +2,7 @@ package me.stuntguy3000.java.telegames.game;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.stuntguy3000.java.telegames.handler.LogHandler;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.game.GameState;
@@ -189,7 +190,10 @@ public class CardsAgainstHumanity extends Game {
                     }
 
                     if (cardCount != currentBlackCard.getBlanks()) {
+                        LogHandler.debug("Skipped a player");
                         continue;
+                    } else {
+                        LogHandler.debug("Counted a player");
                     }
 
                     modifiedBlackCard.append("\n");
