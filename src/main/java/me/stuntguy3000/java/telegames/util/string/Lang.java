@@ -50,7 +50,7 @@ public class Lang {
     public static String GAME_BLACKJACK_PLAYER_STAND = "*%s chooses to Stand.*";
     public static String GAME_BLACKJACK_STAND = "Stand";
     public static String GAME_BLACKJACK_STARTING_ROUND = "*Starting round %d/%d\nDealer: %s*";
-    public static String GAME_CAH_ALLPLAYED = TelegramEmoji.GREEN_BOX_TICK.getText() + " *All users have played.*";
+    public static String GAME_CAH_ALLPLAYED = TelegramEmoji.GREEN_BOX_TICK.getText() + " *The czar is choosing a winner.*";
     public static String GAME_CAH_ALLPLAYED_CHOOSING = "*All users have played. A winner will be chosen shortly...*\n\n%s";
     public static String GAME_CAH_ALLPLAYED_CZAR = TelegramEmoji.GREEN_BOX_TICK.getText() + " *All users have played.*\n*Please choose a winner!*";
     public static String GAME_CAH_COMMANDHELP = "CardsAgainstHumanity Command Menu:\n" +
@@ -61,6 +61,8 @@ public class Lang {
     public static String GAME_CAH_NAME = "CardsAgainstHumanity";
     public static String GAME_CAH_PLAY_MORE = "*Please play %s more card(s).*";
     public static String GAME_CAH_STARTROUND_CZAR = TelegramEmoji.BOOK.getText() + " *Starting Round %s\nCzar: %s*";
+    public static String GAME_CAH_TIMENOTICE = "*Not everybody has played!*";
+    public static String GAME_CAH_TIMEWARNING = "*All players have 10 seconds to play all cards.*";
     public static String GAME_CAH_USERPLAY = TelegramEmoji.GREEN_BOX_TICK.getText() + " *%s has played.*";
     public static String GAME_CAH_WHITECARDS = "_Please play %s white cards._";
     public static String GAME_CARDPICKUP = "Picked up cards: %s";

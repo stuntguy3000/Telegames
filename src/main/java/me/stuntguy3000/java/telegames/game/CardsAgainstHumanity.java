@@ -101,7 +101,9 @@ class CAHRobotDelay extends TimerTask {
 
     @Override
     public void run() {
-        cardsAgainstHumanity.tryCzar(new Random().nextInt(options - 1) + 1);
+        if (cardsAgainstHumanity.getGameState() == GameState.INGAME) {
+            cardsAgainstHumanity.tryCzar(new Random().nextInt(options - 1) + 1);
+        }
     }
 }
 
@@ -116,7 +118,9 @@ class CAHRoundDelay extends TimerTask {
 
     @Override
     public void run() {
-        cardsAgainstHumanity.nextRound();
+        if (cardsAgainstHumanity.getGameState() == GameState.INGAME) {
+            cardsAgainstHumanity.nextRound();
+        }
     }
 }
 
@@ -132,6 +136,7 @@ public class CardsAgainstHumanity extends Game {
     private int playerOrderIndex = 0;
     private boolean robotCzar = false;
     private int round = 1;
+    private int secondsSincePlay = 0;
     private HashMap<Integer, List<CAHCard>> userCards = new HashMap<>();
     private List<CAHCard> whiteCards = new ArrayList<>();
 
@@ -143,7 +148,7 @@ public class CardsAgainstHumanity extends Game {
         loadPacks();
     }
 
-    public boolean checkPlayers() {
+    public boolean checkPlayers(boolean forcePlay) {
         if (getMinPlayers() > getActivePlayers().size()) {
             SendableTextMessage message = SendableTextMessage.builder().message(Lang.ERROR_NOT_ENOUGH_PLAYERS).parseMode(ParseMode.MARKDOWN).build();
             getGameLobby().sendMessage(message);
@@ -153,7 +158,7 @@ public class CardsAgainstHumanity extends Game {
 
         if (getGameState() == GameState.CHOOSING) {
             int toPlay = (robotCzar ? getActivePlayers().size() : getActivePlayers().size() - 1);
-            if (playedCards.size() == toPlay) {
+            if (playedCards.size() == toPlay || forcePlay) {
                 for (Map.Entry<Integer, LinkedList<CAHCard>> cardPlay : playedCards.entrySet()) {
                     if (cardPlay.getValue().size() < currentBlackCard.getBlanks()) {
                         return false;
@@ -218,70 +223,6 @@ public class CardsAgainstHumanity extends Game {
         return true;
     }
 
-    @Override
-    public String getGameHelp() {
-        return Lang.GAME_CAH_DESCRIPTION;
-    }
-
-    @Override
-    public void onTextMessageReceived(TextMessageReceivedEvent event) {
-        if (event.getChat().getType() == ChatType.PRIVATE) {
-            User sender = event.getMessage().getSender();
-            String message = event.getContent().getContent();
-            TelegramUser telegramUser = getGameLobby().getTelegramUser(sender.getUsername());
-
-            if (message.startsWith("+")) {
-                String[] allArgs = message.substring(1).split(" ");
-                String command = allArgs[0];
-
-                if (command.equalsIgnoreCase("help")) {
-                    getGameLobby().sendMessage(Lang.GAME_CAH_COMMANDHELP);
-                } else if (command.equalsIgnoreCase("cards")) {
-                    if (getGameState() != GameState.WAITING_FOR_PLAYERS) {
-                        getGameLobby().sendMessage(createUserKeyboard(telegramUser).message(Lang.GAME_GENERAL_PLAYER_CARDS).build());
-                    } else {
-                        TelegramBot.getChat(sender.getId()).sendMessage(Lang.ERROR_GAME_NOT_STARTED, TelegramHook.getBot());
-                    }
-                } else if (command.equalsIgnoreCase("score")) {
-                    if (getGameState() != GameState.WAITING_FOR_PLAYERS) {
-                        TelegramBot.getChat(sender.getId()).sendMessage(String.format(Lang.GAME_GENERAL_PLAYER_SCORE, telegramUser.getGameScore()), TelegramHook.getBot());
-                    } else {
-                        TelegramBot.getChat(sender.getId()).sendMessage(Lang.ERROR_GAME_NOT_STARTED, TelegramHook.getBot());
-                    }
-                }
-            } else {
-                if (!playCard(sender, message)) {
-                    getGameLobby().userChat(telegramUser, message);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void playerLeave(String username, int userID) {
-        removePlayer(username);
-
-        if (cardCzar.getUsername().equals(username) && checkPlayers()) {
-            nextRound();
-        }
-    }
-
-    @Override
-    public void startGame() {
-        setGameState(GameState.INGAME);
-
-        Collections.shuffle(whiteCards);
-        Collections.shuffle(blackCards);
-
-        fillHands();
-
-        if (getActivePlayers().size() == 2) {
-            robotCzar = true;
-        }
-
-        nextRound();
-    }
-
     private SendableTextMessage.SendableTextMessageBuilder createCzarKeyboard() {
         List<List<String>> buttonList = new ArrayList<>();
         List<String> row = new ArrayList<>();
@@ -335,6 +276,84 @@ public class CardsAgainstHumanity extends Game {
         for (TelegramUser telegramUser : getActivePlayers()) {
             giveWhiteCard(telegramUser, 10);
         }
+    }
+
+    @Override
+    public String getGameHelp() {
+        return Lang.GAME_CAH_DESCRIPTION;
+    }
+
+    @Override
+    public void onSecond() {
+        secondsSincePlay++;
+
+        if (!czarChoosing) {
+            if (secondsSincePlay == 30) {
+                getGameLobby().sendMessage(SendableTextMessage.builder().message(Lang.GAME_CAH_TIMEWARNING).build());
+            } else if (secondsSincePlay == 40) {
+                getGameLobby().sendMessage(SendableTextMessage.builder().message(Lang.GAME_CAH_TIMENOTICE).build());
+                checkPlayers(true);
+            }
+        }
+    }
+
+    @Override
+    public void onTextMessageReceived(TextMessageReceivedEvent event) {
+        if (event.getChat().getType() == ChatType.PRIVATE) {
+            User sender = event.getMessage().getSender();
+            String message = event.getContent().getContent();
+            TelegramUser telegramUser = getGameLobby().getTelegramUser(sender.getUsername());
+
+            if (message.startsWith("+")) {
+                String[] allArgs = message.substring(1).split(" ");
+                String command = allArgs[0];
+
+                if (command.equalsIgnoreCase("help")) {
+                    getGameLobby().sendMessage(Lang.GAME_CAH_COMMANDHELP);
+                } else if (command.equalsIgnoreCase("cards")) {
+                    if (getGameState() != GameState.WAITING_FOR_PLAYERS) {
+                        getGameLobby().sendMessage(createUserKeyboard(telegramUser).message(Lang.GAME_GENERAL_PLAYER_CARDS).build());
+                    } else {
+                        TelegramBot.getChat(sender.getId()).sendMessage(Lang.ERROR_GAME_NOT_STARTED, TelegramHook.getBot());
+                    }
+                } else if (command.equalsIgnoreCase("score")) {
+                    if (getGameState() != GameState.WAITING_FOR_PLAYERS) {
+                        TelegramBot.getChat(sender.getId()).sendMessage(String.format(Lang.GAME_GENERAL_PLAYER_SCORE, telegramUser.getGameScore()), TelegramHook.getBot());
+                    } else {
+                        TelegramBot.getChat(sender.getId()).sendMessage(Lang.ERROR_GAME_NOT_STARTED, TelegramHook.getBot());
+                    }
+                }
+            } else {
+                if (!playCard(sender, message)) {
+                    getGameLobby().userChat(telegramUser, message);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void playerLeave(String username, int userID) {
+        removePlayer(username);
+
+        if (cardCzar.getUsername().equals(username) && checkPlayers(false)) {
+            nextRound();
+        }
+    }
+
+    @Override
+    public void startGame() {
+        setGameState(GameState.INGAME);
+
+        Collections.shuffle(whiteCards);
+        Collections.shuffle(blackCards);
+
+        fillHands();
+
+        if (getActivePlayers().size() == 2) {
+            robotCzar = true;
+        }
+
+        nextRound();
     }
 
     private void giveWhiteCard(TelegramUser telegramUser, int amount) {
@@ -529,7 +548,7 @@ public class CardsAgainstHumanity extends Game {
 
                 if (cards.size() == cardsNeeded) {
                     getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_CAH_USERPLAY, StringUtil.markdownSafe(sender.getUsername()))).parseMode(ParseMode.MARKDOWN).build());
-                    checkPlayers();
+                    checkPlayers(false);
                 } else {
                     TelegramBot.getChat(sender.getId()).sendMessage(createUserKeyboard(getGameLobby().getTelegramUser(sender.getUsername())).message(String.format(Lang.GAME_CAH_PLAY_MORE, cardsNeeded - cards.size())).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                 }

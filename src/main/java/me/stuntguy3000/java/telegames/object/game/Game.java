@@ -54,6 +54,7 @@ public abstract class Game {
     }
 
     public void endGame() {
+        gameState = GameState.ENDED;
         SendableTextMessage.SendableTextMessageBuilder messageBuilder = SendableTextMessage.builder().message("The game has ended!").replyMarkup(ReplyKeyboardHide.builder().build());
 
         getGameLobby().sendMessage(messageBuilder.build());
