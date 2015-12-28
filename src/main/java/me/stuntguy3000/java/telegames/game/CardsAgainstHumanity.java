@@ -2,7 +2,6 @@ package me.stuntguy3000.java.telegames.game;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.stuntguy3000.java.telegames.handler.LogHandler;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.game.GameState;
@@ -158,10 +157,8 @@ public class CardsAgainstHumanity extends Game {
             return false;
         }
 
-        LogHandler.debug("Checking");
         if (getGameState() == GameState.CHOOSING || forcePlay) {
             int toPlay = (robotCzar ? getActivePlayers().size() : getActivePlayers().size() - 1);
-            LogHandler.debug("count: " + toPlay);
             if (playedCards.size() == toPlay || forcePlay) {
                 if (!forcePlay) {
                     for (Map.Entry<Integer, LinkedList<CAHCard>> cardPlay : playedCards.entrySet()) {
@@ -170,7 +167,7 @@ public class CardsAgainstHumanity extends Game {
                         }
                     }
                 }
-                
+
                 setGameState(GameState.INGAME);
 
                 String[] blackCardSplit = currentBlackCard.getRawText().split("_");
@@ -194,10 +191,7 @@ public class CardsAgainstHumanity extends Game {
                     }
 
                     if (cardCount != currentBlackCard.getBlanks()) {
-                        LogHandler.debug("Skipped a player");
                         continue;
-                    } else {
-                        LogHandler.debug("Counted a player");
                     }
 
                     modifiedBlackCard.append("\n");
@@ -244,14 +238,12 @@ public class CardsAgainstHumanity extends Game {
     }
 
     private SendableTextMessage.SendableTextMessageBuilder createCzarKeyboard() {
-        LogHandler.debug("Czar Keyboard");
         List<List<String>> buttonList = new ArrayList<>();
         List<String> row = new ArrayList<>();
 
         int index = 1;
 
         for (int i = 1; i <= czarOptions.size(); i++) {
-            LogHandler.debug("Adding " + i);
             if (index == 5) {
                 index = 1;
                 buttonList.add(new ArrayList<>(row));
@@ -263,11 +255,8 @@ public class CardsAgainstHumanity extends Game {
         }
 
         if (row.size() > 0) {
-            LogHandler.debug("Adding Final");
             buttonList.add(new ArrayList<>(row));
         }
-
-        LogHandler.debug("Size " + buttonList.get(0).toString());
 
         return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false));
     }
