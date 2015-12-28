@@ -210,6 +210,11 @@ public class CardsAgainstHumanity extends Game {
                     index++;
                 }
 
+                if (index == 1) {
+                    getGameLobby().sendMessage(SendableTextMessage.builder().message(Lang.GAME_CAH_NOPLAYERS).parseMode(ParseMode.MARKDOWN).build());
+                    return true;
+                }
+
                 if (!robotCzar) {
                     for (TelegramUser telegramUser : getGameLobby().getTelegramUsers()) {
                         if (cardCzar.getUserID() == telegramUser.getUserID()) {

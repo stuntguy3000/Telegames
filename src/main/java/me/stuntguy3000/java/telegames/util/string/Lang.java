@@ -59,6 +59,7 @@ public class Lang {
             "+score - View your cards";
     public static String GAME_CAH_DESCRIPTION = "The most fun and offensive card game ever known.";
     public static String GAME_CAH_NAME = "CardsAgainstHumanity";
+    public static String GAME_CAH_NOPLAYERS = "*Nobody played! Skipping...*";
     public static String GAME_CAH_PLAY_MORE = "*Please play %s more card(s).*";
     public static String GAME_CAH_STARTROUND_CZAR = TelegramEmoji.BOOK.getText() + " *Starting Round %s\nCzar: %s*";
     public static String GAME_CAH_TIMENOTICE = "*Not everybody has played!*";
