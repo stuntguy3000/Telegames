@@ -163,12 +163,6 @@ public class CardsAgainstHumanity extends Game {
             int toPlay = (robotCzar ? getActivePlayers().size() : getActivePlayers().size() - 1);
             LogHandler.debug("count: " + toPlay);
             if (playedCards.size() == toPlay || forcePlay) {
-                for (Map.Entry<Integer, LinkedList<CAHCard>> cardPlay : playedCards.entrySet()) {
-                    if (cardPlay.getValue().size() < currentBlackCard.getBlanks()) {
-                        return false;
-                    }
-                }
-
                 setGameState(GameState.INGAME);
 
                 String[] blackCardSplit = currentBlackCard.getRawText().split("_");
