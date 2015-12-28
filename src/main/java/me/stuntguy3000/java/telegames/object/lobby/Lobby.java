@@ -339,7 +339,7 @@ public class Lobby {
 
             Telegames.getInstance().getLobbyHandler().stopTimer(this);
 
-            if (!isMatchmaking) {
+            if (isMatchmaking) {
                 for (TelegramUser telegramUser : getTelegramUsers()) {
                     SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.PERSON.getText() + " *Returned to the main menu!*").parseMode(ParseMode.MARKDOWN).build();
                     TelegramBot.getChat(telegramUser.getUserID()).sendMessage(sendableTextMessage, TelegramHook.getBot());
