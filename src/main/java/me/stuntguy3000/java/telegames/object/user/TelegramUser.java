@@ -47,7 +47,7 @@ public class TelegramUser implements Comparable {
                 return -1;
             }
         } else {
-            throw new IllegalArgumentException("Comparable object is not PlayerData");
+            throw new IllegalArgumentException("Comparable object is not TelegramUser");
         }
 
         return 0;
