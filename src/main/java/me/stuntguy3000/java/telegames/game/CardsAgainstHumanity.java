@@ -236,12 +236,14 @@ public class CardsAgainstHumanity extends Game {
     }
 
     private SendableTextMessage.SendableTextMessageBuilder createCzarKeyboard() {
+        LogHandler.debug("Czar Keyboard");
         List<List<String>> buttonList = new ArrayList<>();
         List<String> row = new ArrayList<>();
 
         int index = 1;
 
         for (int i = 1; i <= czarOptions.size(); i++) {
+            LogHandler.debug("Adding " + i);
             if (index == 5) {
                 index = 1;
                 buttonList.add(new ArrayList<>(row));
@@ -253,8 +255,11 @@ public class CardsAgainstHumanity extends Game {
         }
 
         if (row.size() > 0) {
+            LogHandler.debug("Adding Final");
             buttonList.add(new ArrayList<>(row));
         }
+
+        LogHandler.debug("Size " + buttonList.size());
 
         return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false));
     }
@@ -300,9 +305,9 @@ public class CardsAgainstHumanity extends Game {
         secondsSincePlay++;
 
         if (!czarChoosing && !robotCzar) {
-            if (secondsSincePlay == 30) {
+            if (secondsSincePlay == 20) {
                 getGameLobby().sendMessage(SendableTextMessage.builder().message(Lang.GAME_CAH_TIMEWARNING).parseMode(ParseMode.MARKDOWN).build());
-            } else if (secondsSincePlay == 40) {
+            } else if (secondsSincePlay == 30) {
                 getGameLobby().sendMessage(SendableTextMessage.builder().message(Lang.GAME_CAH_TIMENOTICE).parseMode(ParseMode.MARKDOWN).build());
                 checkPlayers(true);
             }
