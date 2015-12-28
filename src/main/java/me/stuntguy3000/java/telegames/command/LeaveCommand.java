@@ -3,7 +3,7 @@ package me.stuntguy3000.java.telegames.command;
 import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.object.command.Command;
 import me.stuntguy3000.java.telegames.object.lobby.Lobby;
-import me.stuntguy3000.java.telegames.util.TelegramEmoji;
+import me.stuntguy3000.java.telegames.object.user.TelegramUser;
 import me.stuntguy3000.java.telegames.util.string.Lang;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
@@ -18,10 +18,11 @@ public class LeaveCommand extends Command {
     public void processCommand(CommandMessageReceivedEvent event) {
         Chat chat = event.getChat();
         User sender = event.getMessage().getSender();
-        Lobby lobby = Telegames.getInstance().getLobbyHandler().getLobby(sender);
+        TelegramUser user = new TelegramUser(sender);
+        Lobby lobby = Telegames.getInstance().getLobbyHandler().getLobby(user);
 
         if (lobby != null) {
-            lobby.userLeave(lobby.getLobbyMember(sender.getUsername()), false);
+            lobby.userLeave(lobby.getTelegramUser(sender.getUsername()), false);
         } else {
             respond(chat, Lang.ERROR_USER_NOT_IN_LOBBY);
         }

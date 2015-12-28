@@ -6,11 +6,11 @@ import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.game.GameState;
 import me.stuntguy3000.java.telegames.object.user.TelegramUser;
-import me.stuntguy3000.java.telegames.util.string.Lang;
-import me.stuntguy3000.java.telegames.util.string.StringUtil;
 import me.stuntguy3000.java.telegames.util.cards.Card;
 import me.stuntguy3000.java.telegames.util.cards.Deck;
 import me.stuntguy3000.java.telegames.util.cards.Rank;
+import me.stuntguy3000.java.telegames.util.string.Lang;
+import me.stuntguy3000.java.telegames.util.string.StringUtil;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
 import pro.zackpollard.telegrambot.api.chat.message.ReplyMarkup;
@@ -136,10 +136,10 @@ public class Blackjack extends Game {
         if (event.getChat().getType() == ChatType.PRIVATE) {
             User sender = event.getMessage().getSender();
             String message = event.getContent().getContent();
-            TelegramUser telegramUser = getGameLobby().getLobbyMember(sender.getUsername());
+            TelegramUser telegramUser = getGameLobby().getTelegramUser(sender.getUsername());
 
             if (message.equalsIgnoreCase(Lang.GAME_BLACKJACK_HIT)) {
-                hit(telegramUser, getKeyboard(getGameLobby().getLobbyMember(sender.getUsername())));
+                hit(telegramUser, getKeyboard(getGameLobby().getTelegramUser(sender.getUsername())));
             } else if (message.equalsIgnoreCase(Lang.GAME_BLACKJACK_STAND)) {
                 stand(telegramUser);
             } else if (message.equalsIgnoreCase(Lang.GAME_BLACKJACK_ACE_ONE)) {
@@ -147,7 +147,7 @@ public class Blackjack extends Game {
             } else if (message.equalsIgnoreCase(Lang.GAME_BLACKJACK_ACE_ELEVEN)) {
                 chooseAce(telegramUser, 11);
             } else {
-                getGameLobby().userChat(sender, message);
+                getGameLobby().userChat(telegramUser, message);
             }
         }
     }
@@ -313,8 +313,7 @@ public class Blackjack extends Game {
                 }
             }
 
-            getGameLobby().sendMessage(SendableTextMessage.builder().message("*Starting Round " + currentRound + "/" + maxRounds + "*\n" +
-                    "*Dealer:* " + StringUtil.markdownSafe(roundDealer.getUsername())).parseMode(ParseMode.MARKDOWN).build());
+            getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_BLACKJACK_STARTING_ROUND, currentRound, maxRounds, StringUtil.markdownSafe(roundDealer.getUsername()))).parseMode(ParseMode.MARKDOWN).build());
 
             fillDeck();
             fillHands();
@@ -338,18 +337,18 @@ public class Blackjack extends Game {
             stringBuilder.append(" ");
         }
 
-        TelegramBot.getChat(player.getUserID()).sendMessage(SendableTextMessage.builder().message("*Here is your hand: *\n" + stringBuilder.toString()).parseMode(ParseMode.MARKDOWN).replyMarkup(replyMarkup).build(), TelegramHook.getBot());
+        TelegramBot.getChat(player.getUserID()).sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_GENERAL_PLAYER_HAND, stringBuilder.toString())).parseMode(ParseMode.MARKDOWN).replyMarkup(replyMarkup).build(), TelegramHook.getBot());
     }
 
     private void stand(TelegramUser telegramUser) {
         if (currentPlayer.getUserID() == telegramUser.getUserID()) {
             secondsSincePlay = 0;
             if (checkAces(currentPlayer)) {
-                getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.markdownSafe(telegramUser.getUsername()) + " chose to stand.*").parseMode(ParseMode.MARKDOWN).build());
+                getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_BLACKJACK_PLAYER_STAND, StringUtil.markdownSafe(telegramUser.getUsername()))).parseMode(ParseMode.MARKDOWN).build());
 
                 calculateValue(currentPlayer);
 
-                TelegramBot.getChat(telegramUser.getUserID()).sendMessage(SendableTextMessage.builder().message("Card Score: " + playerCardValues.get(currentPlayer.getUserID()) + "\n").parseMode(ParseMode.MARKDOWN).replyMarkup(ReplyKeyboardHide.builder().build()).build(), TelegramHook.getBot());
+                TelegramBot.getChat(telegramUser.getUserID()).sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_GENERAL_PLAYER_SCORE, playerCardValues.get(currentPlayer.getUserID()))).parseMode(ParseMode.MARKDOWN).replyMarkup(ReplyKeyboardHide.builder().build()).build(), TelegramHook.getBot());
 
                 if (roundDealer.getUserID() == telegramUser.getUserID()) {
                     dealerStand = true;
@@ -358,7 +357,7 @@ public class Blackjack extends Game {
                 nextPlayer();
             }
         } else {
-            TelegramBot.getChat(telegramUser.getUserID()).sendMessage(SendableTextMessage.builder().message("*It's not your turn!*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+            TelegramBot.getChat(telegramUser.getUserID()).sendMessage(SendableTextMessage.builder().message(Lang.GAME_GENERAL_NOT_TURN).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
         }
     }
 }

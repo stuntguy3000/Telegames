@@ -8,6 +8,7 @@ import me.stuntguy3000.java.telegames.object.exception.LobbyLockedException;
 import me.stuntguy3000.java.telegames.object.exception.UserBannedException;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.lobby.Lobby;
+import me.stuntguy3000.java.telegames.object.user.TelegramUser;
 import pro.zackpollard.telegrambot.api.user.User;
 
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class MatchmakingHandler {
      * @param user
      * @param gameName
      */
-    public void addGame(User user, String gameName) {
+    public void addGame(TelegramUser user, String gameName) {
         MatchmakingUser matchmakingUser = getUserFromQueue(user);
         List<String> games = new ArrayList<>();
 
@@ -53,7 +54,7 @@ public class MatchmakingHandler {
         gamesStarting.put(userGame.getGameName(), matchmakingLobby.getLobbyID());
     }
 
-    public void addNewUser(User user) {
+    public void addNewUser(TelegramUser user) {
         matchmakingQueue.put(new MatchmakingUser(user, new ArrayList<>()), new ArrayList<>());
         runMatchmaking();
     }
@@ -62,9 +63,9 @@ public class MatchmakingHandler {
         return matchmakingQueue.size();
     }
 
-    private MatchmakingUser getUserFromQueue(User user) {
+    private MatchmakingUser getUserFromQueue(TelegramUser user) {
         for (MatchmakingUser matchmakingUser : matchmakingQueue.keySet()) {
-            if (matchmakingUser.getId() == user.getId()) {
+            if (matchmakingUser.getId() == user.getUserID()) {
                 return matchmakingUser;
             }
         }
@@ -72,9 +73,9 @@ public class MatchmakingHandler {
         return null;
     }
 
-    public List<String> getUserOptions(User user) {
+    public List<String> getUserOptions(TelegramUser user) {
         for (MatchmakingUser matchmakingUser : matchmakingQueue.keySet()) {
-            if (matchmakingUser.getId() == user.getId()) {
+            if (matchmakingUser.getId() == user.getUserID()) {
                 return matchmakingUser.getGames();
             }
         }
@@ -88,9 +89,9 @@ public class MatchmakingHandler {
      * @param user
      * @return
      */
-    public boolean isInQueue(User user) {
+    public boolean isInQueue(TelegramUser user) {
         for (MatchmakingUser matchmakingUser : matchmakingQueue.keySet()) {
-            if (matchmakingUser.getId() == user.getId()) {
+            if (matchmakingUser.getId() == user.getUserID()) {
                 return true;
             }
         }
@@ -104,7 +105,7 @@ public class MatchmakingHandler {
      * @param user
      * @param gameName
      */
-    public void removeGame(User user, String gameName) {
+    public void removeGame(TelegramUser user, String gameName) {
         if (isInQueue(user)) {
             MatchmakingUser matchmakingUser = getUserFromQueue(user);
             List<String> games = new ArrayList<>();
@@ -198,15 +199,15 @@ class MatchmakingUser {
     @Getter
     private final int id;
     @Getter
-    private final User user;
+    private final TelegramUser user;
     @Getter
     private final String username;
     @Getter
     @Setter
     private List<String> games;
 
-    MatchmakingUser(User user, List<String> games) {
-        this.id = user.getId();
+    MatchmakingUser(TelegramUser user, List<String> games) {
+        this.id = user.getUserID();
         this.username = user.getUsername();
         this.user = user;
         this.games = games;

@@ -3,7 +3,7 @@ package me.stuntguy3000.java.telegames.object.config;
 import lombok.Getter;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.game.GameStatistics;
-import pro.zackpollard.telegrambot.api.user.User;
+import me.stuntguy3000.java.telegames.object.user.TelegramUser;
 
 import java.util.*;
 
@@ -23,8 +23,8 @@ public class UserStatistics {
         gamePlayCount.put(game.getGameName(), ++count);
     }
 
-    public void addPlayer(User user) {
-        knownPlayers.put(user.getId(), System.currentTimeMillis());
+    public void addPlayer(TelegramUser user) {
+        knownPlayers.put(user.getUserID(), System.currentTimeMillis());
     }
 
     public List<GameStatistics> sortGames() {

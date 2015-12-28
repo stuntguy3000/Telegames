@@ -4,8 +4,8 @@ import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.game.GameState;
 import me.stuntguy3000.java.telegames.object.user.TelegramUser;
+import me.stuntguy3000.java.telegames.util.string.Lang;
 import me.stuntguy3000.java.telegames.util.string.StringUtil;
-import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
@@ -36,100 +36,16 @@ public class Hangman extends Game {
     private String word;
 
     public Hangman() {
-        setGameInfo("Hangman", "The classic game of hangman. Try to guess the phrase before its too late!");
+        setGameInfo(Lang.GAME_HANGMAN_NAME, Lang.GAME_HANGMAN_DESCRIPTION);
         setMinPlayers(2);
         setGameState(GameState.WAITING_FOR_PLAYERS);
     }
 
     private SendableTextMessage.SendableTextMessageBuilder createChooserKeyboard() {
         List<List<String>> buttonList = new ArrayList<>();
-        buttonList.add(new ArrayList<>(Collections.singletonList(TelegramEmoji.OPEN_BOOK.getText() + " Choose a random word")));
+        buttonList.add(new ArrayList<>(Collections.singletonList(Lang.GAME_HANGMAN_KEYBOARD_RANDOM)));
 
         return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false));
-    }
-
-    @Override
-    public void endGame() {
-        SendableTextMessage.SendableTextMessageBuilder messageBuilder = SendableTextMessage.builder().message("The game of Hangman has ended!").replyMarkup(ReplyKeyboardHide.builder().build());
-
-        getGameLobby().sendMessage(messageBuilder.build());
-    }
-
-    @Override
-    public void onTextMessageReceived(TextMessageReceivedEvent event) {
-        if (event.getChat().getType() == ChatType.PRIVATE) {
-            User sender = event.getMessage().getSender();
-            String message = event.getContent().getContent();
-            TelegramUser telegramUser = getGameLobby().getLobbyMember(sender.getUsername());
-
-            if (isPlayer(telegramUser)) {
-                if (word != null && message.length() == 1 && sender.getId() != selector.getUserID()) {
-                    if (isAlphaCharactersOnly(message)) {
-                        char letter = message.toCharArray()[0];
-                        getGameLobby().sendMessage(SendableTextMessage.builder().message("*" + StringUtil.markdownSafe(sender.getUsername()) + " guessed " + letter + ".*").parseMode(ParseMode.MARKDOWN).build());
-                        boolean guessedCorrectly = guessLetter(letter);
-
-                        if (wordCompleted()) {
-                            getGameLobby().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.PARTY_POPPER.getText() + " *The word was guessed correctly!\n\nThe word: " + word + "*").parseMode(ParseMode.MARKDOWN).build());
-                            nextRound();
-                        } else {
-                            if (guessedCorrectly) {
-                                getGameLobby().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.GREEN_BOX_TICK.getText() + " *Correct guess!\nRemaining: " + guessesLeft + "\n\nThe word: " + getCensoredWord() + "*").parseMode(ParseMode.MARKDOWN).build());
-                            } else {
-                                --guessesLeft;
-                                if (guessesLeft > 0) {
-                                    guesses.add(letter);
-                                    getGameLobby().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.RED_CROSS.getText() + " *Incorrect guess!\nRemaining: " + guessesLeft + "\n\n" +
-                                            "The word: " + getCensoredWord() + "\nGuessed letters: " + getGuessedLetters() + "*").parseMode(ParseMode.MARKDOWN).build());
-                                } else {
-                                    getGameLobby().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.RED_CROSS.getText() + " *Out of guesses!\n\nThe Word: " + word + "*").parseMode(ParseMode.MARKDOWN).build());
-                                    nextRound();
-                                    return;
-                                }
-                            }
-                        }
-                    } else {
-                        TelegramBot.getChat(sender.getId()).sendMessage(TelegramEmoji.RED_CROSS.getText() + " Only Alpha characters are valid!", TelegramHook.getBot());
-                    }
-                    return;
-                } else {
-                    if (sender.getId() == selector.getUserID() && word == null) {
-                        if (message.equals(TelegramEmoji.OPEN_BOOK.getText() + " Choose a random word")) {
-                            message = predefinedWords.remove(0);
-                            TelegramBot.getChat(selector.getUserID()).sendMessage(TelegramEmoji.GREEN_BOX_TICK.getText() + " Chosen random word: " + message, TelegramHook.getBot());
-                        }
-
-                        if (isAlphaCharactersOnly(message)) {
-                            if (message.length() >= 3) {
-                                word = message.toLowerCase();
-
-                                for (int i = 0; i < word.length(); i++) {
-                                    censoredWord.add(i, censoredChar);
-                                }
-
-                                getGameLobby().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.BOOK.getText() + " *The word has been chosen!\n\nTo guess, send your guess as a message!\nYou can only guess one letter at a time.\n\nThe word: " + getCensoredWord() + "*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
-                            } else {
-                                TelegramBot.getChat(selector.getUserID()).sendMessage(TelegramEmoji.RED_CROSS.getText() + " Words have to be longer than three characters!", TelegramHook.getBot());
-                            }
-                        } else {
-                            TelegramBot.getChat(selector.getUserID()).sendMessage(TelegramEmoji.RED_CROSS.getText() + " Only Alpha characters are valid!", TelegramHook.getBot());
-                        }
-                        return;
-                    }
-                }
-
-                getGameLobby().userChat(sender, message);
-            }
-        }
-    }
-
-    @Override
-    public void startGame() {
-        setGameState(GameState.INGAME);
-        roundsLeft = activePlayers.size() * 3;
-
-        loadWords();
-        nextRound();
     }
 
     private String getCensoredWord() {
@@ -216,12 +132,88 @@ public class Hangman extends Game {
             censoredWord.clear();
             guesses.clear();
             guessesLeft = 9;
-            getGameLobby().sendMessage(StringUtil.markdownSafe(selector.getUsername()) + " is selecting a word...");
-            TelegramBot.getChat(selector.getUserID()).sendMessage(createChooserKeyboard().message("Please choose word...").build(), TelegramHook.getBot());
+            getGameLobby().sendMessage(StringUtil.markdownSafe(String.format(Lang.GAME_HANGMAN_SELECTING, selector.getUsername())));
+            TelegramBot.getChat(selector.getUserID()).sendMessage(createChooserKeyboard().message(Lang.GAME_HANGMAN_SELECTING_ASK).build(), TelegramHook.getBot());
             roundsLeft--;
         } else {
             getGameLobby().stopGame();
         }
+    }
+
+    @Override
+    public void onTextMessageReceived(TextMessageReceivedEvent event) {
+        if (event.getChat().getType() == ChatType.PRIVATE) {
+            User sender = event.getMessage().getSender();
+            String message = event.getContent().getContent();
+            TelegramUser telegramUser = getGameLobby().getTelegramUser(sender.getUsername());
+
+            if (isPlayer(telegramUser)) {
+                if (word != null && message.length() == 1 && sender.getId() != selector.getUserID()) {
+                    if (isAlphaCharactersOnly(message)) {
+                        char letter = message.toCharArray()[0];
+                        getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_HANGMAN_GUESS_LETTER, StringUtil.markdownSafe(sender.getUsername()), letter)).parseMode(ParseMode.MARKDOWN).build());
+                        boolean guessedCorrectly = guessLetter(letter);
+
+                        if (wordCompleted()) {
+                            getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_HANGMAN_GUESS_WORD, word)).parseMode(ParseMode.MARKDOWN).build());
+                            nextRound();
+                        } else {
+                            if (guessedCorrectly) {
+                                getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_HANGMAN_GUESS_CORRECT, guessesLeft, getCensoredWord())).parseMode(ParseMode.MARKDOWN).build());
+                            } else {
+                                --guessesLeft;
+                                if (guessesLeft > 0) {
+                                    guesses.add(letter);
+                                    getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_HANGMAN_GUESS_INCORRECT, guessesLeft, getCensoredWord(), getGuessedLetters())).parseMode(ParseMode.MARKDOWN).build());
+                                } else {
+                                    getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_HANGMAN_GUESS_LOSE, word)).parseMode(ParseMode.MARKDOWN).build());
+                                    nextRound();
+                                    return;
+                                }
+                            }
+                        }
+                    } else {
+                        TelegramBot.getChat(sender.getId()).sendMessage(Lang.ERROR_ALPHA_ONLY, TelegramHook.getBot());
+                    }
+                    return;
+                } else {
+                    if (sender.getId() == selector.getUserID() && word == null) {
+                        if (message.equals(Lang.GAME_HANGMAN_KEYBOARD_RANDOM)) {
+                            message = predefinedWords.remove(0);
+                            TelegramBot.getChat(selector.getUserID()).sendMessage(String.format(Lang.GAME_HANGMAN_RANDOM_CHOSEN, message), TelegramHook.getBot());
+                        }
+
+                        if (isAlphaCharactersOnly(message)) {
+                            if (message.length() >= 3) {
+                                word = message.toLowerCase();
+
+                                for (int i = 0; i < word.length(); i++) {
+                                    censoredWord.add(i, censoredChar);
+                                }
+
+                                getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_HANGMAN_WORD_CHOSEN, getCensoredWord())).parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
+                            } else {
+                                TelegramBot.getChat(selector.getUserID()).sendMessage(Lang.ERROR_TOO_SHORT_3, TelegramHook.getBot());
+                            }
+                        } else {
+                            TelegramBot.getChat(selector.getUserID()).sendMessage(Lang.ERROR_ALPHA_ONLY, TelegramHook.getBot());
+                        }
+                        return;
+                    }
+                }
+
+                getGameLobby().userChat(telegramUser, message);
+            }
+        }
+    }
+
+    @Override
+    public void startGame() {
+        setGameState(GameState.INGAME);
+        roundsLeft = activePlayers.size() * 3;
+
+        loadWords();
+        nextRound();
     }
 
     public boolean wordCompleted() {

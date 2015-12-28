@@ -9,8 +9,8 @@ import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.exception.*;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.user.TelegramUser;
-import me.stuntguy3000.java.telegames.util.string.StringUtil;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
+import me.stuntguy3000.java.telegames.util.string.StringUtil;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.message.content.type.PhotoSize;
 import pro.zackpollard.telegrambot.api.chat.message.send.*;
@@ -40,8 +40,6 @@ public class Lobby {
     @Getter
     private String lobbyID;
     @Getter
-    private List<TelegramUser> telegramUsers = new ArrayList<>();
-    @Getter
     private LobbyOptions lobbyOptions = new LobbyOptions();
     @Getter
     private TelegramUser lobbyOwner;
@@ -56,6 +54,8 @@ public class Lobby {
     @Getter
     @Setter
     private boolean renamingLobby = false;
+    @Getter
+    private List<TelegramUser> telegramUsers = new ArrayList<>();
 
     /**
      * Constructs a new Lobby instance
@@ -63,8 +63,8 @@ public class Lobby {
      * @param owner   User the owner of the Lobby
      * @param lobbyID String the Lobby's ID
      */
-    public Lobby(User owner, String lobbyID) {
-        this.lobbyOwner = new TelegramUser(owner);
+    public Lobby(TelegramUser owner, String lobbyID) {
+        this.lobbyOwner = owner;
         this.lobbyID = lobbyID;
 
         kickList = new ArrayList<>();
@@ -82,11 +82,20 @@ public class Lobby {
     }
 
     /**
-     * Returns a LobbyMember belonging to the username
+     * Returns the active TelegramBot instance
+     *
+     * @return TelegramBot active TelegramBot instance
+     */
+    public TelegramBot getTelegramBot() {
+        return TelegramHook.getBot();
+    }
+
+    /**
+     * Returns a TelegramUser belonging to the username
      *
      * @param username String the username of the player
      */
-    public TelegramUser getLobbyMember(String username) {
+    public TelegramUser getTelegramUser(String username) {
         for (TelegramUser telegramUser : getTelegramUsers()) {
             if (telegramUser.getUsername().equalsIgnoreCase(username)) {
                 return telegramUser;
@@ -97,11 +106,11 @@ public class Lobby {
     }
 
     /**
-     * Returns a LobbyMember belonging to the username
+     * Returns a TelegramUser belonging to the username
      *
      * @param id Integer the ID of the player
      */
-    public TelegramUser getLobbyMember(int id) {
+    public TelegramUser getTelegramUser(int id) {
         for (TelegramUser telegramUser : getTelegramUsers()) {
             if (telegramUser.getUserID() == id) {
                 return telegramUser;
@@ -109,15 +118,6 @@ public class Lobby {
         }
 
         return null;
-    }
-
-    /**
-     * Returns the active TelegramBot instance
-     *
-     * @return TelegramBot active TelegramBot instance
-     */
-    public TelegramBot getTelegramBot() {
-        return TelegramHook.getBot();
     }
 
     /**
@@ -172,6 +172,7 @@ public class Lobby {
     public void onTextMessageReceived(TextMessageReceivedEvent event) {
         lastLobbyAction = System.currentTimeMillis();
         User sender = event.getMessage().getSender();
+        TelegramUser user = new TelegramUser(sender);
         String message = event.getContent().getContent();
 
         if (currentGame == null && !isMatchmaking) {
@@ -206,7 +207,7 @@ public class Lobby {
                     event.getChat().sendMessage(KeyboardHandler.createGameSelector().message(TelegramEmoji.JOYSTICK.getText() + " *Please choose a game:*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                 }
             } else if (message.equals(TelegramEmoji.END.getText() + " Leave the lobby")) {
-                userLeave(getLobbyMember(sender.getUsername()), false);
+                userLeave(getTelegramUser(sender.getUsername()), false);
             } else if (message.equals(TelegramEmoji.METAL_GEAR.getText() + " Lobby options")) {
                 if (lobbyOwner.getUserID() == sender.getId()) {
                     event.getChat().sendMessage(KeyboardHandler.createLobbyOptionsMenu().message("Lobby Options").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
@@ -256,7 +257,7 @@ public class Lobby {
                     event.getChat().sendMessage(KeyboardHandler.createLobbyMenu(previousGame).message(TelegramEmoji.GREEN_BOX_TICK.getText() + " *The Lobby has been renamed to \"" + StringUtil.markdownSafe(customName) + "\"*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                 }
             } else {
-                userChat(sender, message);
+                userChat(user, message);
             }
         } else {
             currentGame.onTextMessageReceived(event);
@@ -329,8 +330,8 @@ public class Lobby {
     /**
      * Stop the current game
      */
-    public void stopGame(User sender) {
-        if (sender == null || lobbyOwner.getUserID() == sender.getId()) {
+    public void stopGame(TelegramUser user) {
+        if (user == null || lobbyOwner.getUserID() == user.getUserID()) {
             lastLobbyAction = System.currentTimeMillis();
             currentGame.endGame();
             previousGame = currentGame.getGameName();
@@ -349,7 +350,7 @@ public class Lobby {
                 sendMessage(lobbyHeader);
             }
         } else {
-            TelegramBot.getChat(sender.getId()).sendMessage(SendableTextMessage.builder().message(TelegramEmoji.RED_CROSS.getText() + " *You cannot perform this action!*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+            TelegramBot.getChat(user.getUserID()).sendMessage(SendableTextMessage.builder().message(TelegramEmoji.RED_CROSS.getText() + " *You cannot perform this action!*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
         }
     }
 
@@ -367,11 +368,11 @@ public class Lobby {
      * @param sender  User the message sender
      * @param message String the message
      */
-    public void userChat(User sender, String message) {
+    public void userChat(TelegramUser sender, String message) {
         message = message.replace('*', ' ').replace('_', ' ');
 
         for (TelegramUser telegramUser : telegramUsers) {
-            if (!telegramUser.getUsername().equalsIgnoreCase(sender.getUsername())) {
+            if (telegramUser.getUserID() != sender.getUserID()) {
                 telegramUser.getChat().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.PERSON_SPEAKING.getText() + " *" + StringUtil.markdownSafe(sender.getUsername()) + ":* " + message).parseMode(ParseMode.MARKDOWN).build(), getTelegramBot());
             }
         }
@@ -382,10 +383,10 @@ public class Lobby {
      *
      * @param user User the user who joined the Lobby
      */
-    public void userJoin(User user) throws LobbyLockedException, UserBannedException, LobbyFullException {
+    public void userJoin(TelegramUser user) throws LobbyLockedException, UserBannedException, LobbyFullException {
         lastLobbyAction = System.currentTimeMillis();
 
-        if (kickList.contains(user.getId())) {
+        if (kickList.contains(user.getUserID())) {
             throw new UserBannedException();
         }
 
@@ -397,21 +398,20 @@ public class Lobby {
             throw new LobbyFullException();
         }
 
-        TelegramUser telegramUser = new TelegramUser(user);
-        telegramUsers.add(telegramUser);
+        telegramUsers.add(user);
         Game game = getCurrentGame();
         updateHeader();
-        telegramUser.getChat().sendMessage(lobbyHeader, getTelegramBot());
+        user.getChat().sendMessage(lobbyHeader, getTelegramBot());
 
         SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.PERSON.getText() + " *" + StringUtil.markdownSafe(user.getUsername()) + " joined!*").parseMode(ParseMode.MARKDOWN).build();
         sendMessage(sendableTextMessage);
 
-        //Telegames.getInstance().getConfigHandler().getLobbyList().addPlayer(getLobbyID(), lobbyMember.getUserID());
+        //Telegames.getInstance().getConfigHandler().getLobbyList().addPlayer(getLobbyID(), telegramUser.getUserID());
         Telegames.getInstance().getConfigHandler().getUserStatistics().addPlayer(user);
 
         if (game != null) {
             sendableTextMessage = SendableTextMessage.builder().message(TelegramEmoji.MONKEY_HIDING.getText() + " *You are spectating a game of " + game.getGameName() + ".*").parseMode(ParseMode.MARKDOWN).build();
-            telegramUser.getChat().sendMessage(sendableTextMessage, getTelegramBot());
+            user.getChat().sendMessage(sendableTextMessage, getTelegramBot());
         }
     }
 

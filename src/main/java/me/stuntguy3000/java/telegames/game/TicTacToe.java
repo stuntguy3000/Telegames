@@ -4,8 +4,9 @@ import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.game.GameState;
 import me.stuntguy3000.java.telegames.object.user.TelegramUser;
-import me.stuntguy3000.java.telegames.util.string.StringUtil;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
+import me.stuntguy3000.java.telegames.util.string.Lang;
+import me.stuntguy3000.java.telegames.util.string.StringUtil;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
@@ -29,7 +30,7 @@ public class TicTacToe extends Game {
     private TelegramUser winner;
 
     public TicTacToe() {
-        setGameInfo("TicTacToe", "First player to line three in a row wins.");
+        setGameInfo(Lang.GAME_TICTACTOE_NAME, Lang.GAME_TICTACTOE_DESCRIPTION);
         setMinPlayers(2);
         setMaxPlayers(2);
         setGameState(GameState.WAITING_FOR_PLAYERS);
@@ -91,12 +92,12 @@ public class TicTacToe extends Game {
 
     @Override
     public void endGame() {
-        StringBuilder message = new StringBuilder("The game of TicTacToe has ended!");
+        StringBuilder message = new StringBuilder(Lang.GAME_TICTACTOE_END);
 
         if (winner != null) {
-            message.append("\n\n*The winner is ").append(StringUtil.markdownSafe(winner.getUsername())).append("*");
+            message.append("\n\n*").append(String.format(Lang.GAME_GENERAL_WINNER, StringUtil.markdownSafe(winner.getUsername())));
         } else {
-            message.append("\n\n*The match was a draw!*");
+            message.append("\n\n").append(Lang.GAME_GENERAL_DRAW);
         }
 
         message.append("\n\n");
@@ -113,7 +114,7 @@ public class TicTacToe extends Game {
 
     @Override
     public String getGameHelp() {
-        return "First player to line three in a row wins.";
+        return Lang.GAME_TICTACTOE_DESCRIPTION;
     }
 
     @Override
@@ -121,7 +122,7 @@ public class TicTacToe extends Game {
         if (event.getChat().getType() == ChatType.PRIVATE) {
             User sender = event.getMessage().getSender();
             String message = event.getContent().getContent();
-            TelegramUser telegramUser = getGameLobby().getLobbyMember(sender.getUsername());
+            TelegramUser telegramUser = getGameLobby().getTelegramUser(sender.getUsername());
 
             TelegramEmoji emoji = TelegramEmoji.getMatch(message);
 
@@ -136,7 +137,7 @@ public class TicTacToe extends Game {
                 }
             }
 
-            getGameLobby().userChat(sender, message);
+            getGameLobby().userChat(telegramUser, message);
         }
     }
 
@@ -182,7 +183,7 @@ public class TicTacToe extends Game {
             }
         }
 
-        getGameLobby().sendMessage(createKeyboard().message("It is your turn, " + StringUtil.markdownSafe(currentPlayer.getUsername())).parseMode(ParseMode.MARKDOWN).build());
+        getGameLobby().sendMessage(createKeyboard().message(String.format(Lang.GAME_GENERAL_NEXT_TURN, StringUtil.markdownSafe(currentPlayer.getUsername()))).parseMode(ParseMode.MARKDOWN).build());
     }
 
     private void playTurn(TelegramUser currentPlayer, TelegramEmoji emoji) {
@@ -227,7 +228,7 @@ public class TicTacToe extends Game {
                     break;
                 }
                 default: {
-                    TelegramBot.getChat(currentPlayer.getUserID()).sendMessage(SendableTextMessage.builder().message("*Please play a valid option!*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                    TelegramBot.getChat(currentPlayer.getUserID()).sendMessage(SendableTextMessage.builder().message(Lang.ERROR_INVALID_SELECTION).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                     return;
                 }
             }

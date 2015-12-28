@@ -23,10 +23,11 @@ public class LobbyCommand extends Command {
     public void processCommand(CommandMessageReceivedEvent event) {
         Chat chat = event.getChat();
         User sender = event.getMessage().getSender();
+        TelegramUser user = new TelegramUser(sender);
         LobbyHandler lobbyHandler = getInstance().getLobbyHandler();
 
         if (event.getChat().getType() == ChatType.PRIVATE) {
-            Lobby lobby = lobbyHandler.getLobby(sender);
+            Lobby lobby = lobbyHandler.getLobby(user);
             if (lobby != null) {
                 StringBuilder playersList = new StringBuilder();
 
