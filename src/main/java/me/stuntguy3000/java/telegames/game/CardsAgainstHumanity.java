@@ -259,7 +259,7 @@ public class CardsAgainstHumanity extends Game {
             buttonList.add(new ArrayList<>(row));
         }
 
-        LogHandler.debug("Size " + buttonList.size());
+        LogHandler.debug("Size " + buttonList.get(0).toString());
 
         return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false));
     }
