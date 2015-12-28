@@ -88,12 +88,12 @@ class CAHCardPack {
     }
 }
 
-class CAHDelay extends TimerTask {
+class CAHRobotDelay extends TimerTask {
 
     private CardsAgainstHumanity cardsAgainstHumanity;
     private int options;
 
-    public CAHDelay(CardsAgainstHumanity cardsAgainstHumanity, int options) {
+    public CAHRobotDelay(CardsAgainstHumanity cardsAgainstHumanity, int options) {
         this.cardsAgainstHumanity = cardsAgainstHumanity;
         this.options = options;
         new Timer().schedule(this, 2000);
@@ -102,6 +102,21 @@ class CAHDelay extends TimerTask {
     @Override
     public void run() {
         cardsAgainstHumanity.tryCzar(new Random().nextInt(options - 1) + 1);
+    }
+}
+
+class CAHRoundDelay extends TimerTask {
+
+    private CardsAgainstHumanity cardsAgainstHumanity;
+
+    public CAHRoundDelay(CardsAgainstHumanity cardsAgainstHumanity) {
+        this.cardsAgainstHumanity = cardsAgainstHumanity;
+        new Timer().schedule(this, 1000);
+    }
+
+    @Override
+    public void run() {
+        cardsAgainstHumanity.nextRound();
     }
 }
 
@@ -196,7 +211,7 @@ public class CardsAgainstHumanity extends Game {
                     getGameLobby().sendMessage(SendableTextMessage.builder().message(options.toString()).parseMode(ParseMode.MARKDOWN).build());
                 } else {
                     getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_CAH_ALLPLAYED_CHOOSING, options.toString())).parseMode(ParseMode.MARKDOWN).build());
-                    new CAHDelay(this, index);
+                    new CAHRobotDelay(this, index);
                 }
             }
         }
@@ -405,7 +420,7 @@ public class CardsAgainstHumanity extends Game {
     }
 
     // Play the next round
-    private void nextRound() {
+    public void nextRound() {
         if (!continueGame) {
             getGameLobby().stopGame();
         } else {
@@ -550,7 +565,7 @@ public class CardsAgainstHumanity extends Game {
                 continueGame = false;
                 getGameLobby().stopGame();
             } else {
-                nextRound();
+                new CAHRoundDelay(this);
             }
             return true;
         } else {
