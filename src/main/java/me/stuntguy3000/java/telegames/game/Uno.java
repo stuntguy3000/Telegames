@@ -170,7 +170,7 @@ public class Uno extends Game {
 
         if (!choosingColour) {
             if (secondsSincePlay == 30) {
-                getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_GENERAL_PLAYTIMER, StringUtil.markdownSafe(currentPlayer))).build());
+                getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_GENERAL_PLAYTIMER, StringUtil.markdownSafe(currentPlayer))).parseMode(ParseMode.MARKDOWN).build());
             } else if (secondsSincePlay == 40) {
                 getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_GENERAL_TURNSKIP, StringUtil.markdownSafe(currentPlayer))).parseMode(ParseMode.MARKDOWN).build());
                 drawCard(currentPlayer);

@@ -172,13 +172,14 @@ public class CardsAgainstHumanity extends Game {
 
                 for (Map.Entry<Integer, LinkedList<CAHCard>> playerCards : playedCards.entrySet()) {
                     int segmentID = 0;
+                    int cardCount = 0;
                     CzarOption czarOption = new CzarOption(getGameLobby().getTelegramUser(playerCards.getKey()));
                     StringBuilder modifiedBlackCard = new StringBuilder();
-
                     modifiedBlackCard.append(blackCardSplit[segmentID]);
 
                     for (CAHCard playerCard : playerCards.getValue()) {
                         segmentID++;
+                        cardCount++;
                         modifiedBlackCard.append("*");
                         modifiedBlackCard.append(playerCard.getText());
                         modifiedBlackCard.append("*");
@@ -186,8 +187,12 @@ public class CardsAgainstHumanity extends Game {
                             modifiedBlackCard.append(blackCardSplit[segmentID]);
                         }
                     }
-                    modifiedBlackCard.append("\n");
 
+                    if (cardCount != currentBlackCard.getBlanks()) {
+                        continue;
+                    }
+
+                    modifiedBlackCard.append("\n");
                     czarOption.setText(modifiedBlackCard.toString());
                     czarOptions.add(czarOption);
                 }
@@ -290,9 +295,9 @@ public class CardsAgainstHumanity extends Game {
 
         if (!czarChoosing && !robotCzar) {
             if (secondsSincePlay == 30) {
-                getGameLobby().sendMessage(SendableTextMessage.builder().message(Lang.GAME_CAH_TIMEWARNING).build());
+                getGameLobby().sendMessage(SendableTextMessage.builder().message(Lang.GAME_CAH_TIMEWARNING).parseMode(ParseMode.MARKDOWN).build());
             } else if (secondsSincePlay == 40) {
-                getGameLobby().sendMessage(SendableTextMessage.builder().message(Lang.GAME_CAH_TIMENOTICE).build());
+                getGameLobby().sendMessage(SendableTextMessage.builder().message(Lang.GAME_CAH_TIMENOTICE).parseMode(ParseMode.MARKDOWN).build());
                 checkPlayers(true);
             }
         }
