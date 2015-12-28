@@ -212,6 +212,7 @@ public class CardsAgainstHumanity extends Game {
 
                 if (index == 1) {
                     getGameLobby().sendMessage(SendableTextMessage.builder().message(Lang.GAME_CAH_NOPLAYERS).parseMode(ParseMode.MARKDOWN).build());
+                    new CAHRoundDelay(this);
                     return true;
                 }
 
