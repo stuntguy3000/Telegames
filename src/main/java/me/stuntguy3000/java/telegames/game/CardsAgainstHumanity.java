@@ -113,6 +113,7 @@ class CAHRoundDelay extends TimerTask {
 
     public CAHRoundDelay(CardsAgainstHumanity cardsAgainstHumanity) {
         this.cardsAgainstHumanity = cardsAgainstHumanity;
+        this.cardsAgainstHumanity.secondsSincePlay = 0;
         new Timer().schedule(this, 1000);
     }
 
@@ -136,7 +137,7 @@ public class CardsAgainstHumanity extends Game {
     private int playerOrderIndex = 0;
     private boolean robotCzar = false;
     private int round = 1;
-    private int secondsSincePlay = 0;
+    public int secondsSincePlay = 0;
     private HashMap<Integer, List<CAHCard>> userCards = new HashMap<>();
     private List<CAHCard> whiteCards = new ArrayList<>();
 
@@ -287,7 +288,7 @@ public class CardsAgainstHumanity extends Game {
     public void onSecond() {
         secondsSincePlay++;
 
-        if (!czarChoosing) {
+        if (!czarChoosing && !robotCzar) {
             if (secondsSincePlay == 30) {
                 getGameLobby().sendMessage(SendableTextMessage.builder().message(Lang.GAME_CAH_TIMEWARNING).build());
             } else if (secondsSincePlay == 40) {
@@ -440,6 +441,7 @@ public class CardsAgainstHumanity extends Game {
 
     // Play the next round
     public void nextRound() {
+        secondsSincePlay = 0;
         if (!continueGame) {
             getGameLobby().stopGame();
         } else {
