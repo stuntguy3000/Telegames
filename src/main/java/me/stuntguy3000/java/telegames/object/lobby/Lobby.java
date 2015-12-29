@@ -296,6 +296,7 @@ public class Lobby {
         lastLobbyAction = System.currentTimeMillis();
         currentGame = null;
         try {
+            LogHandler.debug("a");
             Game newGame = targetGame.getClass().newInstance();
             newGame.setGameLobby(this);
 
@@ -308,14 +309,20 @@ public class Lobby {
                 }
             }
 
+            LogHandler.debug("b " + newGame.getGameName());
+
             sendMessage(SendableTextMessage.builder().message(TelegramEmoji.JOYSTICK.getText() + " *Starting game: " + newGame.getGameName() + "*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
             try {
+                LogHandler.debug("c ");
                 newGame.tryStartGame();
+                LogHandler.debug("d ");
             } catch (GameStartException ex) {
+                LogHandler.debug("e ");
                 sendMessage(KeyboardHandler.createLobbyMenu(previousGame).message(TelegramEmoji.RED_CROSS.getText() + " *Unable to start game!\n" + ex.getReason() + "*").parseMode(ParseMode.MARKDOWN).build());
                 return;
             }
 
+            LogHandler.debug("f ");
             currentGame = newGame;
             Telegames.getInstance().getLobbyHandler().startTimer(this);
             Telegames.getInstance().getConfigHandler().getUserStatistics().addGame(newGame);

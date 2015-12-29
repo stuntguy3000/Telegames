@@ -1,5 +1,6 @@
 package me.stuntguy3000.java.telegames.game;
 
+import me.stuntguy3000.java.telegames.handler.LogHandler;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.game.GameState;
@@ -209,6 +210,7 @@ public class Hangman extends Game {
 
     @Override
     public void startGame() {
+        LogHandler.debug("Hangman ingame");
         setGameState(GameState.INGAME);
         roundsLeft = activePlayers.size() * 3;
 

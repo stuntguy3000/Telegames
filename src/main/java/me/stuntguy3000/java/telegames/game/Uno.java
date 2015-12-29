@@ -233,7 +233,7 @@ public class Uno extends Game {
                     }
 
                     if (message.startsWith(String.format(Lang.GAME_UNO_BUTTON_SCORE, 0))) {
-                        telegramUser.getChat().sendMessage(Lang.ERROR_INVALID_SELECTION, TelegramHook.getBot());
+                        telegramUser.getChat().sendMessage(SendableTextMessage.builder().message(Lang.ERROR_INVALID_SELECTION).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                         sendDeck(telegramUser);
                         return;
                     }
@@ -262,7 +262,7 @@ public class Uno extends Game {
             TelegramUser telegramUser = getActivePlayers().get(i);
             wholeMessage.append(String.format(Lang.GAME_SCORE, playerPos++, StringUtil.markdownSafe(telegramUser.getUsername()), telegramUser.getGameScore()));
         }
-        getGameLobby().sendMessage(wholeMessage.toString());
+        getGameLobby().sendMessage(SendableTextMessage.builder().message(wholeMessage.toString()).parseMode(ParseMode.MARKDOWN).build());
     }
 
     public void startGame() {
@@ -411,7 +411,7 @@ public class Uno extends Game {
                             nextRound();
                         }
                     } else {
-                        telegramUser.getChat().sendMessage(Lang.ERROR_INVALID_SELECTION, TelegramHook.getBot());
+                        telegramUser.getChat().sendMessage(SendableTextMessage.builder().message(Lang.ERROR_INVALID_SELECTION).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                         sendDeck(getGameLobby().getTelegramUser(sender.getUsername()));
                     }
                     return;
@@ -490,7 +490,7 @@ public class Uno extends Game {
 
         buttonList.add(Arrays.asList(Lang.GAME_UNO_BUTTON_DRAW, String.format(Lang.GAME_UNO_BUTTON_SCORE, telegramUser.getGameScore())));
 
-        TelegramBot.getChat(telegramUser.getUserID()).sendMessage(SendableTextMessage.builder().message(Lang.GAME_GENERAL_PLAYER_CARDS_MESSAGE).replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false)).build(), TelegramHook.getBot());
+        TelegramBot.getChat(telegramUser.getUserID()).sendMessage(SendableTextMessage.builder().message(Lang.GAME_GENERAL_PLAYER_CARDS_MESSAGE).replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false)).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
     }
 
     private void updateScore(TelegramUser telegramUser) {

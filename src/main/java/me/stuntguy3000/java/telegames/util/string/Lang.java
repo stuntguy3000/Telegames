@@ -62,8 +62,8 @@ public class Lang {
     public static String GAME_CAH_NOPLAYERS = "*Nobody played! Skipping...*";
     public static String GAME_CAH_PLAY_MORE = "*Please play %s more card(s).*";
     public static String GAME_CAH_STARTROUND_CZAR = TelegramEmoji.BOOK.getText() + " *Starting Round %s\nCzar: %s*";
-    public static String GAME_CAH_TIMENOTICE = TelegramEmoji.SAD_FACE + " *Not everybody has played!*";
-    public static String GAME_CAH_TIMEWARNING = TelegramEmoji.ALERT + " *All players have 10 seconds to play all cards.*";
+    public static String GAME_CAH_TIMENOTICE = TelegramEmoji.SAD_FACE.getText() + " *Not everybody has played!*";
+    public static String GAME_CAH_TIMEWARNING = TelegramEmoji.ALERT.getText() + " *All players have 10 seconds to play all cards.*";
     public static String GAME_CAH_USERPLAY = TelegramEmoji.GREEN_BOX_TICK.getText() + " *%s has played.*";
     public static String GAME_CAH_WHITECARDS = "_Please play %s white cards._";
     public static String GAME_CARDPICKUP = "Picked up cards: %s";
@@ -76,9 +76,9 @@ public class Lang {
     public static String GAME_GENERAL_PLAYER_HAND = "*Here is your hand: *\n%s";
     public static String GAME_GENERAL_PLAYER_QUIT = "*The current player quit!*";
     public static String GAME_GENERAL_PLAYER_SCORE = "*Score: %s*";
-    public static String GAME_GENERAL_PLAYTIMER = TelegramEmoji.ALERT + " *Please make a play* @%s";
+    public static String GAME_GENERAL_PLAYTIMER = TelegramEmoji.ALERT.getText() + " *Please make a play* @%s";
     public static String GAME_GENERAL_STARTROUND_NUMBER = TelegramEmoji.BOOK.getText() + " *Starting round %d.*";
-    public static String GAME_GENERAL_TURNSKIP = TelegramEmoji.ALERT + " *%s ran out of time!*";
+    public static String GAME_GENERAL_TURNSKIP = TelegramEmoji.ALERT.getText() + " *%s ran out of time!*";
     public static String GAME_GENERAL_WINNER = "*The winner is %s.*";
     public static String GAME_GENERAL_WIN_ROUND = "*%s won the round!*";
     public static String GAME_HANGMAN_DESCRIPTION = "The classic game of hangman. Try to guess the phrase before its too late!";
@@ -113,7 +113,7 @@ public class Lang {
     public static String GAME_UNO_PLAYCOLOUR = "_Please play any %s card_";
     public static String GAME_UNO_PLAYED = "%s played %s";
     public static String GAME_UNO_REVERSE = "*Player order has been reversed!*";
-    public static String GAME_UNO_ROUNDINFO = TelegramEmoji.BLUE_RIGHT_ARROW + " *Current Card:* %s\n" + TelegramEmoji.PERSON + " *Current Player:* %s";
+    public static String GAME_UNO_ROUNDINFO = TelegramEmoji.BLUE_RIGHT_ARROW.getText() + " *Current Card:* %s\n" + TelegramEmoji.PERSON.getText() + " *Current Player:* %s";
     public static String GAME_UNO_SHUFFLING = "_Shuffling deck..._";
     public static String GAME_UNO_SKIP = "*%s has been skipped.";
     public static String MISC_HEADER_BOTFATHER = "*Lobby Message:*";

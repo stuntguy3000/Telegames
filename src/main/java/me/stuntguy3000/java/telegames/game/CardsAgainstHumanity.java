@@ -510,7 +510,7 @@ public class CardsAgainstHumanity extends Game {
                 try {
                     int number = TelegramEmoji.getNumber(TelegramEmoji.fromString(message));
                     if (!tryCzar(number)) {
-                        TelegramBot.getChat(sender.getId()).sendMessage(Lang.ERROR_INVALID_SELECTION, TelegramHook.getBot());
+                        TelegramBot.getChat(sender.getId()).sendMessage(SendableTextMessage.builder().message(Lang.ERROR_INVALID_SELECTION).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                     }
                 } catch (Exception ignored) {
                 }
