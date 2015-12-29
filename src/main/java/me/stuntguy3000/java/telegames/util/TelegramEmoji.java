@@ -45,7 +45,8 @@ public enum TelegramEmoji {
     METAL_GEAR("⚙"),
     PADLOCK("\uD83D\uDD12"),
     PENCIL("✏️"),
-    ALERT("❗️");
+    ALERT("❗️"),
+    FINGER("\uD83D\uDC49\uD83C\uDFFB");
 
     @Getter
     String text;

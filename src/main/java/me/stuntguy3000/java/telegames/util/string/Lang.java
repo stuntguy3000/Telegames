@@ -50,7 +50,7 @@ public class Lang {
     public static String GAME_BLACKJACK_PLAYER_STAND = "*%s chooses to Stand.*";
     public static String GAME_BLACKJACK_STAND = "Stand";
     public static String GAME_BLACKJACK_STARTING_ROUND = "*Starting round %d/%d\nDealer: %s*";
-    public static String GAME_CAH_ALLPLAYED = TelegramEmoji.GREEN_BOX_TICK.getText() + " *The czar is choosing a winner.*";
+    public static String GAME_CAH_ALLPLAYED = TelegramEmoji.FINGER.getText() + " *The czar is choosing a winner.*";
     public static String GAME_CAH_ALLPLAYED_CHOOSING = "*All users have played. A winner will be chosen shortly...*\n\n%s";
     public static String GAME_CAH_ALLPLAYED_CZAR = TelegramEmoji.GREEN_BOX_TICK.getText() + " *All users have played.*\n*Please choose a winner!*";
     public static String GAME_CAH_COMMANDHELP = "CardsAgainstHumanity Command Menu:\n" +
@@ -66,6 +66,7 @@ public class Lang {
     public static String GAME_CAH_TIMEWARNING = TelegramEmoji.ALERT.getText() + " *All players have 10 seconds to play all cards.*";
     public static String GAME_CAH_USERPLAY = TelegramEmoji.GREEN_BOX_TICK.getText() + " *%s has played.*";
     public static String GAME_CAH_WHITECARDS = "_Please play %s white cards._";
+    public static String GAME_CAH_WIN_ROUND = "*% %s won the round!*";
     public static String GAME_CARDPICKUP = "Picked up cards: %s";
     public static String GAME_GENERAL_DRAW = "*The match was a draw!*";
     public static String GAME_GENERAL_NEXT_TURN = "*It's your turn, %s.*";

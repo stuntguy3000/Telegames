@@ -585,7 +585,7 @@ public class CardsAgainstHumanity extends Game {
         }
 
         if (winner != null) {
-            getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_GENERAL_WIN_ROUND, StringUtil.markdownSafe(winner.getUsername()))).parseMode(ParseMode.MARKDOWN).build());
+            getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_CAH_WIN_ROUND, TelegramEmoji.getNumberBlock(number), StringUtil.markdownSafe(winner.getUsername()))).parseMode(ParseMode.MARKDOWN).build());
             winner.setGameScore(winner.getGameScore() + 1);
 
             TelegramUser gameWinner = null;
