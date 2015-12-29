@@ -302,9 +302,9 @@ public class CardsAgainstHumanity extends Game {
         secondsSincePlay++;
 
         if (!czarChoosing && !robotCzar) {
-            if (secondsSincePlay == 20) {
+            if (secondsSincePlay == 30) {
                 getGameLobby().sendMessage(SendableTextMessage.builder().message(Lang.GAME_CAH_TIMEWARNING).parseMode(ParseMode.MARKDOWN).build());
-            } else if (secondsSincePlay == 30) {
+            } else if (secondsSincePlay == 40) {
                 getGameLobby().sendMessage(SendableTextMessage.builder().message(Lang.GAME_CAH_TIMENOTICE).parseMode(ParseMode.MARKDOWN).build());
                 checkPlayers(true);
             }
