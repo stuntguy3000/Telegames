@@ -1,4 +1,7 @@
 # Changelog
+#### Version 1.6
+* Major code revamp and organization
+
 #### Version 1.5
 * Added: New Lobby options
     - Lock/Unlock feature to prevent people from joining
