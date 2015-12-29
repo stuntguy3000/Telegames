@@ -126,7 +126,7 @@ public abstract class Game {
                 startGame();
             }
         } else {
-            throw new GameStartException("Not enough players! Required: " + getMaxPlayers());
+            throw new GameStartException("Not enough players! Required: " + getMinPlayers());
         }
     }
 }

@@ -1,7 +1,6 @@
 package me.stuntguy3000.java.telegames.game;
 
 import lombok.Getter;
-import lombok.Setter;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.game.GameState;
@@ -33,9 +32,6 @@ public class Blackjack extends Game {
     private int currentRound = 1;
     private Boolean dealerStand = false;
     private Deck deck;
-    @Getter
-    @Setter
-    private GameState gameState;
     private int maxRounds = 5;
     private HashMap<Integer, Integer> playerCardValues = new HashMap<>();
     private HashMap<Integer, List<BlackjackCard>> playerCards = new HashMap<>();
@@ -47,6 +43,7 @@ public class Blackjack extends Game {
     public Blackjack() {
         setGameInfo(Lang.GAME_BLACKJACK_NAME, Lang.GAME_BLACKJACK_DESCRIPTION);
         setMinPlayers(2);
+        setMinPlayers(8);
         setGameState(GameState.WAITING_FOR_PLAYERS);
 
         aceKeyboard = ReplyKeyboardMarkup.builder().addRow(Lang.GAME_BLACKJACK_ACE_ONE, Lang.GAME_BLACKJACK_ACE_ELEVEN).oneTime(true).build();
