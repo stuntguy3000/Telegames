@@ -1,6 +1,5 @@
 package me.stuntguy3000.java.telegames.game;
 
-import me.stuntguy3000.java.telegames.handler.LogHandler;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.game.GameState;
@@ -126,14 +125,13 @@ public class Hangman extends Game {
     }
 
     public void nextRound() {
-        LogHandler.debug("H4: " + roundsLeft);
         if (roundsLeft > 0) {
             selector = getActivePlayers().get(roundsLeft % getActivePlayers().size());
             word = null;
             censoredWord.clear();
             guesses.clear();
             guessesLeft = 9;
-            getGameLobby().sendMessage(StringUtil.markdownSafe(String.format(Lang.GAME_HANGMAN_SELECTING, selector.getUsername())));
+            getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_HANGMAN_SELECTING, StringUtil.markdownSafe(selector.getUsername()))).parseMode(ParseMode.MARKDOWN).build());
             TelegramBot.getChat(selector.getUserID()).sendMessage(createChooserKeyboard().message(Lang.GAME_HANGMAN_SELECTING_ASK).build(), TelegramHook.getBot());
             roundsLeft--;
         } else {
@@ -174,14 +172,14 @@ public class Hangman extends Game {
                             }
                         }
                     } else {
-                        TelegramBot.getChat(sender.getId()).sendMessage(Lang.ERROR_ALPHA_ONLY, TelegramHook.getBot());
+                        TelegramBot.getChat(selector.getUserID()).sendMessage(SendableTextMessage.builder().message(Lang.ERROR_ALPHA_ONLY).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                     }
                     return;
                 } else {
                     if (sender.getId() == selector.getUserID() && word == null) {
                         if (message.equals(Lang.GAME_HANGMAN_KEYBOARD_RANDOM)) {
                             message = predefinedWords.remove(0);
-                            TelegramBot.getChat(selector.getUserID()).sendMessage(String.format(Lang.GAME_HANGMAN_RANDOM_CHOSEN, message), TelegramHook.getBot());
+                            TelegramBot.getChat(selector.getUserID()).sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_HANGMAN_RANDOM_CHOSEN, message)).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                         }
 
                         if (isAlphaCharactersOnly(message)) {
@@ -194,10 +192,10 @@ public class Hangman extends Game {
 
                                 getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_HANGMAN_WORD_CHOSEN, getCensoredWord())).parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
                             } else {
-                                TelegramBot.getChat(selector.getUserID()).sendMessage(Lang.ERROR_TOO_SHORT_3, TelegramHook.getBot());
+                                TelegramBot.getChat(selector.getUserID()).sendMessage(SendableTextMessage.builder().message(Lang.ERROR_TOO_SHORT_3).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                             }
                         } else {
-                            TelegramBot.getChat(selector.getUserID()).sendMessage(Lang.ERROR_ALPHA_ONLY, TelegramHook.getBot());
+                            TelegramBot.getChat(selector.getUserID()).sendMessage(SendableTextMessage.builder().message(Lang.ERROR_ALPHA_ONLY).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                         }
                         return;
                     }

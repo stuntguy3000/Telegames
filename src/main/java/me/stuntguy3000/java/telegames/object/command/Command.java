@@ -4,7 +4,9 @@ import lombok.Getter;
 import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import pro.zackpollard.telegrambot.api.chat.Chat;
+import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableMessage;
+import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
 
 import java.util.Arrays;
@@ -33,7 +35,7 @@ public abstract class Command {
     public abstract void processCommand(CommandMessageReceivedEvent event);
 
     public void respond(Chat chat, String message) {
-        chat.sendMessage(message, TelegramHook.getBot());
+        respond(chat, SendableTextMessage.builder().message(message).parseMode(ParseMode.MARKDOWN).build());
     }
 
     public void respond(Chat c, String s, Object... format) {

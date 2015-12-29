@@ -84,7 +84,7 @@ public class Lang {
     public static String GAME_HANGMAN_DESCRIPTION = "The classic game of hangman. Try to guess the phrase before its too late!";
     public static String GAME_HANGMAN_GUESS_CORRECT = TelegramEmoji.GREEN_BOX_TICK.getText() + " *Correct guess!\nRemaining: %s\n\nThe word: %s*";
     public static String GAME_HANGMAN_GUESS_INCORRECT = TelegramEmoji.RED_CROSS.getText() + " *Incorrect guess!\nRemaining: %s\n\nThe word: %s\nGuessed letters: %s*";
-    public static String GAME_HANGMAN_GUESS_LETTER = "*%s guessed %s.*";
+    public static String GAME_HANGMAN_GUESS_LETTER = "%s guessed %s.";
     public static String GAME_HANGMAN_GUESS_LOSE = TelegramEmoji.RED_CROSS.getText() + " *Out of guesses!\n\nThe Word: %s*";
     public static String GAME_HANGMAN_GUESS_WORD = TelegramEmoji.PARTY_POPPER.getText() + " *The word was guessed correctly!\n\nThe word was \"%s\"*";
     public static String GAME_HANGMAN_KEYBOARD_RANDOM = TelegramEmoji.OPEN_BOOK.getText() + " Choose a random word";
