@@ -26,7 +26,6 @@ import java.util.List;
 
 public class Hangman extends Game {
 
-    private List<TelegramUser> activePlayers = new ArrayList<>();
     private Character censoredChar = '-';
     private List<Character> censoredWord = new ArrayList<>();
     private List<Character> guesses = new ArrayList<>();
@@ -99,7 +98,7 @@ public class Hangman extends Game {
     }
 
     private boolean isPlayer(TelegramUser telegramUser) {
-        for (TelegramUser player : activePlayers) {
+        for (TelegramUser player : getActivePlayers()) {
             if (telegramUser.getUserID() == player.getUserID()) {
                 return true;
             }
@@ -127,8 +126,9 @@ public class Hangman extends Game {
     }
 
     public void nextRound() {
+        LogHandler.debug("H4: " + roundsLeft);
         if (roundsLeft > 0) {
-            selector = activePlayers.get(roundsLeft % activePlayers.size());
+            selector = getActivePlayers().get(roundsLeft % getActivePlayers().size());
             word = null;
             censoredWord.clear();
             guesses.clear();
@@ -210,9 +210,8 @@ public class Hangman extends Game {
 
     @Override
     public void startGame() {
-        LogHandler.debug("Hangman ingame");
         setGameState(GameState.INGAME);
-        roundsLeft = activePlayers.size() * 3;
+        roundsLeft = getActivePlayers().size() * 3;
 
         loadWords();
         nextRound();
