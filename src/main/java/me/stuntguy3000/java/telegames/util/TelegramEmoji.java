@@ -50,7 +50,8 @@ public enum TelegramEmoji {
     FINGER("\uD83D\uDC49\uD83C\uDFFB"),
     SAND_CLOCK("⌛️"),
     QUESTION_MARK("❓"),
-    JOKER_CARD("\uD83C\uDCCF");
+    JOKER_CARD("\uD83C\uDCCF"),
+    HOUSE("\uD83C\uDFDA");
 
     @Getter
     String text;

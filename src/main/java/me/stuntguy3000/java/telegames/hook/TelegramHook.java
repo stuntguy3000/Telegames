@@ -118,19 +118,20 @@ public class TelegramHook implements Listener {
 
         if (lobby != null) {
             lobby.onTextMessageReceived(event);
-            LogHandler.log("[Chat] [%s] %s: %s", lobby.getLobbyID(), user.getUsername(), event.getContent().getContent());
+            LogHandler.log("(Chat) [#%s] %s: %s", lobby.getLobbyID(), user.getUsername(), event.getContent().getContent());
         } else if (message.equalsIgnoreCase(Lang.KEYBOARD_CANCEL)) {
-            event.getChat().sendMessage(KeyboardHandler.createLobbyCreationMenu().message(TelegramEmoji.PENCIL.getText() + " *Returning to lobby menu:*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+            enteringlobby.remove(user.getUsername());
+            event.getChat().sendMessage(KeyboardHandler.createLobbyCreationMenu().message(Lang.GENERAL_RETURNING_MENU).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
         } else if (message.equalsIgnoreCase(Lang.KEYBOARD_CREATE_LOBBY)) {
             try {
                 Telegames.getInstance().getLobbyHandler().tryCreateLobby(telegramUser);
             } catch (UserIsMatchmakingException e) {
-                event.getChat().sendMessage(TelegramEmoji.RED_CROSS.getText() + " You cannot create a lobby while in matchmaking!", TelegramHook.getBot());
+                event.getChat().sendMessage(SendableTextMessage.builder().message(Lang.ERROR_LOBBY_CREATE_MATCHMAKING).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
             } catch (UserHasLobbyException e) {
-                event.getChat().sendMessage(TelegramEmoji.RED_CROSS.getText() + " You are already have a lobby!", TelegramHook.getBot());
+                event.getChat().sendMessage(Lang.ERROR_USER_IN_LOBBY, TelegramHook.getBot());
             }
         } else if (message.equalsIgnoreCase(Lang.KEYBOARD_JOIN_LOBBY)) {
-            event.getChat().sendMessage(KeyboardHandler.createCancelMenu().message(TelegramEmoji.PENCIL.getText() + " *Enter the name or ID of the lobby:*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+            event.getChat().sendMessage(KeyboardHandler.createCancelMenu().message(Lang.GENERAL_ENTER_LOBBY_NAME).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
             if (!enteringlobby.contains(user.getUsername())) {
                 enteringlobby.add(user.getUsername());
             }
@@ -143,12 +144,7 @@ public class TelegramHook implements Listener {
             }
 
             if (!matchmakingHandler.isInQueue(telegramUser)) {
-                event.getChat().sendMessage(KeyboardHandler.createMatchmakingMenu(null).message(TelegramEmoji.PERSON.getText() + " *Welcome to Telegames Matchmaking!*\n\n" +
-                        "Matchmaking is a simple feature allowing players to quickly play a game with random people " +
-                        "around the world, with no lobbies required.\n\n" +
-                        "To begin matchmaking, simply click on a game's name in the menu below to toggle if " +
-                        "you want to include that game in the matchmaking search. All games are disabled by default.\n\n" +
-                        "*Players in matchmaking queue: " + matchmakingHandler.getQueueCount() + "*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                event.getChat().sendMessage(KeyboardHandler.createMatchmakingMenu(null).message(String.format(Lang.MATCHMAKING_DESCRIPTION, matchmakingHandler.getQueueCount())).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                 matchmakingHandler.addNewUser(telegramUser);
             }
         } else if (message.equalsIgnoreCase(Lang.KEYBOARD_QUIT_MATCHMAKING)) {
@@ -158,7 +154,7 @@ public class TelegramHook implements Listener {
                 matchmakingHandler.removeUser(user);
             }
 
-            event.getChat().sendMessage(KeyboardHandler.createLobbyCreationMenu().message(TelegramEmoji.BACK.getText() + " *Returning to main menu...*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+            event.getChat().sendMessage(KeyboardHandler.createLobbyCreationMenu().message(Lang.GENERAL_RETURNING_MENU).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
         } else {
             MatchmakingHandler matchmakingHandler = getInstance().getMatchmakingHandler();
 
@@ -186,11 +182,11 @@ public class TelegramHook implements Listener {
                         targetLobby.userJoin(telegramUser);
                         enteringlobby.remove(user.getUsername());
                     } catch (LobbyLockedException | UserBannedException | LobbyFullException e) {
-                        SendableTextMessage sendableTextMessage = KeyboardHandler.createLobbyCreationMenu().message(TelegramEmoji.RED_CROSS.getText() + " *You cannot join this lobby.*").parseMode(ParseMode.MARKDOWN).build();
+                        SendableTextMessage sendableTextMessage = KeyboardHandler.createLobbyCreationMenu().message(Lang.ERROR_CANNOT_JOIN_LOBBY).parseMode(ParseMode.MARKDOWN).build();
                         event.getChat().sendMessage(sendableTextMessage, TelegramHook.getBot());
                     }
                 } else {
-                    event.getChat().sendMessage(SendableTextMessage.builder().message(TelegramEmoji.RED_CROSS.getText() + " *Unknown lobby!*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                    event.getChat().sendMessage(SendableTextMessage.builder().message(Lang.ERROR_LOBBY_NOT_FOUND).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                 }
             }
         }

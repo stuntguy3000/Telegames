@@ -9,7 +9,6 @@ import me.stuntguy3000.java.telegames.object.exception.LobbyLockedException;
 import me.stuntguy3000.java.telegames.object.exception.UserBannedException;
 import me.stuntguy3000.java.telegames.object.lobby.Lobby;
 import me.stuntguy3000.java.telegames.object.user.TelegramUser;
-import me.stuntguy3000.java.telegames.util.TelegramEmoji;
 import me.stuntguy3000.java.telegames.util.string.Lang;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
@@ -43,7 +42,7 @@ public class JoinCommand extends Command {
                         try {
                             targetLobby.userJoin(user);
                         } catch (LobbyLockedException | UserBannedException | LobbyFullException e) {
-                            SendableTextMessage sendableTextMessage = KeyboardHandler.createLobbyCreationMenu().message(TelegramEmoji.RED_CROSS.getText() + " *You cannot join this lobby.*").parseMode(ParseMode.MARKDOWN).build();
+                            SendableTextMessage sendableTextMessage = KeyboardHandler.createLobbyCreationMenu().message(Lang.ERROR_CANNOT_JOIN_LOBBY).parseMode(ParseMode.MARKDOWN).build();
                             respond(chat, sendableTextMessage);
                         }
                     }

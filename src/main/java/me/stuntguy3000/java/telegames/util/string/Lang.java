@@ -19,6 +19,7 @@ public class Lang {
     public static String COMMAND_PLAY_RANDOM = TelegramEmoji.JOYSTICK.getText() + " *Choosing a random game!*";
     public static String ERROR_ALPHA_ONLY = TelegramEmoji.RED_CROSS.getText() + " Only Alpha characters are valid!";
     public static String ERROR_ALREADY_PLAYED_CARD = TelegramEmoji.RED_CROSS.getText() + " *You cannot play this card again!*";
+    public static String ERROR_CANNOT_JOIN_LOBBY = TelegramEmoji.RED_CROSS.getText() + " *You cannot join this lobby.*";
     public static String ERROR_COMMAND_PM_ONLY = TelegramEmoji.RED_CROSS.getText() + " *This command can only be executed via a private message to* @" + TelegramHook.getBot().getBotUsername();
     public static String ERROR_GAME_NOT_FOUND = TelegramEmoji.RED_CROSS.getText() + " *No such game exists!*";
     public static String ERROR_GAME_NOT_RUNNING = TelegramEmoji.RED_CROSS.getText() + " *No game is currently running!*";
@@ -121,6 +122,8 @@ public class Lang {
     public static String GAME_UNO_ROUNDINFO = TelegramEmoji.BLUE_RIGHT_ARROW.getText() + " *Current Card:* %s\n" + TelegramEmoji.PERSON.getText() + " *Current Player:* %s";
     public static String GAME_UNO_SHUFFLING = "_Shuffling deck..._";
     public static String GAME_UNO_SKIP = "*%s has been skipped.";
+    public static String GENERAL_ENTER_LOBBY_NAME = TelegramEmoji.PENCIL.getText() + " *Enter the name or ID of the lobby:*";
+    public static String GENERAL_RETURNING_MENU = TelegramEmoji.HOUSE.getText() + " *Returning to lobby menu:*";
     public static String KEYBOARD_ABOUT = TelegramEmoji.BOOK.getText() + " About";
     public static String KEYBOARD_CANCEL = TelegramEmoji.RED_CROSS.getText() + " Cancel";
     public static String KEYBOARD_CREATE_LOBBY = TelegramEmoji.JOYSTICK.getText() + " Create a lobby";
@@ -138,6 +141,12 @@ public class Lang {
     public static String KEYBOARD_RENAME = TelegramEmoji.PENCIL.getText() + " Rename lobby";
     public static String KEYBOARD_REPLAY = TelegramEmoji.REPLAY.getText() + " Replay previous game";
     public static String KEYBOARD_RETURN_MENU = TelegramEmoji.BACK.getText() + " Back to menu";
+    public static String MATCHMAKING_DESCRIPTION = TelegramEmoji.PERSON.getText() + " *Welcome to Telegames Matchmaking!*\n\n" +
+            "Matchmaking is a simple feature allowing players to quickly play a game with random people " +
+            "around the world, with no lobbies required.\n\n" +
+            "To begin matchmaking, simply click on a game's name in the menu below to toggle if " +
+            "you want to include that game in the matchmaking search. All games are disabled by default.\n\n" +
+            "*Players in matchmaking queue: %d*";
     public static String MISC_HEADER_BOTFATHER = "*Lobby Message:*";
     public static String MISC_HEADER_LOBBYLIST = "*Lobby List:*";
 }

@@ -42,7 +42,7 @@ public class CreateCommand extends Command {
                     try {
                         targetLobby.userJoin(user);
                     } catch (LobbyLockedException | UserBannedException | LobbyFullException e) {
-                        SendableTextMessage sendableTextMessage = KeyboardHandler.createLobbyCreationMenu().message(TelegramEmoji.RED_CROSS.getText() + " *You cannot join this lobby.*").parseMode(ParseMode.MARKDOWN).build();
+                        SendableTextMessage sendableTextMessage = KeyboardHandler.createLobbyCreationMenu().message(Lang.ERROR_CANNOT_JOIN_LOBBY).parseMode(ParseMode.MARKDOWN).build();
                         respond(TelegramBot.getChat(sender.getId()), sendableTextMessage);
                     }
                 }
