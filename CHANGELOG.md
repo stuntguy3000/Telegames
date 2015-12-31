@@ -1,4 +1,14 @@
 # Changelog
+#### Version 1.7
+Major Cards Against Humanity Update!
+The lobby owner how has to select which card pack(s) to play with. This happens on game start, and is required. 
+The ability to select a random selection of decks are possible. 
+
+We now can support more card decks, contact @stuntguy3000 with suggestions.
+
+Other updates:
+* More organization and message improvements
+
 #### Version 1.6
 * Major code revamp and organization
 
