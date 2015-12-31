@@ -139,7 +139,7 @@ public class CardsAgainstHumanity extends Game {
     private CAHCard currentBlackCard;
     private boolean czarChoosing = false;
     private List<CzarOption> czarOptions = new ArrayList<>();
-    private HashMap<String, Boolean> extrasPacks = new HashMap<>();
+    private LinkedHashMap<String, Boolean> extrasPacks = new LinkedHashMap<>();
     private HashMap<Integer, LinkedList<CAHCard>> playedCards = new HashMap<>();
     private int playerOrderIndex = 0;
     private boolean robotCzar = false;

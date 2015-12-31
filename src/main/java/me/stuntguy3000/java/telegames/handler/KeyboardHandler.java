@@ -11,7 +11,7 @@ import java.util.*;
 
 // @author Luke Anderson | stuntguy3000
 public class KeyboardHandler {
-    public static SendableTextMessage.SendableTextMessageBuilder createCAHExtrasKeyboard(HashMap<String, Boolean> extrasPacks) {
+    public static SendableTextMessage.SendableTextMessageBuilder createCAHExtrasKeyboard(LinkedHashMap<String, Boolean> extrasPacks) {
         List<List<String>> buttonList = new ArrayList<>();
         List<String> optionsRow = new ArrayList<>();
 
