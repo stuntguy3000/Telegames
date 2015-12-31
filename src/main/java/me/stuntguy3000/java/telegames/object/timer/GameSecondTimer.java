@@ -1,6 +1,5 @@
 package me.stuntguy3000.java.telegames.object.timer;
 
-import me.stuntguy3000.java.telegames.handler.LogHandler;
 import me.stuntguy3000.java.telegames.object.game.Game;
 
 import java.util.Timer;
@@ -16,7 +15,6 @@ public class GameSecondTimer extends TimerTask {
 
     @Override
     public void run() {
-        LogHandler.debug("onSecond");
         instance.onSecond();
     }
 }

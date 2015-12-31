@@ -3,7 +3,6 @@ package me.stuntguy3000.java.telegames.game;
 import lombok.Getter;
 import lombok.Setter;
 import me.stuntguy3000.java.telegames.handler.KeyboardHandler;
-import me.stuntguy3000.java.telegames.handler.LogHandler;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.game.GameState;
@@ -313,9 +312,7 @@ public class CardsAgainstHumanity extends Game {
     public void onSecond() {
         secondsSincePlay++;
 
-        LogHandler.debug("TIMER: %s %s %s %s", czarChoosing, robotCzar, choosingExtras, choosingVersion);
-
-        if (!czarChoosing && !robotCzar && !choosingVersion && !choosingExtras) {
+        if (!czarChoosing && !choosingVersion && !choosingExtras) {
             if (secondsSincePlay == 30) {
                 getGameLobby().sendMessage(SendableTextMessage.builder().message(Lang.GAME_CAH_TIMEWARNING).parseMode(ParseMode.MARKDOWN).build());
             } else if (secondsSincePlay == 40) {

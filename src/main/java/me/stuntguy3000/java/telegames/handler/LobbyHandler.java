@@ -145,10 +145,7 @@ public class LobbyHandler {
      */
     public void startTimer(Lobby lobby) {
         if (!lobbyTimers.containsKey(lobby.getLobbyID().toLowerCase())) {
-            LogHandler.debug("Starting timer");
             lobbyTimers.put(lobby.getLobbyID().toLowerCase(), new GameSecondTimer(lobby.getCurrentGame()));
-        } else {
-            LogHandler.debug("Not Starting timer");
         }
     }
 
