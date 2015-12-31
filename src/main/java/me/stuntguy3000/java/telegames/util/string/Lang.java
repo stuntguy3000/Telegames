@@ -130,7 +130,7 @@ public class Lang {
     public static String KEYBOARD_DONE = TelegramEmoji.GREEN_BOX_TICK.getText() + " Done";
     public static String KEYBOARD_JOIN_LOBBY = TelegramEmoji.PERSON.getText() + " Join a lobby";
     public static String KEYBOARD_JOIN_MATCHMAKING = TelegramEmoji.BLUE_RIGHT_ARROW.getText() + " Enter matchmaking";
-    public static String KEYBOARD_LEAVE_LOBBY = TelegramEmoji.END.getText() + " Leave the lobby";
+    public static String KEYBOARD_LEAVE_LOBBY = TelegramEmoji.HOUSE.getText() + " Leave the lobby";
     public static String KEYBOARD_LOBBY_LOCK = TelegramEmoji.PADLOCK_LOCKED.getText() + " Lock lobby";
     public static String KEYBOARD_LOBBY_OPTIONS = TelegramEmoji.METAL_GEAR.getText() + " Lobby options";
     public static String KEYBOARD_LOBBY_UNLOCK = TelegramEmoji.PADLOCK_UNLOCKED.getText() + " Unlock lobby";
