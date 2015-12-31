@@ -140,7 +140,7 @@ public class Lang {
     public static String KEYBOARD_RATE = TelegramEmoji.STAR.getText() + " Rate this bot";
     public static String KEYBOARD_RENAME = TelegramEmoji.PENCIL.getText() + " Rename lobby";
     public static String KEYBOARD_REPLAY = TelegramEmoji.REPLAY.getText() + " Replay previous game";
-    public static String KEYBOARD_RETURN_MENU = TelegramEmoji.BACK.getText() + " Back to menu";
+    public static String KEYBOARD_RETURN_MENU = TelegramEmoji.HOUSE.getText() + " Back to menu";
     public static String MATCHMAKING_DESCRIPTION = TelegramEmoji.PERSON.getText() + " *Welcome to Telegames Matchmaking!*\n\n" +
             "Matchmaking is a simple feature allowing players to quickly play a game with random people " +
             "around the world, with no lobbies required.\n\n" +
