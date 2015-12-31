@@ -21,7 +21,6 @@ import pro.zackpollard.telegrambot.api.event.Listener;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.PhotoMessageReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.TextMessageReceivedEvent;
-import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardHide;
 import pro.zackpollard.telegrambot.api.user.User;
 
 import java.util.ArrayList;
@@ -121,7 +120,7 @@ public class TelegramHook implements Listener {
             lobby.onTextMessageReceived(event);
             LogHandler.log("[Chat] [%s] %s: %s", lobby.getLobbyID(), user.getUsername(), event.getContent().getContent());
         } else if (message.equalsIgnoreCase(Lang.KEYBOARD_CANCEL)) {
-            event.getChat().sendMessage(KeyboardHandler.createLobbyCreationMenu().message(TelegramEmoji.PENCIL.getText() + " *Returning to lobby menu:*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build(), TelegramHook.getBot());
+            event.getChat().sendMessage(KeyboardHandler.createLobbyCreationMenu().message(TelegramEmoji.PENCIL.getText() + " *Returning to lobby menu:*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
         } else if (message.equalsIgnoreCase(Lang.KEYBOARD_CREATE_LOBBY)) {
             try {
                 Telegames.getInstance().getLobbyHandler().tryCreateLobby(telegramUser);
@@ -131,7 +130,7 @@ public class TelegramHook implements Listener {
                 event.getChat().sendMessage(TelegramEmoji.RED_CROSS.getText() + " You are already have a lobby!", TelegramHook.getBot());
             }
         } else if (message.equalsIgnoreCase(Lang.KEYBOARD_JOIN_LOBBY)) {
-            event.getChat().sendMessage(KeyboardHandler.createCancelMenu().message(TelegramEmoji.PENCIL.getText() + " *Enter the name or ID of the lobby:*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build(), TelegramHook.getBot());
+            event.getChat().sendMessage(KeyboardHandler.createCancelMenu().message(TelegramEmoji.PENCIL.getText() + " *Enter the name or ID of the lobby:*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
             if (!enteringlobby.contains(user.getUsername())) {
                 enteringlobby.add(user.getUsername());
             }
