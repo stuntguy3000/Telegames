@@ -458,10 +458,10 @@ public class CardsAgainstHumanity extends Game {
                     }
                 }
 
-                stringBuilder.append(pack.getMetadata().get("")).append(", ");
+                stringBuilder.append(pack.getMetadata().get("name")).append(", ");
             }
 
-            getGameLobby().sendMessage(String.format(Lang.GAME_CAH_ACTIVECARDS, stringBuilder.toString().substring(0, stringBuilder.length() - 2)));
+            getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_CAH_ACTIVECARDS, stringBuilder.toString().substring(0, stringBuilder.length() - 2))).parseMode(ParseMode.MARKDOWN).build());
 
             Collections.shuffle(whiteCards);
             Collections.shuffle(blackCards);
@@ -701,7 +701,7 @@ public class CardsAgainstHumanity extends Game {
         }
 
         if (winner != null) {
-            getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_CAH_WIN_ROUND, TelegramEmoji.getNumberBlock(number), StringUtil.markdownSafe(winner.getUsername()))).parseMode(ParseMode.MARKDOWN).build());
+            getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_CAH_WIN_ROUND, TelegramEmoji.getNumberBlock(number).getText(), StringUtil.markdownSafe(winner.getUsername()))).parseMode(ParseMode.MARKDOWN).build());
             winner.setGameScore(winner.getGameScore() + 1);
 
             TelegramUser gameWinner = null;
