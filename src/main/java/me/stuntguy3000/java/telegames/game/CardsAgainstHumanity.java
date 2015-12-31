@@ -370,16 +370,16 @@ public class CardsAgainstHumanity extends Game {
 
                                 }
                             }
+                        }
 
-                            if (basePack != null) {
-                                choosingVersion = false;
-                                choosingExtras = true;
+                        if (basePack != null) {
+                            choosingVersion = false;
+                            choosingExtras = true;
 
-                                TelegramBot.getChat(telegramUser.getUserID()).sendMessage(KeyboardHandler.createCAHExtrasKeyboard(extrasPacks).message(Lang.GAME_CAH_CHOOSE_EXTRAS).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
-                            }
-
+                            TelegramBot.getChat(telegramUser.getUserID()).sendMessage(KeyboardHandler.createCAHExtrasKeyboard(extrasPacks).message(Lang.GAME_CAH_CHOOSE_EXTRAS).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                             return;
                         }
+
                     } else {
                         if (message.startsWith(Lang.KEYBOARD_DONE)) {
                             choosingVersion = false;
