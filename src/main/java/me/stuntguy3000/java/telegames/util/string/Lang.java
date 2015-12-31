@@ -70,7 +70,7 @@ public class Lang {
     public static String GAME_CAH_USERPLAY = TelegramEmoji.GREEN_BOX_TICK.getText() + " *%s has played.*";
     public static String GAME_CAH_WAITING = TelegramEmoji.SAND_CLOCK.getText() + " *Please wait while the %s chooses the card decks...*";
     public static String GAME_CAH_WHITECARDS = "_Please play %s white cards._";
-    public static String GAME_CAH_WIN_ROUND = "*% %s won the round!*";
+    public static String GAME_CAH_WIN_ROUND = "*%s %s won the round!*";
     public static String GAME_CARDPICKUP = "Picked up cards: %s";
     public static String GAME_GENERAL_DRAW = "*The match was a draw!*";
     public static String GAME_GENERAL_NEXT_TURN = "*It's your turn, %s.*";

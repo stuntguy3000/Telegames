@@ -442,7 +442,7 @@ public class CardsAgainstHumanity extends Game {
                     choosingVersion = true;
                     TelegramBot.getChat(telegramUser.getUserID()).sendMessage(KeyboardHandler.createCAHKeyboard("Version 1", "Version 2", "Version 3").message(Lang.GAME_CAH_CHOOSE_VERSION).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                 } else {
-                    TelegramBot.getChat(telegramUser.getUserID()).sendMessage(SendableTextMessage.builder().message(Lang.GAME_CAH_WAITING).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                    TelegramBot.getChat(telegramUser.getUserID()).sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_CAH_WAITING, getGameLobby().getLobbyOwner().getUsername())).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                 }
             }
         } else {

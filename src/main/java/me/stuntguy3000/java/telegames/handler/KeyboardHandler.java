@@ -16,7 +16,7 @@ public class KeyboardHandler {
         List<String> optionsRow = new ArrayList<>();
 
         for (Map.Entry<String, Boolean> extraPack : extrasPacks.entrySet()) {
-            optionsRow.add((extraPack.getValue() ? TelegramEmoji.BLUE_CIRCLE : TelegramEmoji.RED_CIRCLE) + " " + extraPack.getKey());
+            optionsRow.add((extraPack.getValue() ? TelegramEmoji.BLUE_CIRCLE.getText() : TelegramEmoji.RED_CIRCLE.getText()) + " " + extraPack.getKey());
         }
 
         buttonList.add(optionsRow);
