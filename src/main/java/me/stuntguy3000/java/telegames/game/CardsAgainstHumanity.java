@@ -312,13 +312,15 @@ public class CardsAgainstHumanity extends Game {
     public void onSecond() {
         secondsSincePlay++;
 
-        if (!czarChoosing && !robotCzar) {
+        if (!czarChoosing && !robotCzar && !choosingVersion && !choosingExtras) {
             if (secondsSincePlay == 30) {
                 getGameLobby().sendMessage(SendableTextMessage.builder().message(Lang.GAME_CAH_TIMEWARNING).parseMode(ParseMode.MARKDOWN).build());
             } else if (secondsSincePlay == 40) {
                 getGameLobby().sendMessage(SendableTextMessage.builder().message(Lang.GAME_CAH_TIMENOTICE).parseMode(ParseMode.MARKDOWN).build());
                 checkPlayers(true);
             }
+        } else {
+            secondsSincePlay = 0;
         }
     }
 
@@ -354,7 +356,7 @@ public class CardsAgainstHumanity extends Game {
                         if (message.startsWith(Lang.KEYBOARD_RANDOM)) {
                             Random random = new Random();
                             int versionNumber = random.nextInt(3) + 1;
-                            basePack = allCardPacks.get("version" + versionNumber);
+                            basePack = allCardPacks.get("cah.v" + versionNumber + ".cards");
                         } else {
                             if (message.startsWith("Version ")) {
                                 try {
