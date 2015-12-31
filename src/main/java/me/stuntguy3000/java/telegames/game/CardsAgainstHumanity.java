@@ -2,6 +2,7 @@ package me.stuntguy3000.java.telegames.game;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.stuntguy3000.java.telegames.handler.KeyboardHandler;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.game.GameState;
@@ -127,12 +128,18 @@ class CAHRoundDelay extends TimerTask {
 
 // @author Luke Anderson | stuntguy3000
 public class CardsAgainstHumanity extends Game {
+    private HashMap<String, CAHCardPack> allCardPacks = new HashMap<>();
+    private CAHCardPack basePack;
     private List<CAHCard> blackCards = new ArrayList<>();
     private TelegramUser cardCzar;
+    private boolean choosingExtras = false;
+    private boolean choosingVersion = false;
+    private List<CAHCardPack> chosenDecks = new ArrayList<>();
     private boolean continueGame = true;
     private CAHCard currentBlackCard;
     private boolean czarChoosing = false;
     private List<CzarOption> czarOptions = new ArrayList<>();
+    private HashMap<String, Boolean> extrasPacks = new HashMap<>();
     private HashMap<Integer, LinkedList<CAHCard>> playedCards = new HashMap<>();
     private int playerOrderIndex = 0;
     private boolean robotCzar = false;
@@ -147,6 +154,10 @@ public class CardsAgainstHumanity extends Game {
         setMinPlayers(2);
         setGameState(GameState.WAITING_FOR_PLAYERS);
         loadPacks();
+
+        for (int i = 1; i < 6; i++) {
+            extrasPacks.put("Extra " + i, false);
+        }
     }
 
     public boolean checkPlayers(boolean forcePlay) {
@@ -338,6 +349,75 @@ public class CardsAgainstHumanity extends Game {
                     }
                 }
             } else {
+                if ((choosingVersion || choosingExtras) && sender.getId() == getGameLobby().getLobbyOwner().getUserID()) {
+                    if (choosingVersion) {
+                        if (message.startsWith(Lang.KEYBOARD_RANDOM)) {
+                            Random random = new Random();
+                            int versionNumber = random.nextInt(3) + 1;
+                            basePack = allCardPacks.get("version" + versionNumber);
+                        } else {
+                            if (message.startsWith("Version ")) {
+                                try {
+                                    String[] split = message.split("Version ");
+                                    int packNumber = Integer.parseInt(split[1]);
+
+                                    if (packNumber > 0 && packNumber < 4) {
+                                        basePack = allCardPacks.get("cah.v" + packNumber + ".cards");
+                                    }
+                                } catch (Exception ignore) {
+
+                                }
+                            }
+
+                            if (basePack != null) {
+                                choosingVersion = false;
+                                choosingExtras = true;
+
+                                TelegramBot.getChat(telegramUser.getUserID()).sendMessage(KeyboardHandler.createCAHExtrasKeyboard(extrasPacks).message(Lang.GAME_CAH_CHOOSE_EXTRAS).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                            }
+                        }
+                    } else {
+                        if (message.startsWith(Lang.KEYBOARD_DONE)) {
+                            choosingVersion = false;
+                            choosingExtras = false;
+
+                            for (Map.Entry<String, Boolean> cahCardPack : extrasPacks.entrySet()) {
+                                if (cahCardPack.getValue()) {
+                                    try {
+                                        int number = Integer.parseInt(cahCardPack.getKey().split(" ")[1]);
+                                        chosenDecks.add(allCardPacks.get("cah.x" + number + ".cards"));
+                                    } catch (Exception ignored) {
+
+                                    }
+                                }
+                            }
+
+                            chosenDecks.add(basePack);
+
+                            startGame();
+                        } else {
+                            if (message.contains("Extra ")) {
+                                try {
+                                    String[] split = message.split("Extra ");
+                                    int packNumber = Integer.parseInt(split[1]);
+
+                                    if (packNumber > 0 && packNumber < 6) {
+                                        if (message.startsWith(TelegramEmoji.BLUE_CIRCLE.getText())) {
+                                            extrasPacks.put("Extra " + packNumber, false);
+                                        } else if (message.startsWith(TelegramEmoji.RED_CIRCLE.getText())) {
+                                            extrasPacks.put("Extra " + packNumber, true);
+                                        }
+
+                                        TelegramBot.getChat(telegramUser.getUserID()).sendMessage(KeyboardHandler.createCAHExtrasKeyboard(extrasPacks).message(Lang.GAME_CAH_CHOOSE_EXTRAS).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                                    }
+                                } catch (Exception ignore) {
+
+                                }
+                            }
+                        }
+                    }
+                }
+
                 if (!playCard(sender, message)) {
                     getGameLobby().userChat(telegramUser, message);
                 }
@@ -356,18 +436,44 @@ public class CardsAgainstHumanity extends Game {
 
     @Override
     public void startGame() {
-        setGameState(GameState.INGAME);
+        if (chosenDecks.isEmpty()) {
+            for (TelegramUser telegramUser : getActivePlayers()) {
+                if (telegramUser.getUserID() == getGameLobby().getLobbyOwner().getUserID()) {
+                    choosingVersion = true;
+                    TelegramBot.getChat(telegramUser.getUserID()).sendMessage(KeyboardHandler.createCAHKeyboard("Version 1", "Version 2", "Version 3").message(Lang.GAME_CAH_CHOOSE_VERSION).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                } else {
+                    TelegramBot.getChat(telegramUser.getUserID()).sendMessage(SendableTextMessage.builder().message(Lang.GAME_CAH_WAITING).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                }
+            }
+        } else {
+            setGameState(GameState.INGAME);
+            StringBuilder stringBuilder = new StringBuilder();
 
-        Collections.shuffle(whiteCards);
-        Collections.shuffle(blackCards);
+            for (CAHCardPack pack : chosenDecks) {
+                for (CAHCard card : pack.getCards()) {
+                    if (card.getCahCardType() == CAHCardType.WHITE) {
+                        whiteCards.add(card);
+                    } else if (card.getCahCardType() == CAHCardType.BLACK) {
+                        blackCards.add(card);
+                    }
+                }
 
-        fillHands();
+                stringBuilder.append(pack.getMetadata().get("")).append(", ");
+            }
 
-        if (getActivePlayers().size() == 2) {
-            robotCzar = true;
+            getGameLobby().sendMessage(String.format(Lang.GAME_CAH_ACTIVECARDS, stringBuilder.toString().substring(0, stringBuilder.length() - 2)));
+
+            Collections.shuffle(whiteCards);
+            Collections.shuffle(blackCards);
+
+            fillHands();
+
+            if (getActivePlayers().size() == 2) {
+                robotCzar = true;
+            }
+
+            nextRound();
         }
-
-        nextRound();
     }
 
     private void giveWhiteCard(TelegramUser telegramUser, int amount) {
@@ -396,59 +502,65 @@ public class CardsAgainstHumanity extends Game {
 
     // Load Card Packs from Jar resources
     public void loadPacks() {
-        InputStream is = getClass().getResourceAsStream("/cah.v3.cards");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        CAHCardPack cahCardPack = new CAHCardPack();
-        String packLine;
-        CAHPackProperty cahPackProperty = null;
+        List<String> knownPacks = new ArrayList<>();
 
-        try {
-            while ((packLine = reader.readLine()) != null) {
-                switch (packLine) {
-                    case "___METADATA___": {
-                        cahPackProperty = CAHPackProperty.METADATA;
-                        continue;
-                    }
-                    case "___BLACK___": {
-                        cahPackProperty = CAHPackProperty.BLACKCARDS;
-                        continue;
-                    }
-                    case "___WHITE___": {
-                        cahPackProperty = CAHPackProperty.WHITECARDS;
-                        continue;
-                    }
-                    default: {
-                        if (cahPackProperty != null) {
-                            switch (cahPackProperty) {
-                                case METADATA: {
-                                    if (packLine.contains(": ")) {
-                                        String[] packData = packLine.split(": ");
-                                        cahCardPack.addMetadata(packData[0], packData[1]);
+        for (int i = 1; i < 4; i++) {
+            knownPacks.add("cah.v" + i + ".cards");
+        }
+
+        for (int i = 1; i < 6; i++) {
+            knownPacks.add("cah.x" + i + ".cards");
+        }
+
+        for (String name : knownPacks) {
+            InputStream is = getClass().getResourceAsStream("/" + name);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            CAHCardPack cahCardPack = new CAHCardPack();
+            String packLine;
+            CAHPackProperty cahPackProperty = null;
+
+            try {
+                while ((packLine = reader.readLine()) != null) {
+                    switch (packLine) {
+                        case "___METADATA___": {
+                            cahPackProperty = CAHPackProperty.METADATA;
+                            continue;
+                        }
+                        case "___BLACK___": {
+                            cahPackProperty = CAHPackProperty.BLACKCARDS;
+                            continue;
+                        }
+                        case "___WHITE___": {
+                            cahPackProperty = CAHPackProperty.WHITECARDS;
+                            continue;
+                        }
+                        default: {
+                            if (cahPackProperty != null) {
+                                switch (cahPackProperty) {
+                                    case METADATA: {
+                                        if (packLine.contains(": ")) {
+                                            String[] packData = packLine.split(": ");
+                                            cahCardPack.addMetadata(packData[0], packData[1]);
+                                        }
+                                        continue;
                                     }
-                                    continue;
-                                }
-                                case BLACKCARDS: {
-                                    cahCardPack.addCard(packLine.replaceAll("~", "\n"), CAHCardType.BLACK);
-                                    continue;
-                                }
-                                case WHITECARDS: {
-                                    cahCardPack.addCard(packLine.replaceAll("~", "\n"), CAHCardType.WHITE);
+                                    case BLACKCARDS: {
+                                        cahCardPack.addCard(packLine.replaceAll("~", "\n"), CAHCardType.BLACK);
+                                        continue;
+                                    }
+                                    case WHITECARDS: {
+                                        cahCardPack.addCard(packLine.replaceAll("~", "\n"), CAHCardType.WHITE);
+                                    }
                                 }
                             }
                         }
                     }
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        for (CAHCard cahCard : cahCardPack.getCards()) {
-            if (cahCard.getCahCardType() == CAHCardType.BLACK) {
-                blackCards.add(cahCard);
-            } else if (cahCard.getCahCardType() == CAHCardType.WHITE) {
-                whiteCards.add(cahCard);
-            }
+            allCardPacks.put(name, cahCardPack);
         }
     }
 
@@ -505,6 +617,10 @@ public class CardsAgainstHumanity extends Game {
     }
 
     private boolean playCard(User sender, String message) {
+        if (choosingVersion || choosingExtras) {
+            return false;
+        }
+
         if (czarChoosing) {
             if (sender.getId() == cardCzar.getUserID()) {
                 try {

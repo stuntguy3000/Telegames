@@ -13,6 +13,7 @@ import me.stuntguy3000.java.telegames.object.lobby.Lobby;
 import me.stuntguy3000.java.telegames.object.user.TelegramUser;
 import me.stuntguy3000.java.telegames.util.ClassGetter;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
+import me.stuntguy3000.java.telegames.util.string.Lang;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
@@ -119,9 +120,9 @@ public class TelegramHook implements Listener {
         if (lobby != null) {
             lobby.onTextMessageReceived(event);
             LogHandler.log("[Chat] [%s] %s: %s", lobby.getLobbyID(), user.getUsername(), event.getContent().getContent());
-        } else if (message.equalsIgnoreCase(TelegramEmoji.RED_CROSS.getText() + " Cancel")) {
+        } else if (message.equalsIgnoreCase(Lang.KEYBOARD_CANCEL)) {
             event.getChat().sendMessage(KeyboardHandler.createLobbyCreationMenu().message(TelegramEmoji.PENCIL.getText() + " *Returning to lobby menu:*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build(), TelegramHook.getBot());
-        } else if (message.equalsIgnoreCase(TelegramEmoji.JOYSTICK.getText() + " Create a lobby")) {
+        } else if (message.equalsIgnoreCase(Lang.KEYBOARD_CREATE_LOBBY)) {
             try {
                 Telegames.getInstance().getLobbyHandler().tryCreateLobby(telegramUser);
             } catch (UserIsMatchmakingException e) {
@@ -129,12 +130,12 @@ public class TelegramHook implements Listener {
             } catch (UserHasLobbyException e) {
                 event.getChat().sendMessage(TelegramEmoji.RED_CROSS.getText() + " You are already have a lobby!", TelegramHook.getBot());
             }
-        } else if (message.equalsIgnoreCase(TelegramEmoji.PERSON.getText() + " Join a lobby")) {
+        } else if (message.equalsIgnoreCase(Lang.KEYBOARD_JOIN_LOBBY)) {
             event.getChat().sendMessage(KeyboardHandler.createCancelMenu().message(TelegramEmoji.PENCIL.getText() + " *Enter the name or ID of the lobby:*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build(), TelegramHook.getBot());
             if (!enteringlobby.contains(user.getUsername())) {
                 enteringlobby.add(user.getUsername());
             }
-        } else if (message.equalsIgnoreCase(TelegramEmoji.BLUE_RIGHT_ARROW.getText() + " Enter matchmaking")) {
+        } else if (message.equalsIgnoreCase(Lang.KEYBOARD_JOIN_MATCHMAKING)) {
             MatchmakingHandler matchmakingHandler = getInstance().getMatchmakingHandler();
 
             if (!Telegames.DEV_MODE) {
@@ -151,7 +152,7 @@ public class TelegramHook implements Listener {
                         "*Players in matchmaking queue: " + matchmakingHandler.getQueueCount() + "*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                 matchmakingHandler.addNewUser(telegramUser);
             }
-        } else if (message.equalsIgnoreCase(TelegramEmoji.RED_CROSS.getText() + " Quit matchmaking")) {
+        } else if (message.equalsIgnoreCase(Lang.KEYBOARD_QUIT_MATCHMAKING)) {
             MatchmakingHandler matchmakingHandler = getInstance().getMatchmakingHandler();
 
             if (matchmakingHandler.isInQueue(telegramUser)) {

@@ -3,20 +3,43 @@ package me.stuntguy3000.java.telegames.handler;
 import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
+import me.stuntguy3000.java.telegames.util.string.Lang;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardMarkup;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 // @author Luke Anderson | stuntguy3000
 public class KeyboardHandler {
+    public static SendableTextMessage.SendableTextMessageBuilder createCAHExtrasKeyboard(HashMap<String, Boolean> extrasPacks) {
+        List<List<String>> buttonList = new ArrayList<>();
+        List<String> optionsRow = new ArrayList<>();
+
+        for (Map.Entry<String, Boolean> extraPack : extrasPacks.entrySet()) {
+            optionsRow.add((extraPack.getValue() ? TelegramEmoji.BLUE_CIRCLE : TelegramEmoji.RED_CIRCLE) + " " + extraPack.getKey());
+        }
+
+        buttonList.add(optionsRow);
+        buttonList.add(Collections.singletonList(Lang.KEYBOARD_DONE));
+        return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false));
+    }
+
+    public static SendableTextMessage.SendableTextMessageBuilder createCAHKeyboard(String... options) {
+        List<List<String>> buttonList = new ArrayList<>();
+        List<String> optionsRow = new ArrayList<>();
+
+        Collections.addAll(optionsRow, options);
+
+        buttonList.add(optionsRow);
+        buttonList.add(Collections.singletonList(Lang.KEYBOARD_RANDOM));
+
+        return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false));
+    }
+
     public static SendableTextMessage.SendableTextMessageBuilder createCancelMenu() {
         List<List<String>> buttonList = new ArrayList<>();
 
-        buttonList.add(Collections.singletonList(TelegramEmoji.RED_CROSS.getText() + " Cancel"));
+        buttonList.add(Collections.singletonList(Lang.KEYBOARD_CANCEL));
 
         return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false));
     }
@@ -46,7 +69,7 @@ public class KeyboardHandler {
             buttonList.add(new ArrayList<>(row));
         }
 
-        buttonList.add(Collections.singletonList(TelegramEmoji.BACK.getText() + " Back to menu"));
+        buttonList.add(Collections.singletonList(Lang.KEYBOARD_RETURN_MENU));
 
         return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, false, false));
     }
@@ -54,9 +77,9 @@ public class KeyboardHandler {
     public static SendableTextMessage.SendableTextMessageBuilder createLobbyCreationMenu() {
         List<List<String>> buttonList = new ArrayList<>();
 
-        buttonList.add(Collections.singletonList(TelegramEmoji.JOYSTICK.getText() + " Create a lobby"));
-        buttonList.add(Collections.singletonList(TelegramEmoji.PERSON.getText() + " Join a lobby"));
-        buttonList.add(Collections.singletonList(TelegramEmoji.BLUE_RIGHT_ARROW.getText() + " Enter matchmaking"));
+        buttonList.add(Collections.singletonList(Lang.KEYBOARD_CREATE_LOBBY));
+        buttonList.add(Collections.singletonList(Lang.KEYBOARD_JOIN_LOBBY));
+        buttonList.add(Collections.singletonList(Lang.KEYBOARD_JOIN_MATCHMAKING));
 
         return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, false, false));
     }
@@ -65,23 +88,27 @@ public class KeyboardHandler {
         List<List<String>> buttonList = new ArrayList<>();
 
         if (previousGame != null) {
-            buttonList.add(Collections.singletonList(TelegramEmoji.REPLAY.getText() + " Replay previous game"));
+            buttonList.add(Collections.singletonList(Lang.KEYBOARD_REPLAY));
         }
 
-        buttonList.add(Collections.singletonList(TelegramEmoji.JOYSTICK.getText() + " Play a game"));
-        buttonList.add(Arrays.asList(TelegramEmoji.END.getText() + " Leave the lobby", TelegramEmoji.METAL_GEAR.getText() + " Lobby options"));
-        //                                                                                                       Solid
-        buttonList.add(Arrays.asList(TelegramEmoji.STAR.getText() + " Rate this bot", TelegramEmoji.BOOK.getText() + " About"));
+        buttonList.add(Collections.singletonList(Lang.KEYBOARD_PLAY));
+        buttonList.add(Arrays.asList(Lang.KEYBOARD_LEAVE_LOBBY, Lang.KEYBOARD_LOBBY_OPTIONS));
+        buttonList.add(Arrays.asList(Lang.KEYBOARD_RATE, Lang.KEYBOARD_ABOUT));
 
         return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, false, false));
     }
 
-    public static SendableTextMessage.SendableTextMessageBuilder createLobbyOptionsMenu() {
+    public static SendableTextMessage.SendableTextMessageBuilder createLobbyOptionsMenu(boolean isLocked) {
         List<List<String>> buttonList = new ArrayList<>();
 
-        buttonList.add(Collections.singletonList(TelegramEmoji.PADLOCK.getText() + " Lock/Unlock lobby"));
-        buttonList.add(Collections.singletonList(TelegramEmoji.PENCIL.getText() + " Rename lobby"));
-        buttonList.add(Collections.singletonList(TelegramEmoji.BACK.getText() + " Back to menu"));
+        if (isLocked) {
+            buttonList.add(Collections.singletonList(Lang.KEYBOARD_LOBBY_UNLOCK));
+        } else {
+            buttonList.add(Collections.singletonList(Lang.KEYBOARD_LOBBY_LOCK));
+        }
+
+        buttonList.add(Collections.singletonList(Lang.KEYBOARD_RENAME));
+        buttonList.add(Collections.singletonList(Lang.KEYBOARD_RETURN_MENU));
 
         return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, false, false));
     }
@@ -111,7 +138,7 @@ public class KeyboardHandler {
             index++;
         }
 
-        buttonList.add(Collections.singletonList(TelegramEmoji.RED_CROSS.getText() + " Quit matchmaking"));
+        buttonList.add(Collections.singletonList(Lang.KEYBOARD_QUIT_MATCHMAKING));
 
         return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, false, false));
     }

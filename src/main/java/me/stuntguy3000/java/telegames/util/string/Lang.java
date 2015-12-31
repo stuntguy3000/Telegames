@@ -50,9 +50,12 @@ public class Lang {
     public static String GAME_BLACKJACK_PLAYER_STAND = "*%s chooses to Stand.*";
     public static String GAME_BLACKJACK_STAND = "Stand";
     public static String GAME_BLACKJACK_STARTING_ROUND = "*Starting round %d/%d\nDealer: %s*";
+    public static String GAME_CAH_ACTIVECARDS = TelegramEmoji.JOKER_CARD.getText() + " *The decks have been chosen!\n\nDecks: %s*";
     public static String GAME_CAH_ALLPLAYED = TelegramEmoji.FINGER.getText() + " *The czar is choosing a winner.*";
     public static String GAME_CAH_ALLPLAYED_CHOOSING = "*All users have played. A winner will be chosen shortly...*\n\n%s";
     public static String GAME_CAH_ALLPLAYED_CZAR = TelegramEmoji.GREEN_BOX_TICK.getText() + " *All users have played.*\n*Please choose a winner!*";
+    public static String GAME_CAH_CHOOSE_EXTRAS = TelegramEmoji.PENCIL.getText() + " *Which expansion card packs would you like?\n\nClick done when you have made your selections.*";
+    public static String GAME_CAH_CHOOSE_VERSION = TelegramEmoji.PENCIL.getText() + " *Which card deck would you like?*";
     public static String GAME_CAH_COMMANDHELP = "CardsAgainstHumanity Command Menu:\n" +
             "+help - View the help menu\n" +
             "+cards - View your cards\n" +
@@ -65,6 +68,7 @@ public class Lang {
     public static String GAME_CAH_TIMENOTICE = TelegramEmoji.SAD_FACE.getText() + " *Not everybody has played!*";
     public static String GAME_CAH_TIMEWARNING = TelegramEmoji.ALERT.getText() + " *All players have 10 seconds to play all cards.*";
     public static String GAME_CAH_USERPLAY = TelegramEmoji.GREEN_BOX_TICK.getText() + " *%s has played.*";
+    public static String GAME_CAH_WAITING = TelegramEmoji.SAND_CLOCK.getText() + " *Please wait while the %s chooses the card decks...*";
     public static String GAME_CAH_WHITECARDS = "_Please play %s white cards._";
     public static String GAME_CAH_WIN_ROUND = "*% %s won the round!*";
     public static String GAME_CARDPICKUP = "Picked up cards: %s";
@@ -117,6 +121,23 @@ public class Lang {
     public static String GAME_UNO_ROUNDINFO = TelegramEmoji.BLUE_RIGHT_ARROW.getText() + " *Current Card:* %s\n" + TelegramEmoji.PERSON.getText() + " *Current Player:* %s";
     public static String GAME_UNO_SHUFFLING = "_Shuffling deck..._";
     public static String GAME_UNO_SKIP = "*%s has been skipped.";
+    public static String KEYBOARD_ABOUT = TelegramEmoji.BOOK.getText() + " About";
+    public static String KEYBOARD_CANCEL = TelegramEmoji.RED_CROSS.getText() + " Cancel";
+    public static String KEYBOARD_CREATE_LOBBY = TelegramEmoji.JOYSTICK.getText() + " Create a lobby";
+    public static String KEYBOARD_DONE = TelegramEmoji.GREEN_BOX_TICK.getText() + " Done";
+    public static String KEYBOARD_JOIN_LOBBY = TelegramEmoji.PERSON.getText() + " Join a lobby";
+    public static String KEYBOARD_JOIN_MATCHMAKING = TelegramEmoji.BLUE_RIGHT_ARROW.getText() + " Enter matchmaking";
+    public static String KEYBOARD_LEAVE_LOBBY = TelegramEmoji.END.getText() + " Leave the lobby";
+    public static String KEYBOARD_LOBBY_LOCK = TelegramEmoji.PADLOCK_LOCKED.getText() + " Lock lobby";
+    public static String KEYBOARD_LOBBY_OPTIONS = TelegramEmoji.METAL_GEAR.getText() + " Lobby options";
+    public static String KEYBOARD_LOBBY_UNLOCK = TelegramEmoji.PADLOCK_UNLOCKED.getText() + " Unlock lobby";
+    public static String KEYBOARD_PLAY = TelegramEmoji.JOYSTICK.getText() + " Play a game";
+    public static String KEYBOARD_QUIT_MATCHMAKING = TelegramEmoji.RED_CROSS.getText() + " Quit matchmaking";
+    public static String KEYBOARD_RANDOM = TelegramEmoji.QUESTION_MARK.getText() + " Random";
+    public static String KEYBOARD_RATE = TelegramEmoji.STAR.getText() + " Rate this bot";
+    public static String KEYBOARD_RENAME = TelegramEmoji.PENCIL.getText() + " Rename lobby";
+    public static String KEYBOARD_REPLAY = TelegramEmoji.REPLAY.getText() + " Replay previous game";
+    public static String KEYBOARD_RETURN_MENU = TelegramEmoji.BACK.getText() + " Back to menu";
     public static String MISC_HEADER_BOTFATHER = "*Lobby Message:*";
     public static String MISC_HEADER_LOBBYLIST = "*Lobby List:*";
 }

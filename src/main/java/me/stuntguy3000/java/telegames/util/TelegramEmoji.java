@@ -43,10 +43,14 @@ public enum TelegramEmoji {
     SPACE_INVADER("\uD83D\uDC7E"),
     REPLAY("\uD83D\uDD04"),
     METAL_GEAR("⚙"),
-    PADLOCK("\uD83D\uDD12"),
+    PADLOCK_UNLOCKED("\uD83D\uDD13"),
+    PADLOCK_LOCKED("\uD83D\uDD12"),
     PENCIL("✏️"),
     ALERT("❗️"),
-    FINGER("\uD83D\uDC49\uD83C\uDFFB");
+    FINGER("\uD83D\uDC49\uD83C\uDFFB"),
+    SAND_CLOCK("⌛️"),
+    QUESTION_MARK("❓"),
+    JOKER_CARD("\uD83C\uDCCF");
 
     @Getter
     String text;
