@@ -93,7 +93,7 @@ public class LobbyHandler {
      * @return Lobby the associated Lobby
      */
     public Lobby getLobby(String lobbyID) {
-        if (lobbyID != null) {
+        if (lobbyID != null && lobbyID != null) {
             for (Lobby lobby : activeLobbies.values()) {
                 if (lobby.getLobbyID().equalsIgnoreCase(lobbyID) || (lobby.getCustomName() != null && lobby.getCustomName().equalsIgnoreCase(lobbyID))) {
                     return lobby;
