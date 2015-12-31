@@ -375,6 +375,8 @@ public class CardsAgainstHumanity extends Game {
 
                                 TelegramBot.getChat(telegramUser.getUserID()).sendMessage(KeyboardHandler.createCAHExtrasKeyboard(extrasPacks).message(Lang.GAME_CAH_CHOOSE_EXTRAS).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                             }
+
+                            return;
                         }
                     } else {
                         if (message.startsWith(Lang.KEYBOARD_DONE)) {
@@ -393,8 +395,8 @@ public class CardsAgainstHumanity extends Game {
                             }
 
                             chosenDecks.add(basePack);
-
                             startGame();
+                            return;
                         } else {
                             if (message.contains("Extra ")) {
                                 try {
@@ -413,6 +415,7 @@ public class CardsAgainstHumanity extends Game {
                                 } catch (Exception ignore) {
 
                                 }
+                                return;
                             }
                         }
                     }
