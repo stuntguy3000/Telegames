@@ -2,6 +2,8 @@ package me.stuntguy3000.java.telegames.util.string;
 
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.util.TelegramEmoji;
+import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
+import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 
 // @author Luke Anderson | stuntguy3000
 public class Lang {
@@ -147,7 +149,13 @@ public class Lang {
             "To begin matchmaking, simply click on a game's name in the menu below to toggle if " +
             "you want to include that game in the matchmaking search. All games are disabled by default.\n\n" +
             "*Players in matchmaking queue: %d*";
+    public static String MATCHMAKING_STARTING = TelegramEmoji.SAND_CLOCK.getText() + " *The game is starting in %s second(s).*";
+    public static String MATCHMAKING_STARTING_NOW = TelegramEmoji.STAR.getText() + " *The game is starting!*";
     public static String MISC_HEADER_BOTFATHER = "*Lobby Message:*";
     public static String MISC_HEADER_LOBBYLIST = "*Lobby List:*";
+
+    public static SendableTextMessage.SendableTextMessageBuilder build(String text, String... variables) {
+        return SendableTextMessage.builder().message(String.format(text, variables)).parseMode(ParseMode.MARKDOWN);
+    }
 }
     

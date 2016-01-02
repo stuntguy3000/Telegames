@@ -6,6 +6,7 @@ import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.lobby.Lobby;
 import me.stuntguy3000.java.telegames.object.timer.LobbyExpirationTimer;
 import me.stuntguy3000.java.telegames.util.RandomString;
+import me.stuntguy3000.java.telegames.util.botan.Botan;
 import me.stuntguy3000.java.telegames.util.string.StringUtil;
 import org.apache.commons.io.FileUtils;
 import pro.zackpollard.telegrambot.api.TelegramBot;
@@ -118,6 +119,8 @@ public class Telegames {
         } else {
             LogHandler.log("** Update Announcer is not running **");
         }
+
+        Botan.addData();
 
         /**
          * Start various timers and threads

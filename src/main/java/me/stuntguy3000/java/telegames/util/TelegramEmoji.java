@@ -66,7 +66,7 @@ public enum TelegramEmoji {
                 return telegramEmoji;
             }
         }
-        
+
         return null;
     }
 

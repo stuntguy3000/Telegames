@@ -7,8 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by amir on 2015-11-25.
- * Modified by stuntguy3000 :D
+ * Created by amir on 2015-11-25. Modified by stuntguy3000 :D
  */
 public class CommandHandler {
     public HashMap<String[], Command> commands = new HashMap<>();

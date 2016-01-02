@@ -3,8 +3,7 @@ package me.stuntguy3000.java.telegames.handler;
 import me.stuntguy3000.java.telegames.Telegames;
 
 /**
- * Created by amir on 2015-11-25.
- * Modified by stuntguy3000.
+ * Created by amir on 2015-11-25. Modified by stuntguy3000.
  */
 public class LogHandler {
 

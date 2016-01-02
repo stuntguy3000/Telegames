@@ -261,6 +261,7 @@ public class Uno extends Game {
         for (int i = getActivePlayers().size() - 1; i >= 0; --i) {
             TelegramUser telegramUser = getActivePlayers().get(i);
             wholeMessage.append(String.format(Lang.GAME_SCORE, playerPos++, StringUtil.markdownSafe(telegramUser.getUsername()), telegramUser.getGameScore()));
+            wholeMessage.append("\n");
         }
         getGameLobby().sendMessage(SendableTextMessage.builder().message(wholeMessage.toString()).parseMode(ParseMode.MARKDOWN).build());
     }

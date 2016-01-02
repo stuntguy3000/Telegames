@@ -10,6 +10,8 @@ public class BotSettings {
     @Getter
     private Boolean autoUpdater;
     @Getter
+    private String botanKey;
+    @Getter
     private Boolean devMode;
     @Getter
     private List<Integer> telegramAdmins;
@@ -18,6 +20,7 @@ public class BotSettings {
 
     public BotSettings() {
         this.telegramKey = "";
+        this.botanKey = "";
         this.telegramAdmins = new ArrayList<>();
         this.autoUpdater = true;
         this.devMode = false;
