@@ -636,6 +636,8 @@ public class CardsAgainstHumanity extends Game {
                 } catch (Exception ignored) {
                 }
                 return true;
+            } else {
+                return false;
             }
         }
 
@@ -698,34 +700,38 @@ public class CardsAgainstHumanity extends Game {
     }
 
     boolean tryCzar(int number) {
-        TelegramUser winner = null;
-        for (CzarOption czarOption : czarOptions) {
-            if (czarOption.getOptionNumber() == number) {
-                winner = czarOption.getOwner();
-            }
-        }
-
-        if (winner != null) {
-            getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_CAH_WIN_ROUND, Emoji.getNumberBlock(number).getText(), StringUtil.markdownSafe(winner.getUsername()))).parseMode(ParseMode.MARKDOWN).build());
-            winner.setGameScore(winner.getGameScore() + 1);
-
-            TelegramUser gameWinner = null;
-            for (TelegramUser telegramUser : getActivePlayers()) {
-                if (telegramUser.getGameScore() >= 10) {
-                    gameWinner = telegramUser;
+        if (czarChoosing) {
+            TelegramUser winner = null;
+            for (CzarOption czarOption : czarOptions) {
+                if (czarOption.getOptionNumber() == number) {
+                    winner = czarOption.getOwner();
+                    czarChoosing = false;
+                    break;
                 }
             }
 
-            if (gameWinner != null) {
-                continueGame = false;
-                getGameLobby().stopGame();
-            } else {
-                new CAHRoundDelay(this);
+            if (winner != null) {
+                getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_CAH_WIN_ROUND, Emoji.getNumberBlock(number).getText(), StringUtil.markdownSafe(winner.getUsername()))).parseMode(ParseMode.MARKDOWN).build());
+                winner.setGameScore(winner.getGameScore() + 1);
+
+                TelegramUser gameWinner = null;
+                for (TelegramUser telegramUser : getActivePlayers()) {
+                    if (telegramUser.getGameScore() >= 10) {
+                        gameWinner = telegramUser;
+                    }
+                }
+
+                if (gameWinner != null) {
+                    continueGame = false;
+                    getGameLobby().stopGame();
+                } else {
+                    new CAHRoundDelay(this);
+                }
+                return true;
             }
-            return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 }
 
