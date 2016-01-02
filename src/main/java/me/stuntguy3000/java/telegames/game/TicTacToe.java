@@ -4,7 +4,7 @@ import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.game.GameState;
 import me.stuntguy3000.java.telegames.object.user.TelegramUser;
-import me.stuntguy3000.java.telegames.util.TelegramEmoji;
+import me.stuntguy3000.java.telegames.util.string.Emoji;
 import me.stuntguy3000.java.telegames.util.string.Lang;
 import me.stuntguy3000.java.telegames.util.string.StringUtil;
 import pro.zackpollard.telegrambot.api.TelegramBot;
@@ -22,11 +22,11 @@ import java.util.List;
 
 // @author Luke Anderson | stuntguy3000
 public class TicTacToe extends Game {
-    private TelegramEmoji[][] board = new TelegramEmoji[3][3];
+    private Emoji[][] board = new Emoji[3][3];
     private TelegramUser cross;
     private TelegramUser currentPlayer;
     private TelegramUser naught;
-    private List<TelegramEmoji> numbers = new ArrayList<>();
+    private List<Emoji> numbers = new ArrayList<>();
     private TelegramUser winner;
 
     public TicTacToe() {
@@ -60,7 +60,7 @@ public class TicTacToe extends Game {
     }
 
     // Check to see if all three values are the same (and not empty) indicating a win.
-    private boolean checkRowCol(TelegramEmoji c1, TelegramEmoji c2, TelegramEmoji c3) {
+    private boolean checkRowCol(Emoji c1, Emoji c2, Emoji c3) {
         return (!numbers.contains(c1) && (c1 == c2) && (c2 == c3));
     }
 
@@ -124,14 +124,14 @@ public class TicTacToe extends Game {
             String message = event.getContent().getContent();
             TelegramUser telegramUser = getGameLobby().getTelegramUser(sender.getUsername());
 
-            TelegramEmoji emoji = TelegramEmoji.getMatch(message);
+            Emoji emoji = Emoji.getMatch(message);
 
             if (emoji != null) {
                 if (currentPlayer.getUserID() == telegramUser.getUserID()) {
                     playTurn(currentPlayer, emoji);
                     return;
                 } else {
-                    if (TelegramEmoji.getNumber(emoji) > -1) {
+                    if (Emoji.getNumber(emoji) > -1) {
                         return;
                     }
                 }
@@ -145,25 +145,25 @@ public class TicTacToe extends Game {
     public void startGame() {
         setGameState(GameState.INGAME);
 
-        numbers.add(TelegramEmoji.NUMBER_BLOCK_ONE);
-        numbers.add(TelegramEmoji.NUMBER_BLOCK_TWO);
-        numbers.add(TelegramEmoji.NUMBER_BLOCK_THREE);
-        numbers.add(TelegramEmoji.NUMBER_BLOCK_FOUR);
-        numbers.add(TelegramEmoji.NUMBER_BLOCK_FIVE);
-        numbers.add(TelegramEmoji.NUMBER_BLOCK_SIX);
-        numbers.add(TelegramEmoji.NUMBER_BLOCK_SEVEN);
-        numbers.add(TelegramEmoji.NUMBER_BLOCK_EIGHT);
-        numbers.add(TelegramEmoji.NUMBER_BLOCK_NINE);
+        numbers.add(Emoji.NUMBER_BLOCK_ONE);
+        numbers.add(Emoji.NUMBER_BLOCK_TWO);
+        numbers.add(Emoji.NUMBER_BLOCK_THREE);
+        numbers.add(Emoji.NUMBER_BLOCK_FOUR);
+        numbers.add(Emoji.NUMBER_BLOCK_FIVE);
+        numbers.add(Emoji.NUMBER_BLOCK_SIX);
+        numbers.add(Emoji.NUMBER_BLOCK_SEVEN);
+        numbers.add(Emoji.NUMBER_BLOCK_EIGHT);
+        numbers.add(Emoji.NUMBER_BLOCK_NINE);
 
-        board[0][0] = TelegramEmoji.NUMBER_BLOCK_ONE;
-        board[0][1] = TelegramEmoji.NUMBER_BLOCK_TWO;
-        board[0][2] = TelegramEmoji.NUMBER_BLOCK_THREE;
-        board[1][0] = TelegramEmoji.NUMBER_BLOCK_FOUR;
-        board[1][1] = TelegramEmoji.NUMBER_BLOCK_FIVE;
-        board[1][2] = TelegramEmoji.NUMBER_BLOCK_SIX;
-        board[2][0] = TelegramEmoji.NUMBER_BLOCK_SEVEN;
-        board[2][1] = TelegramEmoji.NUMBER_BLOCK_EIGHT;
-        board[2][2] = TelegramEmoji.NUMBER_BLOCK_NINE;
+        board[0][0] = Emoji.NUMBER_BLOCK_ONE;
+        board[0][1] = Emoji.NUMBER_BLOCK_TWO;
+        board[0][2] = Emoji.NUMBER_BLOCK_THREE;
+        board[1][0] = Emoji.NUMBER_BLOCK_FOUR;
+        board[1][1] = Emoji.NUMBER_BLOCK_FIVE;
+        board[1][2] = Emoji.NUMBER_BLOCK_SIX;
+        board[2][0] = Emoji.NUMBER_BLOCK_SEVEN;
+        board[2][1] = Emoji.NUMBER_BLOCK_EIGHT;
+        board[2][2] = Emoji.NUMBER_BLOCK_NINE;
 
         Collections.shuffle(getActivePlayers());
 
@@ -186,9 +186,9 @@ public class TicTacToe extends Game {
         getGameLobby().sendMessage(createKeyboard().message(String.format(Lang.GAME_GENERAL_NEXT_TURN, StringUtil.markdownSafe(currentPlayer.getUsername()))).parseMode(ParseMode.MARKDOWN).build());
     }
 
-    private void playTurn(TelegramUser currentPlayer, TelegramEmoji emoji) {
+    private void playTurn(TelegramUser currentPlayer, Emoji emoji) {
         if (emoji != null) {
-            TelegramEmoji character = (currentPlayer.getUserID() == naught.getUserID() ? TelegramEmoji.RED_CIRCLE : TelegramEmoji.RED_CROSS);
+            Emoji character = (currentPlayer.getUserID() == naught.getUserID() ? Emoji.RED_CIRCLE : Emoji.RED_CROSS);
 
             switch (emoji) {
                 case NUMBER_BLOCK_ONE: {

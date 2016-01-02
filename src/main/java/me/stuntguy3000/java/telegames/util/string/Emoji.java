@@ -1,8 +1,8 @@
-package me.stuntguy3000.java.telegames.util;
+package me.stuntguy3000.java.telegames.util.string;
 
 import lombok.Getter;
 
-public enum TelegramEmoji {
+public enum Emoji {
     BACK("\uD83D\uDD19"),
     NUMBER_BLOCK_ZERO("0⃣"),
     NUMBER_BLOCK_ONE("1⃣"),
@@ -56,22 +56,22 @@ public enum TelegramEmoji {
     @Getter
     String text;
 
-    TelegramEmoji(String text) {
+    Emoji(String text) {
         this.text = text;
     }
 
-    public static TelegramEmoji fromString(String message) {
-        for (TelegramEmoji telegramEmoji : TelegramEmoji.values()) {
-            if (message.equals(telegramEmoji.getText())) {
-                return telegramEmoji;
+    public static Emoji fromString(String message) {
+        for (Emoji emoji : Emoji.values()) {
+            if (message.equals(emoji.getText())) {
+                return emoji;
             }
         }
 
         return null;
     }
 
-    public static TelegramEmoji getMatch(String message) {
-        for (TelegramEmoji emoji : TelegramEmoji.values()) {
+    public static Emoji getMatch(String message) {
+        for (Emoji emoji : Emoji.values()) {
             if (emoji.getText().equals(message)) {
                 return emoji;
             }
@@ -80,8 +80,8 @@ public enum TelegramEmoji {
         return null;
     }
 
-    public static int getNumber(TelegramEmoji telegramEmoji) {
-        switch (telegramEmoji) {
+    public static int getNumber(Emoji emoji) {
+        switch (emoji) {
             default: {
                 return -1;
             }
@@ -108,7 +108,7 @@ public enum TelegramEmoji {
         }
     }
 
-    public static TelegramEmoji getNumberBlock(int index) {
+    public static Emoji getNumberBlock(int index) {
         switch (index) {
             default: {
                 return null;

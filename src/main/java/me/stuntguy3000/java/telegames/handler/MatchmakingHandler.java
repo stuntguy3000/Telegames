@@ -3,6 +3,7 @@ package me.stuntguy3000.java.telegames.handler;
 import lombok.Getter;
 import lombok.Setter;
 import me.stuntguy3000.java.telegames.Telegames;
+import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.game.matchmaking.MatchmakingGame;
 import me.stuntguy3000.java.telegames.object.user.TelegramUser;
 import pro.zackpollard.telegrambot.api.user.User;
@@ -10,6 +11,7 @@ import pro.zackpollard.telegrambot.api.user.User;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 // @author Luke Anderson | stuntguy3000
 public class MatchmakingHandler {
@@ -17,12 +19,12 @@ public class MatchmakingHandler {
     @Getter
     private HashMap<MatchmakingUser, List<String>> matchmakingQueue = new HashMap<>();
     @Getter
-    private HashMap<String, MatchmakingGame> startingGames = new HashMap<>();
+    private List<MatchmakingGame> startingGames = new ArrayList<>();
     private Thread thread;
 
     public MatchmakingHandler() {
         this.instance = Telegames.getInstance();
-        thread = new Thread(new MatchmakingTask(instance));
+        thread = new Thread(new MatchmakingTask());
     }
 
     /**
@@ -129,63 +131,60 @@ public class MatchmakingHandler {
     public void runMatchmaking() {
         thread.run();
     }
-}
 
-class MatchmakingTask implements Runnable {
-    private final Telegames instance;
+    class MatchmakingTask implements Runnable {
 
-    public MatchmakingTask(Telegames instance) {
-        this.instance = instance;
-    }
+        private void checkUsers(Game game) {
+            /*
+		if any games are starting
+			if player can join
+				add player
+				return
 
-    @Override
-    public void run() {
-        if (instance == null) {
-            LogHandler.debug("Instance is null for MatchmakingHandler");
+		while playercount above min
+		create new game lobby
+				if lobby is not full
+					add player to lobby
+				else
+					#createGameLobby
+             */
+
+            for (MatchmakingGame matchmakingGame : startingGames) {
+                if (matchmakingGame.getGame().getGameName().equals(game.getGameName())) {
+                    if (matchmakingGame.isHasStarted() && matchmakingGame.getGameUsers().size() < game.getMaxPlayers()) {
+                        //matchmakingGame.addPlayer();
+                    }
+                }
+            }
         }
 
-        /**
-         // Loop through all players and their selections
-         for (MatchmakingUser matchmakingUser : instance.getMatchmakingHandler().getMatchmakingQueue().keySet()) {
-         LogHandler.debug("Scanning user " + matchmakingUser.getUsername());
-         for (String game : matchmakingUser.getGames()) {
-         LogHandler.debug("Checking game " + matchmakingUser.getUsername());
-         Game userGame = instance.getGameHandler().getGame(game);
-         String correctGameName = userGame.getGameName();
+        @Override
+        public void run() {
+            if (instance == null) {
+                LogHandler.debug("Instance is null for MatchmakingHandler");
+            }
 
-         if (userGame != null) {
-         String existingLobbyID = instance.getMatchmakingHandler().getGamesStarting().get(correctGameName);
-         if (existingLobbyID != null) {
-         Lobby lobby = instance.getLobbyHandler().getLobby(existingLobbyID);
+            HashMap<Game, List<TelegramUser>> gameCounts = new HashMap<>();
 
-         if (lobby != null && lobby.getCurrentGame() == null) {
-         LogHandler.debug("Adding user to " + lobby.getLobbyID());
-         try {
-         lobby.userJoin(matchmakingUser.getUser());
-         LogHandler.debug("Added user to " + lobby.getLobbyID());
-         break;
-         } catch (LobbyLockedException | UserBannedException | LobbyFullException ignore) {
-         LogHandler.debug("Failed adding user to " + lobby.getLobbyID());
-         instance.getMatchmakingHandler().getGamesStarting().remove(correctGameName);
-         }
-         } else {
-         instance.getMatchmakingHandler().getGamesStarting().remove(correctGameName);
-         }
-         }
+            // Count the users
+            for (List<String> games : getMatchmakingQueue().values()) {
+                for (String gameName : games) {
+                    Game game = instance.getGameHandler().getGame(gameName);
 
-         try {
-         Lobby matchmakingLobby = instance.getLobbyHandler().createMatchmakingLobby(userGame);
-         matchmakingLobby.userJoin(matchmakingUser.getUser());
-         instance.getMatchmakingHandler().addGameStarting(matchmakingLobby, userGame);
-         LogHandler.debug("Creating new lobby, adding user to " + matchmakingLobby.getLobbyID());
-         } catch (LobbyLockedException | UserBannedException | LobbyFullException ignore) {
+                    if (game != null) {
+                        if (!gameCounts.containsKey(game)) {
+                            //gameCounts.put(game, 1);
+                        } else {
+                            //gameCounts.put(game, gameCounts.get(game) + 1);
+                        }
+                    }
+                }
+            }
 
-         }
-         }
-         }
-         }*/
-
-
+            for (Map.Entry<MatchmakingUser, List<String>> game :  getMatchmakingQueue().entrySet()) {
+                //checkUsers(game);
+            }
+        }
     }
 }
 

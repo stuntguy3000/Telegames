@@ -2,7 +2,7 @@ package me.stuntguy3000.java.telegames.command;
 
 import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.object.command.Command;
-import me.stuntguy3000.java.telegames.util.TelegramEmoji;
+import me.stuntguy3000.java.telegames.util.string.Emoji;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
@@ -23,6 +23,6 @@ public class GameListCommand extends Command {
             restricted = true;
         }
 
-        respond(chat, SendableTextMessage.builder().message(TelegramEmoji.BOOK.getText() + " " + getInstance().getGameHandler().getGameList(restricted)).parseMode(ParseMode.MARKDOWN).build());
+        respond(chat, SendableTextMessage.builder().message(Emoji.BOOK.getText() + " " + getInstance().getGameHandler().getGameList(restricted)).parseMode(ParseMode.MARKDOWN).build());
     }
 }

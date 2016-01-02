@@ -2,7 +2,7 @@ package me.stuntguy3000.java.telegames.command;
 
 import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.object.command.Command;
-import me.stuntguy3000.java.telegames.util.TelegramEmoji;
+import me.stuntguy3000.java.telegames.util.string.Emoji;
 import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
@@ -17,7 +17,7 @@ public class VersionCommand extends Command {
     public void processCommand(CommandMessageReceivedEvent event) {
         Chat chat = event.getChat();
 
-        respond(chat, SendableTextMessage.builder().message(TelegramEmoji.GHOST.getText() + " *Telegames" + (Telegames.DEV_MODE ? " Dev Mode " : " ") + "by* @stuntguy3000\n" +
+        respond(chat, SendableTextMessage.builder().message(Emoji.GHOST.getText() + " *Telegames" + (Telegames.DEV_MODE ? " Dev Mode " : " ") + "by* @stuntguy3000\n" +
                 "*Current version:* " + Telegames.BUILD + "\n\n" +
                 "Source [Available on GitHub](https://github.com/stuntguy3000/telegames)\n" +
                 "Created using @zackpollard's [JavaTelegramBotAPI](https://github.com/zackpollard/JavaTelegramBot-API)\n\n" +

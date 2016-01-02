@@ -7,7 +7,7 @@ import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.game.GameState;
 import me.stuntguy3000.java.telegames.object.user.TelegramUser;
-import me.stuntguy3000.java.telegames.util.TelegramEmoji;
+import me.stuntguy3000.java.telegames.util.string.Emoji;
 import me.stuntguy3000.java.telegames.util.string.Lang;
 import me.stuntguy3000.java.telegames.util.string.StringUtil;
 import pro.zackpollard.telegrambot.api.TelegramBot;
@@ -217,7 +217,7 @@ public class CardsAgainstHumanity extends Game {
                 int index = 1;
                 for (CzarOption czarOption : czarOptions) {
                     czarOption.setOptionNumber(index);
-                    options.append(TelegramEmoji.getNumberBlock(index).getText());
+                    options.append(Emoji.getNumberBlock(index).getText());
                     options.append(" ");
                     options.append(czarOption.getText());
                     index++;
@@ -261,7 +261,7 @@ public class CardsAgainstHumanity extends Game {
                 row.clear();
             }
 
-            row.add(TelegramEmoji.getNumberBlock(index).getText());
+            row.add(Emoji.getNumberBlock(index).getText());
             index++;
         }
 
@@ -406,9 +406,9 @@ public class CardsAgainstHumanity extends Game {
                                     int packNumber = Integer.parseInt(split[1]);
 
                                     if (packNumber > 0 && packNumber < 6) {
-                                        if (message.startsWith(TelegramEmoji.BLUE_CIRCLE.getText())) {
+                                        if (message.startsWith(Emoji.BLUE_CIRCLE.getText())) {
                                             extrasPacks.put("Extra " + packNumber, false);
-                                        } else if (message.startsWith(TelegramEmoji.RED_CIRCLE.getText())) {
+                                        } else if (message.startsWith(Emoji.RED_CIRCLE.getText())) {
                                             extrasPacks.put("Extra " + packNumber, true);
                                         }
 
@@ -604,12 +604,12 @@ public class CardsAgainstHumanity extends Game {
             for (TelegramUser telegramUser : getGameLobby().getTelegramUsers()) {
                 if (isPlaying(telegramUser)) {
                     if (cardCzar != null && cardCzar.getUserID() == telegramUser.getUserID()) {
-                        TelegramBot.getChat(telegramUser.getUserID()).sendMessage(SendableTextMessage.builder().message(TelegramEmoji.BLUE_RIGHT_ARROW.getText() + " " + currentBlackCard.getText()).build(), TelegramHook.getBot());
+                        TelegramBot.getChat(telegramUser.getUserID()).sendMessage(SendableTextMessage.builder().message(Emoji.BLUE_RIGHT_ARROW.getText() + " " + currentBlackCard.getText()).build(), TelegramHook.getBot());
                         continue;
                     }
-                    TelegramBot.getChat(telegramUser.getUserID()).sendMessage(createUserKeyboard(telegramUser).message(TelegramEmoji.BLUE_RIGHT_ARROW.getText() + " " + currentBlackCard.getText()).build(), TelegramHook.getBot());
+                    TelegramBot.getChat(telegramUser.getUserID()).sendMessage(createUserKeyboard(telegramUser).message(Emoji.BLUE_RIGHT_ARROW.getText() + " " + currentBlackCard.getText()).build(), TelegramHook.getBot());
                 } else {
-                    TelegramBot.getChat(telegramUser.getUserID()).sendMessage(SendableTextMessage.builder().message(TelegramEmoji.BLUE_RIGHT_ARROW.getText() + " " + currentBlackCard.getText()).build(), TelegramHook.getBot());
+                    TelegramBot.getChat(telegramUser.getUserID()).sendMessage(SendableTextMessage.builder().message(Emoji.BLUE_RIGHT_ARROW.getText() + " " + currentBlackCard.getText()).build(), TelegramHook.getBot());
                 }
             }
 
@@ -629,7 +629,7 @@ public class CardsAgainstHumanity extends Game {
         if (czarChoosing) {
             if (sender.getId() == cardCzar.getUserID()) {
                 try {
-                    int number = TelegramEmoji.getNumber(TelegramEmoji.fromString(message));
+                    int number = Emoji.getNumber(Emoji.fromString(message));
                     if (!tryCzar(number)) {
                         TelegramBot.getChat(sender.getId()).sendMessage(SendableTextMessage.builder().message(Lang.ERROR_INVALID_SELECTION).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                     }
@@ -706,7 +706,7 @@ public class CardsAgainstHumanity extends Game {
         }
 
         if (winner != null) {
-            getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_CAH_WIN_ROUND, TelegramEmoji.getNumberBlock(number).getText(), StringUtil.markdownSafe(winner.getUsername()))).parseMode(ParseMode.MARKDOWN).build());
+            getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_CAH_WIN_ROUND, Emoji.getNumberBlock(number).getText(), StringUtil.markdownSafe(winner.getUsername()))).parseMode(ParseMode.MARKDOWN).build());
             winner.setGameScore(winner.getGameScore() + 1);
 
             TelegramUser gameWinner = null;

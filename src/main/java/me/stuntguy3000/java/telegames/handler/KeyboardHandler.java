@@ -2,7 +2,7 @@ package me.stuntguy3000.java.telegames.handler;
 
 import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.object.game.Game;
-import me.stuntguy3000.java.telegames.util.TelegramEmoji;
+import me.stuntguy3000.java.telegames.util.string.Emoji;
 import me.stuntguy3000.java.telegames.util.string.Lang;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardMarkup;
@@ -16,7 +16,7 @@ public class KeyboardHandler {
         List<String> optionsRow = new ArrayList<>();
 
         for (Map.Entry<String, Boolean> extraPack : extrasPacks.entrySet()) {
-            optionsRow.add((extraPack.getValue() ? TelegramEmoji.BLUE_CIRCLE.getText() : TelegramEmoji.RED_CIRCLE.getText()) + " " + extraPack.getKey());
+            optionsRow.add((extraPack.getValue() ? Emoji.BLUE_CIRCLE.getText() : Emoji.RED_CIRCLE.getText()) + " " + extraPack.getKey());
         }
 
         buttonList.add(optionsRow);
@@ -61,7 +61,7 @@ public class KeyboardHandler {
                 row.clear();
             }
 
-            row.add(TelegramEmoji.BLUE_RIGHT_ARROW.getText() + " " + game.getGameName());
+            row.add(Emoji.BLUE_RIGHT_ARROW.getText() + " " + game.getGameName());
             index++;
         }
 
@@ -79,7 +79,7 @@ public class KeyboardHandler {
 
         buttonList.add(Collections.singletonList(Lang.KEYBOARD_CREATE_LOBBY));
         buttonList.add(Collections.singletonList(Lang.KEYBOARD_JOIN_LOBBY));
-        buttonList.add(Collections.singletonList(Lang.KEYBOARD_JOIN_MATCHMAKING));
+        //buttonList.add(Collections.singletonList(Lang.KEYBOARD_JOIN_MATCHMAKING));
 
         return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, false, false));
     }
@@ -134,7 +134,7 @@ public class KeyboardHandler {
                 row.clear();
             }
 
-            row.add((includedGames.contains(game.getGameName()) ? TelegramEmoji.BLUE_CIRCLE.getText() : TelegramEmoji.RED_CIRCLE.getText()) + " " + game.getGameName());
+            row.add((includedGames.contains(game.getGameName()) ? Emoji.BLUE_CIRCLE.getText() : Emoji.RED_CIRCLE.getText()) + " " + game.getGameName());
             index++;
         }
 

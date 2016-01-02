@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.stuntguy3000.java.telegames.Telegames;
+import me.stuntguy3000.java.telegames.handler.LogHandler;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpResponseException;
@@ -49,7 +50,8 @@ public final class Botan {
             try (CloseableHttpAsyncClient client = HttpAsyncClients.createDefault()) {
                 client.start();
                 Botan botan = new Botan(client, new ObjectMapper());
-                botan.track(Telegames.getInstance().getConfigHandler().getBotSettings().getBotanKey(), "telegamesbot", "/test", "Command").get();
+                botan.track(Telegames.getInstance().getConfigHandler().getBotSettings().getBotanKey(), "stuntguy3000", "/test", "Command").get();
+                LogHandler.log("Botan done");
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
@@ -69,7 +71,7 @@ public final class Botan {
             return future;
         }
 
-        final URIBuilder uriBuilder = new URIBuilder().setScheme("https").setHost("api.botan.io").setPath("/track").setParameters(new BasicNameValuePair("token", token), new BasicNameValuePair("uid", uid), new BasicNameValuePair("name", name));
+        final URIBuilder uriBuilder = new URIBuilder().setScheme("http").setHost("api.botan.io").setPath("/track").setParameters(new BasicNameValuePair("token", token), new BasicNameValuePair("uid", uid), new BasicNameValuePair("name", name));
         final URI uri;
         try {
             uri = uriBuilder.build();
@@ -95,6 +97,7 @@ public final class Botan {
                     final Map<String, String> map = mapper.readValue(entity, MAP_TYPE);
                     if (map != null && "accepted".equals(map.get("status"))) {
                         future.complete(null);
+                        LogHandler.log("Botan is accepted");
                     } else {
                         future.completeExceptionally(new BotanException("Unexpected response " + entity));
                     }

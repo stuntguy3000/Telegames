@@ -12,7 +12,7 @@ import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.lobby.Lobby;
 import me.stuntguy3000.java.telegames.object.user.TelegramUser;
 import me.stuntguy3000.java.telegames.util.ClassGetter;
-import me.stuntguy3000.java.telegames.util.TelegramEmoji;
+import me.stuntguy3000.java.telegames.util.string.Emoji;
 import me.stuntguy3000.java.telegames.util.string.Lang;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
@@ -139,7 +139,7 @@ public class TelegramHook implements Listener {
             MatchmakingHandler matchmakingHandler = getInstance().getMatchmakingHandler();
 
             if (!Telegames.DEV_MODE) {
-                event.getChat().sendMessage(TelegramEmoji.RED_CROSS.getText() + " Feature coming soon...", TelegramHook.getBot());
+                event.getChat().sendMessage(Emoji.RED_CROSS.getText() + " Feature coming soon...", TelegramHook.getBot());
                 return;
             }
 
@@ -164,12 +164,12 @@ public class TelegramHook implements Listener {
                     Game game = getInstance().getGameHandler().getGame(message.split(" ")[1]);
 
                     if (game != null) {
-                        if (message.startsWith(TelegramEmoji.RED_CIRCLE.getText())) {
+                        if (message.startsWith(Emoji.RED_CIRCLE.getText())) {
                             matchmakingHandler.addGame(telegramUser, game.getGameName());
-                            event.getChat().sendMessage(KeyboardHandler.createMatchmakingMenu(matchmakingHandler.getUserOptions(telegramUser)).message(TelegramEmoji.GREEN_BOX_TICK.getText() + " *Included " + game.getGameName() + "*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
-                        } else if (message.startsWith(TelegramEmoji.BLUE_CIRCLE.getText())) {
+                            event.getChat().sendMessage(KeyboardHandler.createMatchmakingMenu(matchmakingHandler.getUserOptions(telegramUser)).message(Emoji.GREEN_BOX_TICK.getText() + " *Included " + game.getGameName() + "*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                        } else if (message.startsWith(Emoji.BLUE_CIRCLE.getText())) {
                             matchmakingHandler.removeGame(telegramUser, game.getGameName());
-                            event.getChat().sendMessage(KeyboardHandler.createMatchmakingMenu(matchmakingHandler.getUserOptions(telegramUser)).message(TelegramEmoji.RED_CROSS.getText() + " *Removed " + game.getGameName() + "*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                            event.getChat().sendMessage(KeyboardHandler.createMatchmakingMenu(matchmakingHandler.getUserOptions(telegramUser)).message(Emoji.RED_CROSS.getText() + " *Removed " + game.getGameName() + "*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                         }
                     }
                 }

@@ -56,8 +56,5 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
-config.json
-stats.json
-!src/main/resources/config.json
+*.json
 build
-RedditLiveBot.new
