@@ -132,6 +132,7 @@ public class CardsAgainstHumanity extends Game {
     private CAHCardPack basePack;
     private List<CAHCard> blackCards = new ArrayList<>();
     private TelegramUser cardCzar;
+    private boolean choosingCards = false;
     private boolean choosingExtras = false;
     private boolean choosingVersion = false;
     private List<CAHCardPack> chosenDecks = new ArrayList<>();
@@ -326,6 +327,10 @@ public class CardsAgainstHumanity extends Game {
 
     @Override
     public void onTextMessageReceived(TextMessageReceivedEvent event) {
+        if (getGameState() == GameState.ENDED) {
+            return;
+        }
+
         if (event.getChat().getType() == ChatType.PRIVATE) {
             User sender = event.getMessage().getSender();
             String message = event.getContent().getContent();
@@ -622,10 +627,6 @@ public class CardsAgainstHumanity extends Game {
     }
 
     private boolean playCard(User sender, String message) {
-        if (choosingVersion || choosingExtras) {
-            return false;
-        }
-
         if (czarChoosing) {
             if (sender.getId() == cardCzar.getUserID()) {
                 try {
@@ -639,6 +640,10 @@ public class CardsAgainstHumanity extends Game {
             } else {
                 return false;
             }
+        }
+
+        if (choosingVersion || choosingExtras || getGameState() != GameState.CHOOSING) {
+            return false;
         }
 
         if (!robotCzar) {
