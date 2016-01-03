@@ -439,8 +439,10 @@ public class Lobby {
         int id = user.getUserID();
 
         for (TelegramUser telegramUser : new ArrayList<>(telegramUsers)) {
-            if (telegramUser.getUserID() == user.getUserID()) {
-                telegramUsers.remove(telegramUser);
+            if (telegramUser.getUserID() == id) {
+                if (!telegramUsers.remove(telegramUser)) {
+                    Telegames.getInstance().sendToAdmins("Unable to remove " + username + " from Lobby #" + getLobbyID());
+                }
             }
         }
 

@@ -118,7 +118,7 @@ public class TelegramHook implements Listener {
 
         if (lobby != null) {
             lobby.onTextMessageReceived(event);
-            LogHandler.log("(Chat) [#%s] %s: %s", lobby.getLobbyID(), user.getUsername(), event.getContent().getContent());
+            LogHandler.debug("(Chat) [#%s] %s: %s", lobby.getLobbyID(), user.getUsername(), event.getContent().getContent());
         } else if (message.equalsIgnoreCase(Lang.KEYBOARD_CANCEL)) {
             enteringlobby.remove(user.getUsername());
             event.getChat().sendMessage(KeyboardHandler.createLobbyCreationMenu().message(Lang.GENERAL_RETURNING_MENU).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
