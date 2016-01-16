@@ -18,7 +18,7 @@ import org.apache.http.impl.nio.client.HttpAsyncClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.nio.client.HttpAsyncClient;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONObject;
+import pro.zackpollard.telegrambot.api.user.User;
 
 import java.io.IOException;
 import java.net.URI;
@@ -46,14 +46,26 @@ public final class Botan {
         this.mapper = mapper;
     }
 
-    public static void addData(JSONObject message) {
+    public static void addCommand(User user, String arguments, String command) {
         try {
             try (CloseableHttpAsyncClient client = HttpAsyncClients.createDefault()) {
                 client.start();
-                LogHandler.debug(message.toString());
                 Botan botan = new Botan(client, new ObjectMapper());
-                botan.track(Telegames.getInstance().getConfigHandler().getBotSettings().getBotanKey(), "stuntguy3000", message.toString(), "/help").get();
-                LogHandler.log("Botan done");
+                botan.track(Telegames.getInstance().getConfigHandler().getBotSettings().getBotanKey(), user.getUsername(), arguments, "/" + command.toLowerCase()).get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void addMessage(User user, String message) {
+        try {
+            try (CloseableHttpAsyncClient client = HttpAsyncClients.createDefault()) {
+                client.start();
+                Botan botan = new Botan(client, new ObjectMapper());
+                botan.track(Telegames.getInstance().getConfigHandler().getBotSettings().getBotanKey(), user.getUsername(), message, "Message").get();
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }

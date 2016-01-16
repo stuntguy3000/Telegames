@@ -97,8 +97,7 @@ public class TelegramHook implements Listener {
         String command = event.getCommand();
 
         if (Telegames.DEV_MODE) {
-            LogHandler.debug("[ Sending Botan Data ]");
-            Botan.addData(event.getMessage().asJson());
+            Botan.addCommand(event.getMessage().getSender(), event.getCommand(), event.getArgsString());
         }
 
         instance.getCommandHandler().executeCommand(command, event);
@@ -121,6 +120,10 @@ public class TelegramHook implements Listener {
         TelegramUser telegramUser = new TelegramUser(user);
         String message = event.getContent().getContent();
         Lobby lobby = Telegames.getInstance().getLobbyHandler().getLobby(telegramUser);
+
+        if (Telegames.DEV_MODE) {
+            Botan.addMessage(event.getMessage().getSender(), message);
+        }
 
         if (lobby != null) {
             lobby.onTextMessageReceived(event);
