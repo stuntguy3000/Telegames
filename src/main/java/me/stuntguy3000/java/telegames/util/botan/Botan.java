@@ -50,6 +50,7 @@ public final class Botan {
         try {
             try (CloseableHttpAsyncClient client = HttpAsyncClients.createDefault()) {
                 client.start();
+                LogHandler.debug(message.toString());
                 Botan botan = new Botan(client, new ObjectMapper());
                 botan.track(Telegames.getInstance().getConfigHandler().getBotSettings().getBotanKey(), "stuntguy3000", message, "EventName").get();
                 LogHandler.log("Botan done");
