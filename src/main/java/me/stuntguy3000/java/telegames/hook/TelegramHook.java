@@ -97,7 +97,7 @@ public class TelegramHook implements Listener {
         String command = event.getCommand();
 
         if (Telegames.DEV_MODE) {
-            Botan.addCommand(event.getMessage().getSender(), event.getCommand(), event.getArgsString());
+            Botan.addCommand(event.getMessage().getSender(), event.getArgsString(), event.getCommand());
         }
 
         instance.getCommandHandler().executeCommand(command, event);

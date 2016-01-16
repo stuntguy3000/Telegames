@@ -23,6 +23,7 @@ import pro.zackpollard.telegrambot.api.user.User;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -50,8 +51,12 @@ public final class Botan {
         try {
             try (CloseableHttpAsyncClient client = HttpAsyncClients.createDefault()) {
                 client.start();
+
+                HashMap<String, String> data = new HashMap<>();
+                data.put("Arguments", arguments);
+
                 Botan botan = new Botan(client, new ObjectMapper());
-                botan.track(Telegames.getInstance().getConfigHandler().getBotSettings().getBotanKey(), user.getUsername(), arguments, "/" + command.toLowerCase()).get();
+                botan.track(Telegames.getInstance().getConfigHandler().getBotSettings().getBotanKey(), user.getUsername(), data, "/" + command.toLowerCase()).get();
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
@@ -64,8 +69,12 @@ public final class Botan {
         try {
             try (CloseableHttpAsyncClient client = HttpAsyncClients.createDefault()) {
                 client.start();
+
+                HashMap<String, String> data = new HashMap<>();
+                data.put("Text", message);
+
                 Botan botan = new Botan(client, new ObjectMapper());
-                botan.track(Telegames.getInstance().getConfigHandler().getBotSettings().getBotanKey(), user.getUsername(), message, "Message").get();
+                botan.track(Telegames.getInstance().getConfigHandler().getBotSettings().getBotanKey(), user.getUsername(), data, "Message").get();
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
