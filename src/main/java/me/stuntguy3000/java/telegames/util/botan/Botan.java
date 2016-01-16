@@ -79,7 +79,7 @@ public final class Botan {
             return future;
         }
 
-        final URIBuilder uriBuilder = new URIBuilder().setScheme("http").setHost("api.botan.io").setPath("/track").setParameters(new BasicNameValuePair("token", token), new BasicNameValuePair("uid", uid), new BasicNameValuePair("name", name));
+        final URIBuilder uriBuilder = new URIBuilder().setScheme("https").setHost("api.botan.io").setPath("/track").setParameters(new BasicNameValuePair("token", token), new BasicNameValuePair("uid", uid), new BasicNameValuePair("name", name));
         final URI uri;
         try {
             uri = uriBuilder.build();
