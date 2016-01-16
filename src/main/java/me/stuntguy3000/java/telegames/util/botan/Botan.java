@@ -53,7 +53,7 @@ public final class Botan {
                 client.start();
 
                 HashMap<String, String> data = new HashMap<>();
-                data.put("Arguments", arguments);
+                data.put("1Arguments", arguments);
 
                 Botan botan = new Botan(client, new ObjectMapper());
                 botan.track(Telegames.getInstance().getConfigHandler().getBotSettings().getBotanKey(), user.getUsername(), data, "/" + command.toLowerCase()).get();
@@ -71,7 +71,7 @@ public final class Botan {
                 client.start();
 
                 HashMap<String, String> data = new HashMap<>();
-                data.put("Text", message);
+                data.put("1Text", message);
 
                 Botan botan = new Botan(client, new ObjectMapper());
                 botan.track(Telegames.getInstance().getConfigHandler().getBotSettings().getBotanKey(), user.getUsername(), data, "Message").get();
