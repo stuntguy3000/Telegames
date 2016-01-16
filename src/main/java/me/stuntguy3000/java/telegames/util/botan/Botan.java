@@ -52,7 +52,7 @@ public final class Botan {
                 client.start();
                 LogHandler.debug(message.toString());
                 Botan botan = new Botan(client, new ObjectMapper());
-                botan.track(Telegames.getInstance().getConfigHandler().getBotSettings().getBotanKey(), "stuntguy3000", message, "EventName").get();
+                botan.track(Telegames.getInstance().getConfigHandler().getBotSettings().getBotanKey(), "stuntguy3000", message.toString(), "EventName").get();
                 LogHandler.log("Botan done");
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
