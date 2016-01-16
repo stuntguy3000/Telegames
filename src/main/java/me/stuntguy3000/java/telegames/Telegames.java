@@ -5,7 +5,6 @@ import me.stuntguy3000.java.telegames.handler.*;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.lobby.Lobby;
 import me.stuntguy3000.java.telegames.object.timer.LobbyExpirationTimer;
-import me.stuntguy3000.java.telegames.util.botan.Botan;
 import me.stuntguy3000.java.telegames.util.string.RandomString;
 import me.stuntguy3000.java.telegames.util.string.StringUtil;
 import org.apache.commons.io.FileUtils;
@@ -118,11 +117,6 @@ public class Telegames {
             updaterAnnouncerHandler.runUpdater();
         } else {
             LogHandler.log("** Update Announcer is not running **");
-        }
-
-        if (DEV_MODE) {
-            LogHandler.debug("[ Sending Botan Data ]");
-            Botan.addData();
         }
 
         /**

@@ -12,6 +12,7 @@ import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.lobby.Lobby;
 import me.stuntguy3000.java.telegames.object.user.TelegramUser;
 import me.stuntguy3000.java.telegames.util.ClassGetter;
+import me.stuntguy3000.java.telegames.util.botan.Botan;
 import me.stuntguy3000.java.telegames.util.string.Emoji;
 import me.stuntguy3000.java.telegames.util.string.Lang;
 import pro.zackpollard.telegrambot.api.TelegramBot;
@@ -94,6 +95,11 @@ public class TelegramHook implements Listener {
     @Override
     public void onCommandMessageReceived(CommandMessageReceivedEvent event) {
         String command = event.getCommand();
+
+        if (Telegames.DEV_MODE) {
+            LogHandler.debug("[ Sending Botan Data ]");
+            Botan.addData(event.getMessage().asJson());
+        }
 
         instance.getCommandHandler().executeCommand(command, event);
     }

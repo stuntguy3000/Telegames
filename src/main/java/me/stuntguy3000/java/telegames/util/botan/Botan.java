@@ -18,11 +18,11 @@ import org.apache.http.impl.nio.client.HttpAsyncClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.nio.client.HttpAsyncClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -46,19 +46,12 @@ public final class Botan {
         this.mapper = mapper;
     }
 
-    public static void addData() {
+    public static void addData(JSONObject message) {
         try {
             try (CloseableHttpAsyncClient client = HttpAsyncClients.createDefault()) {
                 client.start();
                 Botan botan = new Botan(client, new ObjectMapper());
-                HashMap<String, String> data = new HashMap<>();
-                data.put("d1", "v1");
-                data.put("d2", "v2");
-                data.put("d3", "v3");
-                data.put("d4", "v4");
-                data.put("d5", "v5");
-                data.put("d6", "v6");
-                botan.track(Telegames.getInstance().getConfigHandler().getBotSettings().getBotanKey(), "stuntguy3000", data, "EventName").get();
+                botan.track(Telegames.getInstance().getConfigHandler().getBotSettings().getBotanKey(), "stuntguy3000", message, "EventName").get();
                 LogHandler.log("Botan done");
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
