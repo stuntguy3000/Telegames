@@ -6,7 +6,7 @@ import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.exception.*;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.lobby.Lobby;
-import me.stuntguy3000.java.telegames.object.timer.GameSecondTimer;
+import me.stuntguy3000.java.telegames.object.timer.LobbySecondTimer;
 import me.stuntguy3000.java.telegames.object.user.TelegramUser;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
@@ -139,13 +139,13 @@ public class LobbyHandler {
     }
 
     /**
-     * Starts a GameSecondTimer instance
+     * Starts a LobbySecondTimer instance
      *
      * @param lobby Lobby the associated Lobby
      */
     public void startTimer(Lobby lobby) {
         if (!lobbyTimers.containsKey(lobby.getLobbyID().toLowerCase())) {
-            lobbyTimers.put(lobby.getLobbyID().toLowerCase(), new GameSecondTimer(lobby.getCurrentGame()));
+            lobbyTimers.put(lobby.getLobbyID().toLowerCase(), new LobbySecondTimer(lobby));
         }
     }
 

@@ -1,14 +1,14 @@
 package me.stuntguy3000.java.telegames.object.timer;
 
-import me.stuntguy3000.java.telegames.object.game.Game;
+import me.stuntguy3000.java.telegames.object.lobby.Lobby;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class GameSecondTimer extends TimerTask {
-    private Game instance;
+public class LobbySecondTimer extends TimerTask {
+    private Lobby instance;
 
-    public GameSecondTimer(Game instance) {
+    public LobbySecondTimer(Lobby instance) {
         this.instance = instance;
         new Timer().schedule(this, 0, 1000);
     }

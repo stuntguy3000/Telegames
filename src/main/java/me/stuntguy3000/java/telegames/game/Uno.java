@@ -1,6 +1,7 @@
 package me.stuntguy3000.java.telegames.game;
 
 import lombok.Getter;
+import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.hook.TelegramHook;
 import me.stuntguy3000.java.telegames.object.game.Game;
 import me.stuntguy3000.java.telegames.object.game.GameState;
@@ -294,6 +295,13 @@ public class Uno extends Game {
                 entireDeck.addAll(playedUnoCards.stream().collect(Collectors.toList()));
                 playedUnoCards.clear();
                 Collections.shuffle(entireDeck);
+
+                if (entireDeck.size() == 0) {
+                    Telegames.getInstance().sendToAdmins("Unable to refill UNO Deck!");
+                    getGameLobby().sendMessage("A technical issue has occurred. Apologies.");
+                    getGameLobby().stopGame();
+                    return;
+                }
             }
 
             givenUnoCards.add(entireDeck.remove(0));

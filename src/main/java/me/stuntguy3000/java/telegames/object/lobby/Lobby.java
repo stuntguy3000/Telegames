@@ -71,6 +71,8 @@ public class Lobby {
         kickList = new ArrayList<>();
         lastLobbyAction = System.currentTimeMillis();
         updateHeader();
+
+        Telegames.getInstance().getLobbyHandler().startTimer(this);
     }
 
     /**
@@ -162,6 +164,12 @@ public class Lobby {
             if (telegramUser.getUserID() != event.getMessage().getSender().getId()) {
                 telegramUser.getChat().sendMessage(SendablePhotoMessage.builder().photo(new InputFile(lastPhoto.getFileId())).caption("Image from " + event.getMessage().getSender().getUsername()).build(), TelegramHook.getBot());
             }
+        }
+    }
+
+    public void onSecond() {
+        if (currentGame != null) {
+            currentGame.onSecond();
         }
     }
 
@@ -318,7 +326,6 @@ public class Lobby {
             }
 
             currentGame = newGame;
-            Telegames.getInstance().getLobbyHandler().startTimer(this);
             Telegames.getInstance().getConfigHandler().getUserStatistics().addGame(newGame);
         } catch (InstantiationException | IllegalAccessException e) {
             LogHandler.error("InstantiationException or IllegalAccessException occurred!");

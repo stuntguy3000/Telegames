@@ -132,7 +132,6 @@ public class CardsAgainstHumanity extends Game {
     private CAHCardPack basePack;
     private List<CAHCard> blackCards = new ArrayList<>();
     private TelegramUser cardCzar;
-    private boolean choosingCards = false;
     private boolean choosingExtras = false;
     private boolean choosingVersion = false;
     private List<CAHCardPack> chosenDecks = new ArrayList<>();
