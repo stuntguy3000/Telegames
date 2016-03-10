@@ -33,7 +33,7 @@ public class LobbyHandler {
         activeLobbies.put(lobby.getLobbyID(), lobby);
 
         SendableTextMessage sendableTextMessage = SendableTextMessage.builder().message("*You have created a lobby!*\n" +
-                "[Send this link to your friends to play!](http://telegram.me/" + TelegramHook.getBot().getBotUsername() + "?start=" + lobby.getLobbyID() + ")").parseMode(ParseMode.MARKDOWN).build();
+                "[Send this link to your friends to play!](http://telegram.me/" + TelegramHook.getBot().getBotUsername() + "?start=" + lobby.getLobbyID() + ")").parseMode(ParseMode.MARKDOWN).disableWebPagePreview(true).build();
 
         TelegramBot.getChat(user.getUserID()).sendMessage(sendableTextMessage, lobby.getTelegramBot());
         try {
