@@ -90,7 +90,7 @@ public class TelegramHook implements Listener {
         LobbyList lobbyList = getInstance().getConfigHandler().getLobbyList();
 
         if (lobbyList != null) {
-            for (Map.Entry<String, List<Integer>> lobby : lobbyList.getActiveLobbies().entrySet()) {
+            for (Map.Entry<String, List<Long>> lobby : lobbyList.getActiveLobbies().entrySet()) {
                 getInstance().getLobbyHandler().createLobby(lobby.getKey(), lobby.getValue());
             }
         }

@@ -46,7 +46,7 @@ public class LobbyHandler {
         return lobby;
     }
 
-    public void createLobby(String lobbyID, List<Integer> playerList) {
+    public void createLobby(String lobbyID, List<Long> playerList) {
         // TODO: Need a way to get a User [specifically a username]
         // Feature was intended for on bot reboot, reconnect users.
     }

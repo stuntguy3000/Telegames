@@ -11,14 +11,14 @@ import java.util.List;
 // @author Luke Anderson | stuntguy3000
 public class LobbyList {
     @Getter
-    private HashMap<String, List<Integer>> activeLobbies;
+    private HashMap<String, List<Long>> activeLobbies;
 
     public LobbyList() {
         this.activeLobbies = new HashMap<>();
     }
 
     public void addLobby(String id, List<TelegramUser> people) {
-        List<Integer> members = new ArrayList<>();
+        List<Long> members = new ArrayList<>();
 
         for (TelegramUser telegramUser : people) {
             members.add(telegramUser.getUserID());
@@ -29,8 +29,8 @@ public class LobbyList {
         Telegames.getInstance().getConfigHandler().saveConfig("lobby.json");
     }
 
-    public void addPlayer(String id, int personID) {
-        List<Integer> playerList = activeLobbies.get(id);
+    public void addPlayer(String id, long personID) {
+        List<Long> playerList = activeLobbies.get(id);
         playerList.add(personID);
 
         Telegames.getInstance().getConfigHandler().saveConfig("lobby.json");
@@ -43,10 +43,10 @@ public class LobbyList {
     }
 
     public void removePlayer(String id, int personID) {
-        List<Integer> playerList = activeLobbies.get(id);
+        List<Long> playerList = activeLobbies.get(id);
 
         int objectID = 0;
-        for (int player : new ArrayList<>(playerList)) {
+        for (long player : new ArrayList<>(playerList)) {
             if (player == personID) {
                 playerList.remove(objectID);
                 return;

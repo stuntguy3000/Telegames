@@ -79,7 +79,7 @@ public class Uno extends Game {
     @Getter
     private List<UnoCard> playedUnoCards = new ArrayList<>();
     @Getter
-    private HashMap<Integer, List<UnoCard>> playerDecks = new HashMap<>();
+    private HashMap<Long, List<UnoCard>> playerDecks = new HashMap<>();
     @Getter
     private List<String> playerOrder = new ArrayList<>();
     @Getter

@@ -26,15 +26,15 @@ import java.util.List;
 
 // @author Luke Anderson | stuntguy3000
 public class Blackjack extends Game {
-    private HashMap<Integer, Integer> aceCount = new HashMap<>();
+    private HashMap<Long, Integer> aceCount = new HashMap<>();
     private ReplyKeyboardMarkup aceKeyboard;
     private TelegramUser currentPlayer;
     private int currentRound = 1;
     private Boolean dealerStand = false;
     private Deck deck;
     private int maxRounds = 5;
-    private HashMap<Integer, Integer> playerCardValues = new HashMap<>();
-    private HashMap<Integer, List<BlackjackCard>> playerCards = new HashMap<>();
+    private HashMap<Long, Integer> playerCardValues = new HashMap<>();
+    private HashMap<Long, List<BlackjackCard>> playerCards = new HashMap<>();
     private TelegramUser roundDealer;
     private int roundDealerIndex = 0;
     private int secondsSincePlay = 0;

@@ -12,7 +12,7 @@ public class UserStatistics {
     @Getter
     private HashMap<String, Integer> gamePlayCount = new HashMap<>();
     @Getter
-    private HashMap<Integer, Long> knownPlayers = new HashMap<>();
+    private HashMap<Long, Long> knownPlayers = new HashMap<>();
 
     public void addGame(Game game) {
         int count = 0;

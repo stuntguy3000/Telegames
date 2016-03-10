@@ -140,12 +140,12 @@ public class CardsAgainstHumanity extends Game {
     private boolean czarChoosing = false;
     private List<CzarOption> czarOptions = new ArrayList<>();
     private LinkedHashMap<String, Boolean> extrasPacks = new LinkedHashMap<>();
-    private HashMap<Integer, LinkedList<CAHCard>> playedCards = new HashMap<>();
+    private HashMap<Long, LinkedList<CAHCard>> playedCards = new HashMap<>();
     private int playerOrderIndex = 0;
     private boolean robotCzar = false;
     private int round = 1;
     public int secondsSincePlay = 0;
-    private HashMap<Integer, List<CAHCard>> userCards = new HashMap<>();
+    private HashMap<Long, List<CAHCard>> userCards = new HashMap<>();
     private List<CAHCard> whiteCards = new ArrayList<>();
 
     // Init Class
@@ -172,7 +172,7 @@ public class CardsAgainstHumanity extends Game {
             int toPlay = (robotCzar ? getActivePlayers().size() : getActivePlayers().size() - 1);
             if (playedCards.size() == toPlay || forcePlay) {
                 if (!forcePlay) {
-                    for (Map.Entry<Integer, LinkedList<CAHCard>> cardPlay : playedCards.entrySet()) {
+                    for (Map.Entry<Long, LinkedList<CAHCard>> cardPlay : playedCards.entrySet()) {
                         if (cardPlay.getValue().size() < currentBlackCard.getBlanks()) {
                             return false;
                         }
@@ -183,7 +183,7 @@ public class CardsAgainstHumanity extends Game {
 
                 String[] blackCardSplit = currentBlackCard.getRawText().split("_");
 
-                for (Map.Entry<Integer, LinkedList<CAHCard>> playerCards : playedCards.entrySet()) {
+                for (Map.Entry<Long, LinkedList<CAHCard>> playerCards : playedCards.entrySet()) {
                     int segmentID = 0;
                     int cardCount = 0;
                     CzarOption czarOption = new CzarOption(getGameLobby().getTelegramUser(playerCards.getKey()));

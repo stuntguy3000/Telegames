@@ -34,7 +34,7 @@ public class Lobby {
     @Setter
     private boolean isMatchmaking = false;
     @Getter
-    private List<Integer> kickList;
+    private List<Long> kickList;
     @Getter
     private long lastLobbyAction;
     private SendableTextMessage lobbyHeader;
@@ -112,6 +112,7 @@ public class Lobby {
      * Returns a TelegramUser belonging to the username
      *
      * @param id Integer the ID of the player
+     * @deprecated
      */
     public TelegramUser getTelegramUser(int id) {
         for (TelegramUser telegramUser : getTelegramUsers()) {
@@ -122,6 +123,22 @@ public class Lobby {
 
         return null;
     }
+
+    /**
+     * Returns a TelegramUser belonging to the username
+     *
+     * @param id Long the ID of the player
+     */
+    public TelegramUser getTelegramUser(long id) {
+        for (TelegramUser telegramUser : getTelegramUsers()) {
+            if (telegramUser.getUserID() == id) {
+                return telegramUser;
+            }
+        }
+
+        return null;
+    }
+
 
     /**
      * Returns if a User is in the Lobby
@@ -443,7 +460,7 @@ public class Lobby {
         }
 
         String username = user.getUsername();
-        int id = user.getUserID();
+        long id = user.getUserID();
 
         for (TelegramUser telegramUser : new ArrayList<>(telegramUsers)) {
             if (telegramUser.getUserID() == id) {

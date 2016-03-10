@@ -18,7 +18,7 @@ public class TelegramUser implements Comparable {
     @Getter
     private String lastName;
     @Getter
-    private int userID;
+    private long userID;
     @Getter
     private String username;
 

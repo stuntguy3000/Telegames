@@ -20,7 +20,7 @@ public class AdminCommand extends Command {
         super(Telegames.getInstance(), "/admin Admin use only.", "admin");
     }
 
-    private void broadcast(int user, String message) {
+    private void broadcast(long user, String message) {
         try {
             TelegramBot.getChat(user).sendMessage(SendableTextMessage.builder().message(Emoji.GHOST.getText() + " *Broadcast*\n" + message).parseMode(ParseMode.MARKDOWN).disableWebPagePreview(true).build(), TelegramHook.getBot());
         } catch (Exception ignore) {
@@ -67,7 +67,7 @@ public class AdminCommand extends Command {
                                 broadcastMessage.append(args[i]).append(" ");
                             }
 
-                            for (int user : getInstance().getConfigHandler().getUserStatistics().getKnownPlayers().keySet()) {
+                            for (long user : getInstance().getConfigHandler().getUserStatistics().getKnownPlayers().keySet()) {
                                 broadcast(user, broadcastMessage.toString().replaceAll("~", "\n"));
                             }
                             return;

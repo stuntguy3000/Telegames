@@ -191,7 +191,7 @@ public class MatchmakingHandler {
 class MatchmakingUser {
 
     @Getter
-    private final int id;
+    private final long id;
     @Getter
     private final TelegramUser user;
     @Getter

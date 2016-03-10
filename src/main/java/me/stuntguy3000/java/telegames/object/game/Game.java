@@ -79,7 +79,21 @@ public abstract class Game {
         }
     }
 
+    @Deprecated
     public void playerLeave(String username, int userID) {
+        for (TelegramUser member : new ArrayList<>(activePlayers)) {
+            if (member.getUserID() == userID) {
+                activePlayers.remove(userID);
+                return;
+            }
+        }
+
+        if (activePlayers.size() < minPlayers) {
+            getGameLobby().stopGame();
+        }
+    }
+
+    public void playerLeave(String username, long userID) {
         for (TelegramUser member : new ArrayList<>(activePlayers)) {
             if (member.getUserID() == userID) {
                 activePlayers.remove(userID);
