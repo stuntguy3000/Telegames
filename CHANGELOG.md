@@ -1,4 +1,7 @@
 # Changelog
+#### Version 1.7.1
+* Fix: Blackjack Min players is now correctly set to 2
+
 #### Version 1.7
 Major Cards Against Humanity Update!
 The lobby owner how has to select which card pack(s) to play with. This happens on game start, and is required. 
