@@ -43,7 +43,7 @@ public class Blackjack extends Game {
     public Blackjack() {
         setGameInfo(Lang.GAME_BLACKJACK_NAME, Lang.GAME_BLACKJACK_DESCRIPTION);
         setMinPlayers(2);
-        setMinPlayers(8);
+        setMaxPlayers(8);
         setGameState(GameState.WAITING_FOR_PLAYERS);
 
         aceKeyboard = ReplyKeyboardMarkup.builder().addRow(Lang.GAME_BLACKJACK_ACE_ONE, Lang.GAME_BLACKJACK_ACE_ELEVEN).oneTime(true).build();

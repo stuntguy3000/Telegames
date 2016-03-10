@@ -16,9 +16,13 @@ import me.stuntguy3000.java.telegames.util.botan.Botan;
 import me.stuntguy3000.java.telegames.util.string.Emoji;
 import me.stuntguy3000.java.telegames.util.string.Lang;
 import pro.zackpollard.telegrambot.api.TelegramBot;
+import pro.zackpollard.telegrambot.api.chat.inline.send.InlineQueryResponse;
+import pro.zackpollard.telegrambot.api.chat.inline.send.results.InlineQueryResult;
+import pro.zackpollard.telegrambot.api.chat.inline.send.results.InlineQueryResultArticle;
 import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.event.Listener;
+import pro.zackpollard.telegrambot.api.event.chat.inline.InlineQueryReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.PhotoMessageReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.TextMessageReceivedEvent;
@@ -199,6 +203,25 @@ public class TelegramHook implements Listener {
                 }
             }
         }
+    }
+
+    @Override
+    public void onInlineQueryReceived(InlineQueryReceivedEvent event) {
+        List<InlineQueryResult> queryResults = new ArrayList<>();
+
+        queryResults.add(InlineQueryResultArticle.builder()
+                        .parseMode(ParseMode.MARKDOWN)
+                        .title(Emoji.PERSON.getText() + " Test 1")
+                        .description("Test 1 Description")
+                        .build()
+        );
+
+        event.getQuery().answer(getBot(), InlineQueryResponse.builder()
+                        .results(queryResults)
+                        .is_personal(false)
+                        .cache_time(0)
+                        .build()
+        );
     }
 }
     
