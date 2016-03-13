@@ -230,7 +230,7 @@ public class Lobby {
                 }
             } else if (message.equals(Lang.KEYBOARD_PLAY)) {
                 if (currentGame == null) {
-                    event.getChat().sendMessage(KeyboardHandler.createGameSelector().message(Emoji.JOYSTICK.getText() + " *Please choose a game:*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+                    event.getChat().sendMessage(KeyboardHandler.createGameSelector(this).message(Emoji.JOYSTICK.getText() + " *Please choose a game:*").parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                 }
             } else if (message.equals(Lang.KEYBOARD_LEAVE_LOBBY)) {
                 userLeave(getTelegramUser(sender.getUsername()), false);
@@ -471,7 +471,7 @@ public class Lobby {
         }
 
         if (currentGame != null) {
-            currentGame.playerLeave(username, id);
+            currentGame.playerLeave(id);
         }
 
         //Telegames.getInstance().getConfigHandler().getLobbyList().removePlayer(getLobbyID(), user.getUserID());

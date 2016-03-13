@@ -79,24 +79,10 @@ public abstract class Game {
         }
     }
 
-    @Deprecated
-    public void playerLeave(String username, int userID) {
+    public void playerLeave(long userID) {
         for (TelegramUser member : new ArrayList<>(activePlayers)) {
             if (member.getUserID() == userID) {
-                activePlayers.remove(userID);
-                return;
-            }
-        }
-
-        if (activePlayers.size() < minPlayers) {
-            getGameLobby().stopGame();
-        }
-    }
-
-    public void playerLeave(String username, long userID) {
-        for (TelegramUser member : new ArrayList<>(activePlayers)) {
-            if (member.getUserID() == userID) {
-                activePlayers.remove(userID);
+                activePlayers.remove(member);
                 return;
             }
         }
@@ -117,9 +103,9 @@ public abstract class Game {
         getGameLobby().sendMessage(wholeMessage.toString());
     }
 
-    public void removePlayer(String username) {
+    public void removePlayer(long userID) {
         for (TelegramUser telegramUser : new ArrayList<>(getActivePlayers())) {
-            if (telegramUser.getUsername().equals(username)) {
+            if (telegramUser.getUserID() == userID) {
                 getActivePlayers().remove(telegramUser);
             }
         }

@@ -435,10 +435,10 @@ public class CardsAgainstHumanity extends Game {
     }
 
     @Override
-    public void playerLeave(String username, int userID) {
-        removePlayer(username);
+    public void playerLeave(long userID) {
+        removePlayer(userID);
 
-        if (cardCzar.getUsername().equals(username) && checkPlayers(false)) {
+        if (cardCzar.getUserID() == userID && checkPlayers(false)) {
             nextRound();
         }
     }

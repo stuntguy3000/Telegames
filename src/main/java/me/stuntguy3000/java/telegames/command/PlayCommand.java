@@ -49,7 +49,7 @@ public class PlayCommand extends Command {
                             }
                         }
                     } else {
-                        respond(chat, KeyboardHandler.createGameSelector().message(Lang.COMMAND_PLAY).parseMode(ParseMode.MARKDOWN).build());
+                        respond(chat, KeyboardHandler.createGameSelector(lobby).message(Lang.COMMAND_PLAY).parseMode(ParseMode.MARKDOWN).build());
                     }
                 } else {
                     respond(chat, Lang.ERROR_GAME_RUNNING);

@@ -2,6 +2,7 @@ package me.stuntguy3000.java.telegames.handler;
 
 import me.stuntguy3000.java.telegames.Telegames;
 import me.stuntguy3000.java.telegames.object.game.Game;
+import me.stuntguy3000.java.telegames.object.lobby.Lobby;
 import me.stuntguy3000.java.telegames.util.string.Emoji;
 import me.stuntguy3000.java.telegames.util.string.Lang;
 import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
@@ -44,14 +45,16 @@ public class KeyboardHandler {
         return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false));
     }
 
-    public static SendableTextMessage.SendableTextMessageBuilder createGameSelector() {
+    public static SendableTextMessage.SendableTextMessageBuilder createGameSelector(Lobby lobby) {
         List<List<String>> buttonList = new ArrayList<>();
         List<String> row = new ArrayList<>();
 
         int index = 1;
+        int lobbySize = lobby.getTelegramUsers().size();
 
         for (Game game : Telegames.getInstance().getGameHandler().getGameMap().values()) {
-            if ((game.isDevModeOnly() && !Telegames.DEV_MODE) || game.isRestrictedGame()) {
+            if ((game.isDevModeOnly() && !Telegames.DEV_MODE)
+                    || game.isRestrictedGame() || lobbySize < game.getMinPlayers() || lobbySize > game.getMaxPlayers()) {
                 continue;
             }
 

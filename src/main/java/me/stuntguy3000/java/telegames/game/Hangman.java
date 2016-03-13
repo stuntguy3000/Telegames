@@ -151,23 +151,27 @@ public class Hangman extends Game {
                     if (isAlphaCharactersOnly(message)) {
                         char letter = message.toCharArray()[0];
                         getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_HANGMAN_GUESS_LETTER, StringUtil.markdownSafe(sender.getUsername()), letter)).parseMode(ParseMode.MARKDOWN).build());
-                        boolean guessedCorrectly = guessLetter(letter);
-
-                        if (wordCompleted()) {
-                            getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_HANGMAN_GUESS_WORD, word)).parseMode(ParseMode.MARKDOWN).build());
-                            nextRound();
+                        if (guesses.contains(Character.toUpperCase(letter)) || guesses.contains(Character.toLowerCase(letter))) {
+                            getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_HANGMAN_GUESS_ALREADY_GUESSED, guessesLeft, getCensoredWord(), getGuessedLetters())).parseMode(ParseMode.MARKDOWN).build());
                         } else {
-                            if (guessedCorrectly) {
-                                getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_HANGMAN_GUESS_CORRECT, guessesLeft, getCensoredWord())).parseMode(ParseMode.MARKDOWN).build());
+                            boolean guessedCorrectly = guessLetter(letter);
+
+                            if (wordCompleted()) {
+                                getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_HANGMAN_GUESS_WORD, word)).parseMode(ParseMode.MARKDOWN).build());
+                                nextRound();
                             } else {
-                                --guessesLeft;
-                                if (guessesLeft > 0) {
-                                    guesses.add(letter);
-                                    getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_HANGMAN_GUESS_INCORRECT, guessesLeft, getCensoredWord(), getGuessedLetters())).parseMode(ParseMode.MARKDOWN).build());
+                                if (guessedCorrectly) {
+                                    getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_HANGMAN_GUESS_CORRECT, guessesLeft, getCensoredWord())).parseMode(ParseMode.MARKDOWN).build());
                                 } else {
-                                    getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_HANGMAN_GUESS_LOSE, word)).parseMode(ParseMode.MARKDOWN).build());
-                                    nextRound();
-                                    return;
+                                    --guessesLeft;
+                                    if (guessesLeft > 0) {
+                                        guesses.add(letter);
+                                        getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_HANGMAN_GUESS_INCORRECT, guessesLeft, getCensoredWord(), getGuessedLetters())).parseMode(ParseMode.MARKDOWN).build());
+                                    } else {
+                                        getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_HANGMAN_GUESS_LOSE, word)).parseMode(ParseMode.MARKDOWN).build());
+                                        nextRound();
+                                        return;
+                                    }
                                 }
                             }
                         }

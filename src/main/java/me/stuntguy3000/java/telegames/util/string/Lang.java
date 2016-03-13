@@ -89,6 +89,7 @@ public class Lang {
     public static String GAME_GENERAL_WINNER = "*The winner is %s.*";
     public static String GAME_GENERAL_WIN_ROUND = "*%s won the round!*";
     public static String GAME_HANGMAN_DESCRIPTION = "The classic game of hangman. Try to guess the phrase before its too late!";
+    public static String GAME_HANGMAN_GUESS_ALREADY_GUESSED = Emoji.RED_CROSS.getText() + " *Letter already guessed!\nRemaining: %s\n\nThe word: %s\nGuessed letters: %s*";
     public static String GAME_HANGMAN_GUESS_CORRECT = Emoji.GREEN_BOX_TICK.getText() + " *Correct guess!\nRemaining: %s\n\nThe word: %s*";
     public static String GAME_HANGMAN_GUESS_INCORRECT = Emoji.RED_CROSS.getText() + " *Incorrect guess!\nRemaining: %s\n\nThe word: %s\nGuessed letters: %s*";
     public static String GAME_HANGMAN_GUESS_LETTER = "%s guessed %s.";

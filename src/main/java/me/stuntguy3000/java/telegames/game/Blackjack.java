@@ -150,10 +150,10 @@ public class Blackjack extends Game {
     }
 
     @Override
-    public void playerLeave(String username, int userID) {
+    public void playerLeave(long userID) {
         playerCardValues.remove(userID);
         playerCards.remove(userID);
-        removePlayer(username);
+        removePlayer(userID);
         checkPlayers();
 
         if (currentPlayer.getUserID() == userID) {
@@ -167,7 +167,6 @@ public class Blackjack extends Game {
 
             nextRound();
         }
-
     }
 
     public void startGame() {

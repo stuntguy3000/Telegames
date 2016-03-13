@@ -69,7 +69,7 @@ public class Uno extends Game {
     @Getter
     private boolean choosingColour = false;
     @Getter
-    private String currentPlayer;
+    private long currentPlayer;
     @Getter
     private List<UnoCard> entireDeck = new ArrayList<>();
     @Getter
@@ -81,7 +81,7 @@ public class Uno extends Game {
     @Getter
     private HashMap<Long, List<UnoCard>> playerDecks = new HashMap<>();
     @Getter
-    private List<String> playerOrder = new ArrayList<>();
+    private List<Long> playerOrder = new ArrayList<>();
     @Getter
     private int playerOrderIndex = 0;
     @Getter
@@ -96,21 +96,21 @@ public class Uno extends Game {
     }
 
     private void chooseColour(User sender, CardColour cardColour) {
-        if (currentPlayer.equalsIgnoreCase(sender.getUsername()) && choosingColour) {
+        if (currentPlayer == sender.getId() && choosingColour) {
             secondsSincePlay = 0;
             choosingColour = false;
             nextCardColour = cardColour;
-            nextPlayerIndex();
+            nextPlayerFromIndex();
             nextRound();
         }
     }
 
-    private void drawCard(String username) {
-        if (currentPlayer.equalsIgnoreCase(username)) {
+    private void drawCard(long username) {
+        if (currentPlayer == username) {
             secondsSincePlay = 0;
-            getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_UNO_DREW, StringUtil.markdownSafe(username))).parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
+            getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_UNO_DREW, StringUtil.markdownSafe(getGameLobby().getTelegramUser(username).getUsername()))).parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
             giveCardsFromDeck(getGameLobby().getTelegramUser(username), 1);
-            nextPlayerIndex();
+            nextPlayerFromIndex();
             nextRound();
         }
     }
@@ -171,9 +171,9 @@ public class Uno extends Game {
 
         if (!choosingColour) {
             if (secondsSincePlay == 30) {
-                getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_GENERAL_PLAYTIMER, StringUtil.markdownSafe(currentPlayer))).parseMode(ParseMode.MARKDOWN).build());
+                getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_GENERAL_PLAYTIMER, StringUtil.markdownSafe(getGameLobby().getTelegramUser(currentPlayer).getUsername()))).parseMode(ParseMode.MARKDOWN).build());
             } else if (secondsSincePlay == 40) {
-                getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_GENERAL_TURNSKIP, StringUtil.markdownSafe(currentPlayer))).parseMode(ParseMode.MARKDOWN).build());
+                getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_GENERAL_TURNSKIP, StringUtil.markdownSafe(getGameLobby().getTelegramUser(currentPlayer).getUsername()))).parseMode(ParseMode.MARKDOWN).build());
                 drawCard(currentPlayer);
             }
         }
@@ -229,7 +229,7 @@ public class Uno extends Game {
                     }
 
                     if (message.equals(Lang.GAME_UNO_BUTTON_DRAW)) {
-                        drawCard(sender.getUsername());
+                        drawCard(sender.getId());
                         return;
                     }
 
@@ -246,10 +246,10 @@ public class Uno extends Game {
     }
 
     @Override
-    public void playerLeave(String username, int userID) {
-        removePlayer(username);
+    public void playerLeave(long userID) {
+        removePlayer(userID);
 
-        if (currentPlayer.equals(username) && checkPlayers()) {
+        if (currentPlayer == userID && checkPlayers()) {
             nextRound();
         }
     }
@@ -270,7 +270,7 @@ public class Uno extends Game {
     public void startGame() {
         setGameState(GameState.INGAME);
 
-        playerOrder.addAll(getActivePlayers().stream().map(TelegramUser::getUsername).collect(Collectors.toList()));
+        playerOrder.addAll(getActivePlayers().stream().map(TelegramUser::getUserID).collect(Collectors.toList()));
         Collections.shuffle(playerOrder);
 
         fillDeck();
@@ -316,7 +316,7 @@ public class Uno extends Game {
         telegramUser.getChat().sendMessage(String.format(Lang.GAME_CARDPICKUP, givenCardsMessage.toString().substring(0, givenCardsMessage.length() - 3)), TelegramHook.getBot());
     }
 
-    public String nextPlayerIndex() {
+    public Long nextPlayerFromIndex() {
         if (increasePlayerIndex) {
             playerOrderIndex++;
         } else {
@@ -353,7 +353,7 @@ public class Uno extends Game {
             cardText = String.format(Lang.GAME_UNO_PLAYCOLOUR, nextCardColour.text);
         }
 
-        getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_UNO_ROUNDINFO, cardText, StringUtil.markdownSafe(currentPlayer))).parseMode(ParseMode.MARKDOWN).build());
+        getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_UNO_ROUNDINFO, cardText, StringUtil.markdownSafe(getGameLobby().getTelegramUser(currentPlayer).getUsername()))).parseMode(ParseMode.MARKDOWN).build());
 
         round++;
 
@@ -362,7 +362,7 @@ public class Uno extends Game {
 
     private void playCard(UnoCard card, User sender) {
         TelegramUser telegramUser = getGameLobby().getTelegramUser(sender.getUsername());
-        if (currentPlayer.equalsIgnoreCase(sender.getUsername())) {
+        if (currentPlayer == sender.getId()) {
             secondsSincePlay = 0;
             if (choosingColour) {
                 telegramUser.getChat().sendMessage(Lang.GAME_UNO_CHOOSE_COLOUR, TelegramHook.getBot());
@@ -375,7 +375,7 @@ public class Uno extends Game {
                         getGameLobby().sendMessage(String.format(Lang.GAME_UNO_PLAYED, sender.getUsername(), card.getText()));
                         activeUnoCard = card;
                         nextCardColour = card.getCardColour();
-                        nextPlayerIndex();
+                        nextPlayerFromIndex();
 
                         if (!removeCard(playerDecks.get(sender.getId()), activeUnoCard)) {
                             getGameLobby().sendMessage("Card was not removed from deck, contact @stuntguy3000");
@@ -391,8 +391,8 @@ public class Uno extends Game {
                         nextCardColour = card.getCardColour();
 
                         if (activeUnoCard.getCardValue() == CardValue.DRAW2) {
-                            String punishedPlayer = nextPlayerIndex();
-                            nextPlayerIndex();
+                            String punishedPlayer = getGameLobby().getTelegramUser(nextPlayerFromIndex()).getUsername();
+                            nextPlayerFromIndex();
 
                             getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_UNO_DRAW2, StringUtil.markdownSafe(punishedPlayer))).parseMode(ParseMode.MARKDOWN).build());
                             giveCardsFromDeck(getGameLobby().getTelegramUser(punishedPlayer), 2);
@@ -400,15 +400,15 @@ public class Uno extends Game {
                             getGameLobby().sendMessage(SendableTextMessage.builder().message(Lang.GAME_UNO_REVERSE).parseMode(ParseMode.MARKDOWN).build());
                             increasePlayerIndex = !increasePlayerIndex;
 
-                            nextPlayerIndex();
+                            nextPlayerFromIndex();
                         } else if (activeUnoCard.getCardValue() == CardValue.SKIP) {
-                            String punishedPlayer = nextPlayerIndex();
+                            String punishedPlayer = getGameLobby().getTelegramUser(nextPlayerFromIndex()).getUsername();
 
                             getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_UNO_SKIP, StringUtil.markdownSafe(punishedPlayer))).parseMode(ParseMode.MARKDOWN).build());
 
-                            nextPlayerIndex();
+                            nextPlayerFromIndex();
                         } else {
-                            nextPlayerIndex();
+                            nextPlayerFromIndex();
                         }
 
                         if (!removeCard(playerDecks.get(sender.getId()), activeUnoCard)) {
@@ -433,8 +433,8 @@ public class Uno extends Game {
 
 
                     if (card.getCardValue() == CardValue.DRAW4) {
-                        nextPlayerIndex();
-                        String punishedPlayer = playerOrder.get(playerOrderIndex);
+                        nextPlayerFromIndex();
+                        String punishedPlayer = getGameLobby().getTelegramUser(playerOrder.get(playerOrderIndex)).getUsername();
 
                         getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_UNO_DRAW4, StringUtil.markdownSafe(punishedPlayer))).parseMode(ParseMode.MARKDOWN).build());
                         giveCardsFromDeck(getGameLobby().getTelegramUser(punishedPlayer), 4);

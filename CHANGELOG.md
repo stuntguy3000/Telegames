@@ -1,4 +1,10 @@
 # Changelog
+#### Version 1.7.2
+* Added: The Game selector only shows games you can play
+* Fix: Hangman: You can no longer guess the same letter twice
+* Fix: Players will now be correctly removed from a Lobby
+* Fix: More API changes and fixes to reflect those changes
+
 #### Version 1.7.1
 * Fix: Blackjack Min players is now correctly set to 2
 
