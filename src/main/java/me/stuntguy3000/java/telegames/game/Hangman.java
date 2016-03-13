@@ -161,6 +161,7 @@ public class Hangman extends Game {
                                 nextRound();
                             } else {
                                 if (guessedCorrectly) {
+                                    guesses.add(letter);
                                     getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_HANGMAN_GUESS_CORRECT, guessesLeft, getCensoredWord())).parseMode(ParseMode.MARKDOWN).build());
                                 } else {
                                     --guessesLeft;
