@@ -43,11 +43,11 @@ public class UpdateHandler implements Runnable {
                 } else {
                     LogHandler.log("[ERROR] Updater status code: " + response.getStatus());
                     instance.sendToAdmins("[ERROR] Updater status code: " + response.getStatus() + "\n\nUpdater stopped.");
-                    instance.stopUpdater();
+                    return;
                 }
             } catch (UnirestException e) {
                 e.printStackTrace();
-                instance.stopUpdater();
+                return;
             }
 
             if (newBuild > currentBuild) {
@@ -69,7 +69,7 @@ public class UpdateHandler implements Runnable {
                 } catch (IOException e) {
                     instance.sendToAdmins("Updater failed!");
                     e.printStackTrace();
-                    break;
+                    return;
                 }
 
                 System.exit(0);

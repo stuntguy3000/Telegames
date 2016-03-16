@@ -182,9 +182,5 @@ public class Telegames {
             lobby.sendMessage(SendableTextMessage.builder().message(message).parseMode(ParseMode.MARKDOWN).build());
         }
     }
-
-    public void stopUpdater() {
-        updaterThread.interrupt();
-    }
 }
     
