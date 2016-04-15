@@ -13,40 +13,54 @@ import java.util.*;
 // @author Luke Anderson | stuntguy3000
 public class KeyboardHandler {
     public static SendableTextMessage.SendableTextMessageBuilder createCAHExtrasKeyboard(LinkedHashMap<String, Boolean> extrasPacks) {
-        List<List<String>> buttonList = new ArrayList<>();
+        ReplyKeyboardMarkup.ReplyKeyboardMarkupBuilder replyKeyboardMarkupBuilder = ReplyKeyboardMarkup.builder();
         List<String> optionsRow = new ArrayList<>();
 
         for (Map.Entry<String, Boolean> extraPack : extrasPacks.entrySet()) {
             optionsRow.add((extraPack.getValue() ? Emoji.BLUE_CIRCLE.getText() : Emoji.RED_CIRCLE.getText()) + " " + extraPack.getKey());
         }
 
-        buttonList.add(optionsRow);
-        buttonList.add(Collections.singletonList(Lang.KEYBOARD_DONE));
-        return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false));
+        replyKeyboardMarkupBuilder.addRow(optionsRow);
+        replyKeyboardMarkupBuilder.addRow(Collections.singletonList(Lang.KEYBOARD_DONE));
+
+        replyKeyboardMarkupBuilder.resize(true);
+        replyKeyboardMarkupBuilder.oneTime(true);
+        replyKeyboardMarkupBuilder.selective(false);
+
+        return SendableTextMessage.builder().replyMarkup(replyKeyboardMarkupBuilder.build());
     }
 
     public static SendableTextMessage.SendableTextMessageBuilder createCAHKeyboard(String... options) {
-        List<List<String>> buttonList = new ArrayList<>();
+        ReplyKeyboardMarkup.ReplyKeyboardMarkupBuilder replyKeyboardMarkupBuilder = ReplyKeyboardMarkup.builder();
         List<String> optionsRow = new ArrayList<>();
 
         Collections.addAll(optionsRow, options);
 
-        buttonList.add(optionsRow);
-        buttonList.add(Collections.singletonList(Lang.KEYBOARD_RANDOM));
+        replyKeyboardMarkupBuilder.addRow(optionsRow);
+        replyKeyboardMarkupBuilder.addRow(Collections.singletonList(Lang.KEYBOARD_RANDOM));
 
-        return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false));
+        replyKeyboardMarkupBuilder.resize(true);
+        replyKeyboardMarkupBuilder.oneTime(true);
+        replyKeyboardMarkupBuilder.selective(false);
+
+        return SendableTextMessage.builder().replyMarkup(replyKeyboardMarkupBuilder.build());
     }
 
     public static SendableTextMessage.SendableTextMessageBuilder createCancelMenu() {
-        List<List<String>> buttonList = new ArrayList<>();
+        ReplyKeyboardMarkup.ReplyKeyboardMarkupBuilder replyKeyboardMarkupBuilder = ReplyKeyboardMarkup.builder();
 
-        buttonList.add(Collections.singletonList(Lang.KEYBOARD_CANCEL));
+        replyKeyboardMarkupBuilder.addRow(Collections.singletonList(Lang.KEYBOARD_CANCEL));
 
-        return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false));
+        replyKeyboardMarkupBuilder.resize(true);
+        replyKeyboardMarkupBuilder.oneTime(true);
+        replyKeyboardMarkupBuilder.selective(false);
+
+        return SendableTextMessage.builder().replyMarkup(replyKeyboardMarkupBuilder.build());
     }
 
     public static SendableTextMessage.SendableTextMessageBuilder createGameSelector(Lobby lobby) {
-        List<List<String>> buttonList = new ArrayList<>();
+        ReplyKeyboardMarkup.ReplyKeyboardMarkupBuilder replyKeyboardMarkupBuilder = ReplyKeyboardMarkup.builder();
+        
         List<String> row = new ArrayList<>();
 
         int index = 1;
@@ -60,7 +74,7 @@ public class KeyboardHandler {
 
             if (index > 3) {
                 index = 1;
-                buttonList.add(new ArrayList<>(row));
+                replyKeyboardMarkupBuilder.addRow(new ArrayList<>(row));
                 row.clear();
             }
 
@@ -69,55 +83,71 @@ public class KeyboardHandler {
         }
 
         if (row.size() > 0) {
-            buttonList.add(new ArrayList<>(row));
+            replyKeyboardMarkupBuilder.addRow(new ArrayList<>(row));
         }
 
-        buttonList.add(Collections.singletonList(Lang.KEYBOARD_RETURN_MENU));
+        replyKeyboardMarkupBuilder.addRow(Collections.singletonList(Lang.KEYBOARD_RETURN_MENU));
 
-        return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, false, false));
+        replyKeyboardMarkupBuilder.resize(true);
+        replyKeyboardMarkupBuilder.oneTime(true);
+        replyKeyboardMarkupBuilder.selective(false);
+
+        return SendableTextMessage.builder().replyMarkup(replyKeyboardMarkupBuilder.build());
     }
 
     public static SendableTextMessage.SendableTextMessageBuilder createLobbyCreationMenu() {
-        List<List<String>> buttonList = new ArrayList<>();
+        ReplyKeyboardMarkup.ReplyKeyboardMarkupBuilder replyKeyboardMarkupBuilder = ReplyKeyboardMarkup.builder();
 
-        buttonList.add(Collections.singletonList(Lang.KEYBOARD_CREATE_LOBBY));
-        buttonList.add(Collections.singletonList(Lang.KEYBOARD_JOIN_LOBBY));
-        //buttonList.add(Collections.singletonList(Lang.KEYBOARD_JOIN_MATCHMAKING));
+        replyKeyboardMarkupBuilder.addRow(Collections.singletonList(Lang.KEYBOARD_CREATE_LOBBY));
+        replyKeyboardMarkupBuilder.addRow(Collections.singletonList(Lang.KEYBOARD_JOIN_LOBBY));
+        //replyKeyboardMarkupBuilder.addRow(Collections.singletonList(Lang.KEYBOARD_JOIN_MATCHMAKING));
 
-        return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, false, false));
+        replyKeyboardMarkupBuilder.resize(true);
+        replyKeyboardMarkupBuilder.oneTime(true);
+        replyKeyboardMarkupBuilder.selective(false);
+
+        return SendableTextMessage.builder().replyMarkup(replyKeyboardMarkupBuilder.build());
     }
 
     public static SendableTextMessage.SendableTextMessageBuilder createLobbyMenu(String previousGame) {
-        List<List<String>> buttonList = new ArrayList<>();
+        ReplyKeyboardMarkup.ReplyKeyboardMarkupBuilder replyKeyboardMarkupBuilder = ReplyKeyboardMarkup.builder();
 
         if (previousGame != null) {
-            buttonList.add(Collections.singletonList(Lang.KEYBOARD_REPLAY));
+            replyKeyboardMarkupBuilder.addRow(Collections.singletonList(Lang.KEYBOARD_REPLAY));
         }
 
-        buttonList.add(Collections.singletonList(Lang.KEYBOARD_PLAY));
-        buttonList.add(Arrays.asList(Lang.KEYBOARD_LEAVE_LOBBY, Lang.KEYBOARD_LOBBY_OPTIONS));
-        buttonList.add(Arrays.asList(Lang.KEYBOARD_RATE, Lang.KEYBOARD_ABOUT));
+        replyKeyboardMarkupBuilder.addRow(Collections.singletonList(Lang.KEYBOARD_PLAY));
+        replyKeyboardMarkupBuilder.addRow(Arrays.asList(Lang.KEYBOARD_LEAVE_LOBBY, Lang.KEYBOARD_LOBBY_OPTIONS));
+        replyKeyboardMarkupBuilder.addRow(Arrays.asList(Lang.KEYBOARD_RATE, Lang.KEYBOARD_ABOUT));
 
-        return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, false, false));
+        replyKeyboardMarkupBuilder.resize(true);
+        replyKeyboardMarkupBuilder.oneTime(true);
+        replyKeyboardMarkupBuilder.selective(false);
+
+        return SendableTextMessage.builder().replyMarkup(replyKeyboardMarkupBuilder.build());
     }
 
     public static SendableTextMessage.SendableTextMessageBuilder createLobbyOptionsMenu(boolean isLocked) {
-        List<List<String>> buttonList = new ArrayList<>();
+        ReplyKeyboardMarkup.ReplyKeyboardMarkupBuilder replyKeyboardMarkupBuilder = ReplyKeyboardMarkup.builder();
 
         if (isLocked) {
-            buttonList.add(Collections.singletonList(Lang.KEYBOARD_LOBBY_UNLOCK));
+            replyKeyboardMarkupBuilder.addRow(Collections.singletonList(Lang.KEYBOARD_LOBBY_UNLOCK));
         } else {
-            buttonList.add(Collections.singletonList(Lang.KEYBOARD_LOBBY_LOCK));
+            replyKeyboardMarkupBuilder.addRow(Collections.singletonList(Lang.KEYBOARD_LOBBY_LOCK));
         }
 
-        buttonList.add(Collections.singletonList(Lang.KEYBOARD_RENAME));
-        buttonList.add(Collections.singletonList(Lang.KEYBOARD_RETURN_MENU));
+        replyKeyboardMarkupBuilder.addRow(Collections.singletonList(Lang.KEYBOARD_RENAME));
+        replyKeyboardMarkupBuilder.addRow(Collections.singletonList(Lang.KEYBOARD_RETURN_MENU));
 
-        return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, false, false));
+        replyKeyboardMarkupBuilder.resize(true);
+        replyKeyboardMarkupBuilder.oneTime(true);
+        replyKeyboardMarkupBuilder.selective(false);
+
+        return SendableTextMessage.builder().replyMarkup(replyKeyboardMarkupBuilder.build());
     }
 
     public static SendableTextMessage.SendableTextMessageBuilder createMatchmakingMenu(List<String> includedGames) {
-        List<List<String>> buttonList = new ArrayList<>();
+        ReplyKeyboardMarkup.ReplyKeyboardMarkupBuilder replyKeyboardMarkupBuilder = ReplyKeyboardMarkup.builder();
         List<String> row = new ArrayList<>();
 
         if (includedGames == null) {
@@ -133,7 +163,7 @@ public class KeyboardHandler {
 
             if (index > 3) {
                 index = 1;
-                buttonList.add(new ArrayList<>(row));
+                replyKeyboardMarkupBuilder.addRow(new ArrayList<>(row));
                 row.clear();
             }
 
@@ -141,9 +171,13 @@ public class KeyboardHandler {
             index++;
         }
 
-        buttonList.add(Collections.singletonList(Lang.KEYBOARD_QUIT_MATCHMAKING));
+        replyKeyboardMarkupBuilder.addRow(Collections.singletonList(Lang.KEYBOARD_QUIT_MATCHMAKING));
 
-        return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, false, false));
+        replyKeyboardMarkupBuilder.resize(true);
+        replyKeyboardMarkupBuilder.oneTime(true);
+        replyKeyboardMarkupBuilder.selective(false);
+
+        return SendableTextMessage.builder().replyMarkup(replyKeyboardMarkupBuilder.build());
     }
 }
     

@@ -108,7 +108,7 @@ public class Uno extends Game {
     private void drawCard(long username) {
         if (currentPlayer == username) {
             secondsSincePlay = 0;
-            getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_UNO_DREW, StringUtil.markdownSafe(getGameLobby().getTelegramUser(username).getUsername()))).parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
+            getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_UNO_DREW, StringUtil.markdownSafe(getGameLobby().getTelegramUser(username).getUsername()))).parseMode(ParseMode.MARKDOWN).replyMarkup(ReplyKeyboardHide.builder().build()).build());
             giveCardsFromDeck(getGameLobby().getTelegramUser(username), 1);
             nextPlayerFromIndex();
             nextRound();
@@ -469,15 +469,19 @@ public class Uno extends Game {
     }
 
     private void sendColourPicker(User sender) {
-        List<List<String>> buttonList = new ArrayList<>();
+        ReplyKeyboardMarkup.ReplyKeyboardMarkupBuilder replyKeyboardMarkupBuilder = ReplyKeyboardMarkup.builder();
 
-        buttonList.add(Arrays.asList(CardColour.RED.getText(), CardColour.BLUE.getText(), CardColour.GREEN.getText(), CardColour.YELLOW.getText()));
+        replyKeyboardMarkupBuilder.addRow(Arrays.asList(CardColour.RED.getText(), CardColour.BLUE.getText(), CardColour.GREEN.getText(), CardColour.YELLOW.getText()));
 
-        TelegramBot.getChat(sender.getId()).sendMessage(SendableTextMessage.builder().message(Lang.GAME_UNO_CHOOSE_COLOUR).replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false)).build(), TelegramHook.getBot());
+        replyKeyboardMarkupBuilder.resize(true);
+        replyKeyboardMarkupBuilder.oneTime(true);
+        replyKeyboardMarkupBuilder.selective(false);
+
+        TelegramBot.getChat(sender.getId()).sendMessage(SendableTextMessage.builder().message(Lang.GAME_UNO_CHOOSE_COLOUR).replyMarkup(replyKeyboardMarkupBuilder.build()).build(), TelegramHook.getBot());
     }
 
     private void sendDeck(TelegramUser telegramUser) {
-        List<List<String>> buttonList = new ArrayList<>();
+        ReplyKeyboardMarkup.ReplyKeyboardMarkupBuilder replyKeyboardMarkupBuilder = ReplyKeyboardMarkup.builder();
         List<String> row = new ArrayList<>();
         List<UnoCard> deck = playerDecks.get(telegramUser.getUserID());
 
@@ -485,7 +489,7 @@ public class Uno extends Game {
         for (UnoCard unoCard : deck) {
             if (index == 4) {
                 index = 1;
-                buttonList.add(new ArrayList<>(row));
+                replyKeyboardMarkupBuilder.addRow(new ArrayList<>(row));
                 row.clear();
             }
 
@@ -494,12 +498,16 @@ public class Uno extends Game {
         }
 
         if (row.size() > 0) {
-            buttonList.add(new ArrayList<>(row));
+            replyKeyboardMarkupBuilder.addRow(new ArrayList<>(row));
         }
 
-        buttonList.add(Arrays.asList(Lang.GAME_UNO_BUTTON_DRAW, String.format(Lang.GAME_UNO_BUTTON_SCORE, telegramUser.getGameScore())));
+        replyKeyboardMarkupBuilder.addRow(Arrays.asList(Lang.GAME_UNO_BUTTON_DRAW, String.format(Lang.GAME_UNO_BUTTON_SCORE, telegramUser.getGameScore())));
 
-        TelegramBot.getChat(telegramUser.getUserID()).sendMessage(SendableTextMessage.builder().message(Lang.GAME_GENERAL_PLAYER_CARDS_MESSAGE).replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false)).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
+        replyKeyboardMarkupBuilder.resize(true);
+        replyKeyboardMarkupBuilder.oneTime(true);
+        replyKeyboardMarkupBuilder.selective(false);
+
+        TelegramBot.getChat(telegramUser.getUserID()).sendMessage(SendableTextMessage.builder().message(Lang.GAME_GENERAL_PLAYER_CARDS_MESSAGE).replyMarkup(replyKeyboardMarkupBuilder.build()).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
     }
 
     private void updateScore(TelegramUser telegramUser) {
@@ -517,7 +525,7 @@ public class Uno extends Game {
 
         SendableTextMessage.SendableTextMessageBuilder message = SendableTextMessage.builder().message(Lang.GAME_GENERAL_OVER).message(String.format(Lang.GAME_GENERAL_WINNER, StringUtil.markdownSafe(username))).parseMode(ParseMode.MARKDOWN);
 
-        getGameLobby().sendMessage(message.replyMarkup(new ReplyKeyboardHide()).build());
+        getGameLobby().sendMessage(message.replyMarkup(ReplyKeyboardHide.builder().build()).build());
         getGameLobby().stopGame();
     }
 }

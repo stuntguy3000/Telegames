@@ -41,10 +41,16 @@ public class Hangman extends Game {
     }
 
     private SendableTextMessage.SendableTextMessageBuilder createChooserKeyboard() {
-        List<List<String>> buttonList = new ArrayList<>();
-        buttonList.add(new ArrayList<>(Collections.singletonList(Lang.GAME_HANGMAN_KEYBOARD_RANDOM)));
+        ReplyKeyboardMarkup.ReplyKeyboardMarkupBuilder replyKeyboardMarkupBuilder = ReplyKeyboardMarkup.builder();
 
-        return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false));
+
+        replyKeyboardMarkupBuilder.addRow(new ArrayList<>(Collections.singletonList(Lang.GAME_HANGMAN_KEYBOARD_RANDOM)));
+
+        replyKeyboardMarkupBuilder.resize(true);
+        replyKeyboardMarkupBuilder.oneTime(true);
+        replyKeyboardMarkupBuilder.selective(false);
+
+        return SendableTextMessage.builder().replyMarkup(replyKeyboardMarkupBuilder.build());
     }
 
     private String getCensoredWord() {
@@ -195,7 +201,7 @@ public class Hangman extends Game {
                                     censoredWord.add(i, censoredChar);
                                 }
 
-                                getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_HANGMAN_WORD_CHOSEN, getCensoredWord())).parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
+                                getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_HANGMAN_WORD_CHOSEN, getCensoredWord())).parseMode(ParseMode.MARKDOWN).replyMarkup(ReplyKeyboardHide.builder().build()).build());
                             } else {
                                 TelegramBot.getChat(selector.getUserID()).sendMessage(SendableTextMessage.builder().message(Lang.ERROR_TOO_SHORT_3).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                             }
