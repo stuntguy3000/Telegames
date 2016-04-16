@@ -334,7 +334,7 @@ public class Lobby {
                 }
             }
 
-            sendMessage(SendableTextMessage.builder().message(Emoji.JOYSTICK.getText() + " *Starting game: " + newGame.getGameName() + "*").parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
+            sendMessage(SendableTextMessage.builder().message(Emoji.JOYSTICK.getText() + " *Starting game: " + newGame.getGameName() + "*").parseMode(ParseMode.MARKDOWN).replyMarkup(ReplyKeyboardHide.builder().build()).build());
             try {
                 newGame.tryStartGame();
             } catch (GameStartException ex) {

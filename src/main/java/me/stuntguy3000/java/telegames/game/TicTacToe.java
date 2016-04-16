@@ -74,8 +74,8 @@ public class TicTacToe extends Game {
         return false;
     }
 
-    public SendableTextMessage.SendableTextMessageBuilder createKeyboard() {
-        List<List<String>> buttonList = new ArrayList<>();
+    private SendableTextMessage.SendableTextMessageBuilder createKeyboard() {
+        ReplyKeyboardMarkup.ReplyKeyboardMarkupBuilder replyKeyboardMarkupBuilder = ReplyKeyboardMarkup.builder();
         List<String> row = new ArrayList<>();
 
         for (int r = 0; r < 3; r++) {
@@ -83,11 +83,15 @@ public class TicTacToe extends Game {
                 row.add(board[r][c].getText());
             }
 
-            buttonList.add(new ArrayList<>(row));
+            replyKeyboardMarkupBuilder.addRow(new ArrayList<>(row));
             row.clear();
         }
 
-        return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, false, false, false));
+        replyKeyboardMarkupBuilder.resize(true);
+        replyKeyboardMarkupBuilder.oneTime(true);
+        replyKeyboardMarkupBuilder.selective(false);
+
+        return SendableTextMessage.builder().replyMarkup(replyKeyboardMarkupBuilder.build());
     }
 
     @Override
@@ -109,7 +113,7 @@ public class TicTacToe extends Game {
             message.append("\n");
         }
 
-        getGameLobby().sendMessage(SendableTextMessage.builder().message(message.toString()).parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
+        getGameLobby().sendMessage(SendableTextMessage.builder().message(message.toString()).parseMode(ParseMode.MARKDOWN).replyMarkup(ReplyKeyboardHide.builder().build()).build());
     }
 
     @Override

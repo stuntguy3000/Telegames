@@ -235,7 +235,7 @@ public class CardsAgainstHumanity extends Game {
                             czarChoosing = true;
                             TelegramBot.getChat(telegramUser.getUserID()).sendMessage(createCzarKeyboard().message(Lang.GAME_CAH_ALLPLAYED_CZAR).parseMode(ParseMode.MARKDOWN).build(), TelegramHook.getBot());
                         } else {
-                            TelegramBot.getChat(telegramUser.getUserID()).sendMessage(SendableTextMessage.builder().message(Lang.GAME_CAH_ALLPLAYED).parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build(), TelegramHook.getBot());
+                            TelegramBot.getChat(telegramUser.getUserID()).sendMessage(SendableTextMessage.builder().message(Lang.GAME_CAH_ALLPLAYED).parseMode(ParseMode.MARKDOWN).replyMarkup(ReplyKeyboardHide.builder().build()).build(), TelegramHook.getBot());
                         }
                     }
                     getGameLobby().sendMessage(SendableTextMessage.builder().message(options.toString()).parseMode(ParseMode.MARKDOWN).build());
@@ -249,7 +249,7 @@ public class CardsAgainstHumanity extends Game {
     }
 
     private SendableTextMessage.SendableTextMessageBuilder createCzarKeyboard() {
-        List<List<String>> buttonList = new ArrayList<>();
+        ReplyKeyboardMarkup.ReplyKeyboardMarkupBuilder replyKeyboard = ReplyKeyboardMarkup.builder();
         List<String> row = new ArrayList<>();
 
         int index = 1;
@@ -257,7 +257,7 @@ public class CardsAgainstHumanity extends Game {
         for (int i = 1; i <= czarOptions.size(); i++) {
             if (index == 5) {
                 index = 1;
-                buttonList.add(new ArrayList<>(row));
+                replyKeyboard.addRow(new ArrayList<>(row));
                 row.clear();
             }
 
@@ -266,14 +266,18 @@ public class CardsAgainstHumanity extends Game {
         }
 
         if (row.size() > 0) {
-            buttonList.add(new ArrayList<>(row));
+            replyKeyboard.addRow(new ArrayList<>(row));
         }
 
-        return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false));
+        replyKeyboard.resize(true);
+        replyKeyboard.oneTime(true);
+        replyKeyboard.selective(false);
+
+        return SendableTextMessage.builder().replyMarkup(replyKeyboard.build());
     }
 
     private SendableTextMessage.SendableTextMessageBuilder createUserKeyboard(TelegramUser telegramUser) {
-        List<List<String>> buttonList = new ArrayList<>();
+        ReplyKeyboardMarkup.ReplyKeyboardMarkupBuilder replyKeyboardMarkup = ReplyKeyboardMarkup.builder();
         List<CAHCard> cards = userCards.get(telegramUser.getUserID());
         List<String> row = new ArrayList<>();
 
@@ -282,19 +286,23 @@ public class CardsAgainstHumanity extends Game {
         for (CAHCard card : cards) {
             if (index > 3) {
                 index = 1;
-                buttonList.add(new ArrayList<>(row));
+                replyKeyboardMarkup.addRow(new ArrayList<>(row));
                 row.clear();
             }
 
-            buttonList.add(new ArrayList<>(Collections.singletonList(card.getText())));
+            replyKeyboardMarkup.addRow(new ArrayList<>(Collections.singletonList(card.getText())));
             index++;
         }
 
         if (row.size() > 0) {
-            buttonList.add(new ArrayList<>(row));
+            replyKeyboardMarkup.addRow(new ArrayList<>(row));
         }
 
-        return SendableTextMessage.builder().replyMarkup(new ReplyKeyboardMarkup(buttonList, true, true, false));
+        replyKeyboardMarkup.resize(true);
+        replyKeyboardMarkup.oneTime(true);
+        replyKeyboardMarkup.selective(false);
+
+        return SendableTextMessage.builder().replyMarkup(replyKeyboardMarkup.build());
     }
 
     private void fillHands() {
@@ -597,10 +605,10 @@ public class CardsAgainstHumanity extends Game {
             currentBlackCard = blackCards.remove(0);
 
             if (robotCzar) {
-                getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_GENERAL_STARTROUND_NUMBER, round)).parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
+                getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_GENERAL_STARTROUND_NUMBER, round)).parseMode(ParseMode.MARKDOWN).replyMarkup(ReplyKeyboardHide.builder().build()).build());
             } else {
                 cardCzar = getActivePlayers().get(playerOrderIndex);
-                getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_CAH_STARTROUND_CZAR, round, cardCzar.getUsername())).parseMode(ParseMode.MARKDOWN).replyMarkup(new ReplyKeyboardHide()).build());
+                getGameLobby().sendMessage(SendableTextMessage.builder().message(String.format(Lang.GAME_CAH_STARTROUND_CZAR, round, cardCzar.getUsername())).parseMode(ParseMode.MARKDOWN).replyMarkup(ReplyKeyboardHide.builder().build()).build());
             }
 
             setGameState(GameState.CHOOSING);
