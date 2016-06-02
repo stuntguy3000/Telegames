@@ -43,7 +43,7 @@ public class UpdateHandler implements Runnable {
         while (true) {
             try {
                 HttpResponse<String> response = Unirest.get("http://ci.zackpollard.pro/job/" + projectName + "/lastSuccessfulBuild/buildNumber").asString();
-                
+
                 if (response.getStatus() == 200) {
                     newBuild = Integer.parseInt(response.getBody());
                     LogHandler.debug(String.valueOf(newBuild));
@@ -64,7 +64,7 @@ public class UpdateHandler implements Runnable {
                     FileUtils.writeStringToFile(build, String.valueOf(newBuild));
                     FileUtils.copyURLToFile(new URL("http://ci.zackpollard.pro/job/" + projectName + "/lastSuccessfulBuild/artifact/target/" + fileName + ".jar"), jar);
                     LogHandler.log("Build #" + newBuild + " downloaded. Restarting...");
-                    instance.getConfigHandler().saveConfig("stats.json");
+                    instance.getConfigHandler().saveConfig("config.json");
                     if (!instance.isDevelopmentMode()) {
                         Telegames.getInstance().getUpdaterAnnouncerHandler().runUpdater();
                     }
