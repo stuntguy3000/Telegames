@@ -43,11 +43,10 @@ public class UpdateHandler implements Runnable {
         while (true) {
             try {
                 HttpResponse<String> response = Unirest.get("http://ci.zackpollard.pro/job/" + projectName + "/lastSuccessfulBuild/buildNumber").asString();
-
-                LogHandler.debug(String.valueOf(response.getStatus()));
-
+                
                 if (response.getStatus() == 200) {
                     newBuild = Integer.parseInt(response.getBody());
+                    LogHandler.debug(String.valueOf(newBuild));
                 } else {
                     LogHandler.log("[ERROR] Updater status code: " + response.getStatus());
                     instance.sendToAdmins("[ERROR] Updater status code: " + response.getStatus() + "\n\nUpdater stopped.");
