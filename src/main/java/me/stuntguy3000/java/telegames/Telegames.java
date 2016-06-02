@@ -138,6 +138,7 @@ public class Telegames {
         configHandler = new ConfigHandler();
         logHandler = new LogHandler();
         updaterAnnouncerHandler = new UpdaterAnnouncerHandler();
+        commandHandler = new CommandHandler();
     }
 
     /**
