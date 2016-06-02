@@ -69,9 +69,9 @@ public class Telegames {
      */
     public void startTelegames() {
         instance = this;
-        
-        connectTelegram();
+
         registerHandlers();
+        connectTelegram();
 
         /**
          * Initialize Build Number
