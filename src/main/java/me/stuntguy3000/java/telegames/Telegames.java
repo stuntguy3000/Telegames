@@ -69,6 +69,7 @@ public class Telegames {
      */
     public void startTelegames() {
         instance = this;
+        developmentMode = getConfigHandler().getBotSettings().getDevMode();
 
         /**
          * Initialize Build Number
