@@ -110,9 +110,9 @@ public class Telegames {
          *
          * Load the auto updater
          */
-        developmentMode = getConfigHandler().getBotSettings().getDevMode();
-
         registerHandlers();
+        developmentMode = getConfigHandler().getBotSettings().getDevMode();
+        
         connectTelegram();
 
         if (this.getConfigHandler().getBotSettings().getAutoUpdater()) {
