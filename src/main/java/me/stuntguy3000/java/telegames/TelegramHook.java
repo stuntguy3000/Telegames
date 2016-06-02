@@ -33,7 +33,7 @@ public class TelegramHook {
 
         instance.sendToAdmins("> Telegames has connected to Telegram. Running build " + instance.getCurrentBuild());
 
-        LogHandler.debug("============================================");
+        LogHandler.debug("================================================");
 
         LogHandler.debug("[==========] Initializing Bot Content [==========]");
 
@@ -41,7 +41,7 @@ public class TelegramHook {
         this.initializeGames();
         this.initializeLobbies();
 
-        LogHandler.debug("============================================");
+        LogHandler.debug("================================================");
     }
 
     /**
