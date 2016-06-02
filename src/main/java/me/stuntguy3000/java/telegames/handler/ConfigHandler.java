@@ -67,7 +67,7 @@ public class ConfigHandler {
      *
      * @param fileName String the name of the config file to be saved (excluding file type)
      */
-    private void saveConfig(String fileName) {
+    public void saveConfig(String fileName) {
         File configFile = new File(fileName);
         GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
         Gson gson = builder.create();

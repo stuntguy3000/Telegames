@@ -9,6 +9,7 @@ import java.io.PrintWriter;
 import lombok.Data;
 import me.stuntguy3000.java.telegames.handler.ConfigHandler;
 import me.stuntguy3000.java.telegames.handler.LogHandler;
+import me.stuntguy3000.java.telegames.handler.UpdateHandler;
 import me.stuntguy3000.java.telegames.handler.UpdaterAnnouncerHandler;
 
 /**
@@ -102,6 +103,20 @@ public class Telegames {
             }
         } else {
             outputFolder.mkdirs();
+        }
+
+        /**
+         * Start various timers and threads
+         *
+         * Load the auto updater
+         */
+        if (this.getConfigHandler().getBotSettings().getAutoUpdater()) {
+            LogHandler.log("Starting auto updater...");
+            Thread updater = new Thread(new UpdateHandler(this, "Telegames-" + (developmentMode ? "Development" : "Master"), "Telegames"));
+            updater.start();
+            updaterThread = updater;
+        } else {
+            LogHandler.log("** Auto Updater is set to false **");
         }
 
         connectTelegram();
