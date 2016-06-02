@@ -34,12 +34,17 @@ public class UpdateHandler implements Runnable {
     public void run() {
         File build = new File("build");
         File jar = new File(fileName + ".new");
+
+        LogHandler.debug(String.valueOf(build));
+
         int currentBuild = instance.getCurrentBuild();
         int newBuild;
 
         while (true) {
             try {
                 HttpResponse<String> response = Unirest.get("http://ci.zackpollard.pro/job/" + projectName + "/lastSuccessfulBuild/buildNumber").asString();
+
+                LogHandler.debug(String.valueOf(response.getStatus()));
 
                 if (response.getStatus() == 200) {
                     newBuild = Integer.parseInt(response.getBody());
