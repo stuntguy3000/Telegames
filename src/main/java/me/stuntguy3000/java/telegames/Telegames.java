@@ -69,7 +69,8 @@ public class Telegames {
      */
     public void startTelegames() {
         instance = this;
-
+        
+        connectTelegram();
         registerHandlers();
 
         /**
@@ -122,8 +123,6 @@ public class Telegames {
         }
 
         developmentMode = getConfigHandler().getBotSettings().getDevMode();
-
-        connectTelegram();
 
         while (true) {
             // Hello!
