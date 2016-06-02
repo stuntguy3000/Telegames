@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import lombok.Data;
+import me.stuntguy3000.java.telegames.handler.CommandHandler;
 import me.stuntguy3000.java.telegames.handler.ConfigHandler;
 import me.stuntguy3000.java.telegames.handler.LogHandler;
 import me.stuntguy3000.java.telegames.handler.UpdateHandler;
@@ -35,6 +36,7 @@ public class Telegames {
     private LogHandler logHandler;
     private ConfigHandler configHandler;
     private UpdaterAnnouncerHandler updaterAnnouncerHandler;
+    private CommandHandler commandHandler;
 
     /*
         Configuration
@@ -112,7 +114,7 @@ public class Telegames {
          */
         registerHandlers();
         developmentMode = getConfigHandler().getBotSettings().getDevMode();
-        
+
         connectTelegram();
 
         if (this.getConfigHandler().getBotSettings().getAutoUpdater()) {

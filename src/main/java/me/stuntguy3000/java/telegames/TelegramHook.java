@@ -1,6 +1,8 @@
 package me.stuntguy3000.java.telegames;
 
 import lombok.Data;
+import me.stuntguy3000.java.telegames.command.VersionCommand;
+import me.stuntguy3000.java.telegames.handler.CommandHandler;
 import me.stuntguy3000.java.telegames.handler.LogHandler;
 import me.stuntguy3000.java.telegames.handler.TelegramEventHandler;
 import pro.zackpollard.telegrambot.api.TelegramBot;
@@ -41,7 +43,7 @@ public class TelegramHook {
         this.initializeGames();
         this.initializeLobbies();
 
-        LogHandler.debug("================================================");
+        LogHandler.debug("==================================================");
     }
 
     /**
@@ -58,6 +60,9 @@ public class TelegramHook {
      */
     private void initializeCommands() {
         LogHandler.debug("> Initializing commands");
+
+        CommandHandler commandHandler = getInstance().getCommandHandler();
+        commandHandler.registerCommand(new VersionCommand());
     }
 
     /**
