@@ -70,9 +70,6 @@ public class Telegames {
     public void startTelegames() {
         instance = this;
 
-        registerHandlers();
-        connectTelegram();
-
         /**
          * Initialize Build Number
          */
@@ -108,11 +105,16 @@ public class Telegames {
             outputFolder.mkdirs();
         }
 
+        registerHandlers();
+        connectTelegram();
+
         /**
          * Start various timers and threads
          *
          * Load the auto updater
          */
+        developmentMode = getConfigHandler().getBotSettings().getDevMode();
+
         if (this.getConfigHandler().getBotSettings().getAutoUpdater()) {
             LogHandler.log("Starting auto updater...");
             Thread updater = new Thread(new UpdateHandler(this, "Telegames-" + (developmentMode ? "Development" : "Master"), "Telegames"));
@@ -121,8 +123,6 @@ public class Telegames {
         } else {
             LogHandler.log("** Auto Updater is set to false **");
         }
-
-        developmentMode = getConfigHandler().getBotSettings().getDevMode();
 
         while (true) {
             // Hello!
