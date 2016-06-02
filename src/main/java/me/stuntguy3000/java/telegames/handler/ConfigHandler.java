@@ -2,30 +2,42 @@ package me.stuntguy3000.java.telegames.handler;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import lombok.Getter;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+
+import lombok.Data;
 import me.stuntguy3000.java.telegames.object.config.BotSettings;
-import me.stuntguy3000.java.telegames.object.config.LobbyList;
-import me.stuntguy3000.java.telegames.object.config.UserStatistics;
 
-import java.io.*;
-
-// @author Luke Anderson | stuntguy3000
+/**
+ * Handles configuration loading and saving using GSON
+ *
+ * @author stuntguy3000
+ */
+@Data
 public class ConfigHandler {
-
-    @Getter
+    /*
+        Standard bot configuration options
+     */
     private BotSettings botSettings = new BotSettings();
-    @Getter
-    private LobbyList lobbyList = new LobbyList();
-    @Getter
-    private UserStatistics userStatistics = new UserStatistics();
 
+    /**
+     * Initialize the class by loading all related configuration files
+     */
     public ConfigHandler() {
         loadFile("config.json");
-        loadFile("lobby.json");
-        loadFile("stats.json");
     }
 
-    public void loadFile(String fileName) {
+    /**
+     * Load a configuration file by file name (excluding file type)
+     *
+     * @param fileName String the name of the config file to be loaded (excluding file type)
+     */
+    private void loadFile(String fileName) {
         Gson gson = new Gson();
         File configFile = new File(fileName);
 
@@ -43,20 +55,19 @@ public class ConfigHandler {
                     botSettings = gson.fromJson(br, BotSettings.class);
                     return;
                 }
-                case "lobby": {
-                    lobbyList = gson.fromJson(br, LobbyList.class);
-                    return;
-                }
-                case "stats": {
-                    userStatistics = gson.fromJson(br, UserStatistics.class);
-                }
             }
         } else {
             saveConfig(fileName);
         }
     }
 
-    public void saveConfig(String fileName) {
+    /**
+     * Save a configuration file by file name (excluding file type)
+     * <p>If the file cannot be found, it will be created with default options.</p>
+     *
+     * @param fileName String the name of the config file to be saved (excluding file type)
+     */
+    private void saveConfig(String fileName) {
         File configFile = new File(fileName);
         GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
         Gson gson = builder.create();
@@ -65,14 +76,6 @@ public class ConfigHandler {
         switch (fileName.split(".json")[0].toLowerCase()) {
             case "config": {
                 json = gson.toJson(botSettings);
-                break;
-            }
-            case "lobby": {
-                json = gson.toJson(lobbyList);
-                break;
-            }
-            case "stats": {
-                json = gson.toJson(userStatistics);
                 break;
             }
         }
@@ -92,7 +95,7 @@ public class ConfigHandler {
             LogHandler.log("The config could not be saved as the file couldn't be found on the storage device. Please check the directories read/write permissions and contact the developer!");
         } catch (IOException e) {
             e.printStackTrace();
-            LogHandler.log("The config could not be written to as an error occurred. Please check the directories read/write permissions and contact the developer!");
+            LogHandler.log("The config could not be written to as an sendError occurred. Please check the directories read/write permissions and contact the developer!");
         } catch (NullPointerException e) {
             e.printStackTrace();
             LogHandler.log("Invalid Config Specified! Please check the directories read/write permissions and contact the developer!");

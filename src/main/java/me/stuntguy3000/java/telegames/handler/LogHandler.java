@@ -3,25 +3,42 @@ package me.stuntguy3000.java.telegames.handler;
 import me.stuntguy3000.java.telegames.Telegames;
 
 /**
- * Created by amir on 2015-11-25. Modified by stuntguy3000.
+ * @author stuntguy3000
  */
 public class LogHandler {
-
-    public static void debug(String s, Object... format) {
-        if (Telegames.DEV_MODE) {
-            log("[DEBUG] " + s, format);
+    /**
+     * Send a message intended for debugging purposes.
+     * <p>Will only be outputted to console if developmentMode is enabled</p>
+     *
+     * @param message String the message to be outputted to console
+     * @param format  Object[] formatting tags which will be applied to message
+     */
+    public static void debug(String message, Object... format) {
+        if (Telegames.getInstance().isDevelopmentMode()) {
+            log("[DEBUG] " + message, format);
         }
     }
 
-    public static void error(String s) {
-        s = "[ERROR] " + s;
-        log(s);
-        Telegames.getInstance().sendToAdmins(s);
+    /**
+     * Log an error message to console
+     * <p>All messages will have an error prefix</p>
+     *
+     * @param message String the message to be outputted to console
+     * @param format  Object[] formatting tags which will be applied to message
+     */
+    static void sendError(String message, Object... format) {
+        message = "[ERROR] " + message;
+        log(message, format);
+        Telegames.getInstance().sendToAdmins(message);
     }
 
-    public static void log(String s, Object... format) {
-        System.out.println(String.format(s, format));
+    /**
+     * Log a message to console
+     *
+     * @param message String the message to be outputted to console
+     * @param format  Object[] formatting tags which will be applied to message
+     */
+    public static void log(String message, Object... format) {
+        System.out.println(String.format(message, format));
     }
-
-
 }

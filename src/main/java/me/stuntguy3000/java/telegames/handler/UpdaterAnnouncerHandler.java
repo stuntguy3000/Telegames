@@ -1,23 +1,29 @@
 package me.stuntguy3000.java.telegames.handler;
 
-import me.stuntguy3000.java.telegames.Telegames;
-import me.stuntguy3000.java.telegames.hook.TelegramHook;
-import pro.zackpollard.telegrambot.api.TelegramBot;
-import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
-import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 
-// @author Luke Anderson | stuntguy3000
+import me.stuntguy3000.java.telegames.TelegramHook;
+import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
+import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
+
+/**
+ * Handles the announcing of updates
+ *
+ * @author Zack Pollard
+ * @author stuntguy3000
+ */
 public class UpdaterAnnouncerHandler {
 
     String cachedVersion = "";
     String oldVersion = null;
 
+    /**
+     * Run the update cycle
+     */
     public void runUpdater() {
         try {
             String updateContents = "";
@@ -56,12 +62,12 @@ public class UpdaterAnnouncerHandler {
 
                 if (!newVersion.equals(cachedVersion)) {
                     if (oldVersion != null && !newVersion.equals(oldVersion)) {
-                        TelegramHook.getBot().sendMessage(TelegramBot.getChat("@telegames"), SendableTextMessage.builder().disableWebPagePreview(true).parseMode(ParseMode.NONE).message("New release!\n\n" + changelog).build());
+                        TelegramHook.getBot().sendMessage(TelegramHook.getBot().getChat("@telegames"), SendableTextMessage.builder().disableWebPagePreview(true).parseMode(ParseMode.NONE).message("New release!\n\n" + changelog).build());
 
                         LogHandler.debug(newVersion);
                         LogHandler.debug(changelog);
                     } else {
-                        LogHandler.debug("No changes found!");
+                        LogHandler.debug("[Update Announcer] No changes found!");
                     }
 
                     LogHandler.debug(changelog);
@@ -78,9 +84,7 @@ public class UpdaterAnnouncerHandler {
                 }
             }
         } catch (Exception ex) {
-            LogHandler.log("Update Announcer exception occurred");
-            Telegames.getInstance().sendToAdmins("Update Announcer exception occurred");
+            LogHandler.sendError("[Update Announcer] Update Announcer exception occurred! %s", ex.getMessage());
         }
     }
 }
-    

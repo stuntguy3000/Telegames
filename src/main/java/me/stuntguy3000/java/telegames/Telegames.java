@@ -1,57 +1,73 @@
 package me.stuntguy3000.java.telegames;
 
-import lombok.Getter;
-import me.stuntguy3000.java.telegames.handler.*;
-import me.stuntguy3000.java.telegames.hook.TelegramHook;
-import me.stuntguy3000.java.telegames.object.lobby.Lobby;
-import me.stuntguy3000.java.telegames.object.timer.LobbyExpirationTimer;
-import me.stuntguy3000.java.telegames.util.string.RandomString;
-import me.stuntguy3000.java.telegames.util.string.StringUtil;
 import org.apache.commons.io.FileUtils;
-import pro.zackpollard.telegrambot.api.TelegramBot;
-import pro.zackpollard.telegrambot.api.chat.message.send.ParseMode;
-import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Timer;
 
-// @author Luke Anderson | stuntguy3000
+import lombok.Data;
+import me.stuntguy3000.java.telegames.handler.ConfigHandler;
+import me.stuntguy3000.java.telegames.handler.LogHandler;
+import me.stuntguy3000.java.telegames.handler.UpdaterAnnouncerHandler;
+
+/**
+ * Main class for Telegames
+ * Initializes all handlers and connects to the Telegram API
+ *
+ * @author stuntguy3000
+ */
+@Data
 public class Telegames {
-    public static int BUILD = 0;
-    public static boolean DEV_MODE = false;
-    @Getter
-    public static Telegames instance;
-    @Getter
-    private CommandHandler commandHandler;
-    @Getter
+    /*
+        Instance
+     */
+    private static Telegames instance;
+    /*
+        Runtime Build Options, set by configuration
+     */
+    private int currentBuild = 0;
+    private boolean developmentMode = false;
+    /*
+        Handlers
+     */
+    private LogHandler logHandler;
     private ConfigHandler configHandler;
-    @Getter
-    private GameHandler gameHandler;
-    @Getter
-    private LobbyHandler lobbyHandler;
-    @Getter
-    private MatchmakingHandler matchmakingHandler;
-    @Getter
+    private UpdaterAnnouncerHandler updaterAnnouncerHandler;
+
+    /*
+        Configuration
+     */
     private File outputFolder;
-    @Getter
-    private RandomString randomString = new RandomString(5);
-    @Getter
-    private UpdaterAnnouncerHandler updaterAnnouncerHandler = new UpdaterAnnouncerHandler();
-    @Getter
+
+    /*
+        Misc
+     */
     private Thread updaterThread;
 
-    private void connectTelegram() {
-        LogHandler.log("Connecting to Telegram...");
-        DEV_MODE = getConfigHandler().getBotSettings().getDevMode();
-        LogHandler.log("Developer Mode is set to " + DEV_MODE);
-        new TelegramHook(configHandler.getBotSettings().getTelegramKey(), this);
+    /**
+     * Returns the instance of the main class
+     *
+     * @return Telegames the instance of the main class
+     */
+    public static Telegames getInstance() {
+        return instance;
     }
 
-    public void main() {
+    /**
+     * Initialize this class
+     *
+     * @param args String[] Java application launch arguments
+     */
+    public static void main(String[] args) {
+        new Telegames().startTelegames();
+    }
+
+    /**
+     * Begin the startup process for Telegames
+     */
+    public void startTelegames() {
         instance = this;
-        configHandler = new ConfigHandler();
 
         /**
          * Initialize Build Number
@@ -70,7 +86,7 @@ public class Telegames {
         }
 
         try {
-            BUILD = Integer.parseInt(FileUtils.readFileToString(build));
+            currentBuild = Integer.parseInt(FileUtils.readFileToString(build));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -88,99 +104,40 @@ public class Telegames {
             outputFolder.mkdirs();
         }
 
-        /**
-         * Begin CLI for Telegames
-         */
-        LogHandler.log("======================================");
-        LogHandler.log(" Telegames build " + BUILD + " by @stuntguy3000");
-        LogHandler.log("======================================");
-
-        /**
-         * Initialize handlers
-         */
-        commandHandler = new CommandHandler();
-        gameHandler = new GameHandler();
-        lobbyHandler = new LobbyHandler();
-        matchmakingHandler = new MatchmakingHandler();
-
-        /**
-         * Connect to Telegram
-         */
         connectTelegram();
+        registerHandlers();
 
-        /**
-         * Begin auto updater
-         */
-        if (!DEV_MODE) {
-            LogHandler.log("Starting update announcer...");
-            updaterAnnouncerHandler = new UpdaterAnnouncerHandler();
-            updaterAnnouncerHandler.runUpdater();
-        } else {
-            LogHandler.log("** Update Announcer is not running **");
-        }
-
-        /**
-         * Start various timers and threads
-         *
-         * Load the auto updater
-         */
-        if (this.getConfigHandler().getBotSettings().getAutoUpdater()) {
-            LogHandler.log("Starting auto updater...");
-            Thread updater = new Thread(new UpdateHandler(this, "Telegames-" + (DEV_MODE ? "Development" : "Master"), "Telegames"));
-            updater.start();
-            updaterThread = updater;
-        } else {
-            LogHandler.log("** Auto Updater is set to false **");
-        }
-
-        /**
-         * Start Lobby timer
-         */
-        LobbyExpirationTimer lobbyExpirationTimer = new LobbyExpirationTimer();
-        new Timer().schedule(lobbyExpirationTimer, 0, 30 * 1000);
-
-        /**
-         * Keepalive
-         */
         while (true) {
-            String in = System.console().readLine();
-            switch (in.toLowerCase()) {
-                case "list": {
-                    LogHandler.log("Lobby List:");
-
-                    for (Lobby lobby : lobbyHandler.getActiveLobbies().values()) {
-                        LogHandler.log(String.format("ID: %s Owner: %s Members: %s Last Active: %s %s", lobby.getLobbyID(), lobby.getLobbyOwner().getUsername(), lobby.getTelegramUsers().size(), StringUtil.millisecondsToHumanReadable(System.currentTimeMillis() - lobby.getLastLobbyAction()), lobby.getCurrentGame() != null ? "Playing " + lobby.getCurrentGame().getGameName() : ""));
-                    }
-                    continue;
-                }
-                case "botfather": {
-                    LogHandler.log(getCommandHandler().getBotFatherString());
-                    continue;
-                }
-                case "quit":
-                case "stop":
-                case "exit": {
-                    configHandler.saveConfig("stats.json");
-                    System.exit(0);
-                }
-            }
+            // Hello!
         }
     }
 
-    public static void main(String[] args) {
-        new Telegames().main();
+    /**
+     * Register all handlers
+     */
+    private void registerHandlers() {
+        configHandler = new ConfigHandler();
+        logHandler = new LogHandler();
+        updaterAnnouncerHandler = new UpdaterAnnouncerHandler();
     }
 
+    /**
+     * Connect to the Telegram servers through @zackpollard's API
+     *
+     * @source https://github.com/zackpollard/JavaTelegramBot-API
+     */
+    private void connectTelegram() {
+        new TelegramHook(configHandler.getBotSettings().getTelegramKey(), this);
+    }
+
+    /**
+     * Sends a message to all bot admins
+     *
+     * @param message String the message to be sent
+     */
     public void sendToAdmins(String message) {
-        for (int admin : configHandler.getBotSettings().getTelegramAdmins()) {
-            TelegramBot.getChat(admin).sendMessage(message, TelegramHook.getBot());
-        }
-    }
-
-    public void sendToLobbies(String message) {
-        for (Lobby lobby : getLobbyHandler().getActiveLobbies().values()) {
-            lobby.sendMessage(SendableTextMessage.builder().message(message).parseMode(ParseMode.MARKDOWN).build());
+        for (int adminID : configHandler.getBotSettings().getTelegramAdmins()) {
+            TelegramHook.getBot().getChat(adminID).sendMessage(message);
         }
     }
 }
-    

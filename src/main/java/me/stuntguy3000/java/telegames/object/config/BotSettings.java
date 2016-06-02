@@ -1,29 +1,26 @@
 package me.stuntguy3000.java.telegames.object.config;
 
-import lombok.Getter;
-
 import java.util.ArrayList;
 import java.util.List;
 
-// @author Luke Anderson | stuntguy3000
+import lombok.Data;
+
+/**
+ * Represents the various configuration options for this bot
+ *
+ * @author stuntguy3000
+ */
+@Data
 public class BotSettings {
-    @Getter
     private Boolean autoUpdater;
-    @Getter
-    private String botanKey;
-    @Getter
     private Boolean devMode;
-    @Getter
     private List<Integer> telegramAdmins;
-    @Getter
     private String telegramKey;
 
     public BotSettings() {
         this.telegramKey = "";
-        this.botanKey = "";
         this.telegramAdmins = new ArrayList<>();
         this.autoUpdater = true;
         this.devMode = false;
     }
 }
-    
