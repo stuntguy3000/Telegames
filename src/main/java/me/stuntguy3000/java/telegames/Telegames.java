@@ -70,6 +70,8 @@ public class Telegames {
     public void startTelegames() {
         instance = this;
 
+        registerHandlers();
+
         /**
          * Initialize Build Number
          */
@@ -119,8 +121,6 @@ public class Telegames {
             LogHandler.log("** Auto Updater is set to false **");
         }
 
-        registerHandlers();
-        
         developmentMode = getConfigHandler().getBotSettings().getDevMode();
 
         connectTelegram();
