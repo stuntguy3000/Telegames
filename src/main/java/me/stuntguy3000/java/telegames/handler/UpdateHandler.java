@@ -46,7 +46,6 @@ public class UpdateHandler implements Runnable {
 
                 if (response.getStatus() == 200) {
                     newBuild = Integer.parseInt(response.getBody());
-                    LogHandler.debug(String.valueOf(newBuild));
                 } else {
                     LogHandler.log("[ERROR] Updater status code: " + response.getStatus());
                     instance.sendToAdmins("[ERROR] Updater status code: " + response.getStatus() + "\n\nUpdater stopped.");
@@ -64,7 +63,7 @@ public class UpdateHandler implements Runnable {
                     FileUtils.writeStringToFile(build, String.valueOf(newBuild));
                     FileUtils.copyURLToFile(new URL("http://ci.zackpollard.pro/job/" + projectName + "/lastSuccessfulBuild/artifact/target/" + fileName + ".jar"), jar);
                     LogHandler.log("Build #" + newBuild + " downloaded. Restarting...");
-                    instance.getConfigHandler().saveConfig("config.json");
+                    instance.getConfigHandler().saveConfig("config");
                     if (!instance.isDevelopmentMode()) {
                         Telegames.getInstance().getUpdaterAnnouncerHandler().runUpdater();
                     }
