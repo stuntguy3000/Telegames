@@ -35,8 +35,6 @@ public class UpdateHandler implements Runnable {
         File build = new File("build");
         File jar = new File(fileName + ".new");
 
-        LogHandler.debug(String.valueOf(build));
-
         int currentBuild = instance.getCurrentBuild();
         int newBuild;
 

@@ -105,15 +105,15 @@ public class Telegames {
             outputFolder.mkdirs();
         }
 
-        registerHandlers();
-        connectTelegram();
-
         /**
          * Start various timers and threads
          *
          * Load the auto updater
          */
         developmentMode = getConfigHandler().getBotSettings().getDevMode();
+
+        registerHandlers();
+        connectTelegram();
 
         if (this.getConfigHandler().getBotSettings().getAutoUpdater()) {
             LogHandler.log("Starting auto updater...");
