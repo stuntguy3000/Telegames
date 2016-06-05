@@ -58,3 +58,10 @@ buildNumber.properties
 .mvn/timing.properties
 *.json
 build
+
+### Eclipse and shitty IDEs
+/bin/
+/out/
+/.settings/
+/.classpath
+/.project
