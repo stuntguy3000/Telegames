@@ -6,8 +6,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import lombok.Data;
 import me.stuntguy3000.java.telegames.util.string.ConsecutiveId;
 
+/**
+ * Abstract class represents a Game
+ */
+@Data
 public abstract class Game {
 
     public static final String GAME_ID_NAMESPACE = "GAME_ID";
@@ -21,14 +26,6 @@ public abstract class Game {
         this.inline = inline;
         this.users = new LinkedList<>();
         this.listeners = new HashSet<>();
-    }
-
-    public Game() {
-        this(null);
-    }
-
-    public final String getID() {
-        return this.id;
     }
 
     public final String getNextCallbackID() {

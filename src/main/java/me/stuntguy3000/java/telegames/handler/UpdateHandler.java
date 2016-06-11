@@ -37,7 +37,7 @@ import java.net.URL;
 import me.stuntguy3000.java.telegames.Telegames;
 
 /**
- * Automatically update this plugin
+ * Automatically update this bot
  *
  * @author bo0tzz
  * @author stuntguy3000

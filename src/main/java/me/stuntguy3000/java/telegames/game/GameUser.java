@@ -2,15 +2,15 @@ package me.stuntguy3000.java.telegames.game;
 
 import java.util.Objects;
 
-import lombok.Getter;
+import lombok.Data;
 import pro.zackpollard.telegrambot.api.user.User;
 
+/**
+ * Represents a user within a Game
+ */
+@Data
 public class GameUser {
-
-    @Getter
     private final Game game;
-
-    @Getter
     private final User user;
 
     public GameUser(Game game, User user) {
