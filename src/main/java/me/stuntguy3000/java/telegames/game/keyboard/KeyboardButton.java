@@ -3,7 +3,6 @@ package me.stuntguy3000.java.telegames.game.keyboard;
 import java.util.function.BiConsumer;
 
 import me.stuntguy3000.java.telegames.game.Game;
-import me.stuntguy3000.java.telegames.game.GameUser;
 
 public class KeyboardButton {
 

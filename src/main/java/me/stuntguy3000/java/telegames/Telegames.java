@@ -29,10 +29,13 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Timer;
 
 import lombok.Data;
 import me.stuntguy3000.java.telegames.handler.CommandHandler;
 import me.stuntguy3000.java.telegames.handler.ConfigHandler;
+import me.stuntguy3000.java.telegames.handler.GameHandler;
+import me.stuntguy3000.java.telegames.handler.LobbyHandler;
 import me.stuntguy3000.java.telegames.handler.LogHandler;
 import me.stuntguy3000.java.telegames.handler.UpdateHandler;
 import me.stuntguy3000.java.telegames.handler.UpdaterAnnouncerHandler;
@@ -49,11 +52,13 @@ public class Telegames {
         Instance
      */
     private static Telegames instance;
+
     /*
         Runtime Build Options, set by configuration
      */
     private int currentBuild = 0;
     private boolean developmentMode = false;
+
     /*
         Handlers
      */
@@ -61,16 +66,15 @@ public class Telegames {
     private ConfigHandler configHandler;
     private UpdaterAnnouncerHandler updaterAnnouncerHandler;
     private CommandHandler commandHandler;
-
-    /*
-        Configuration
-     */
-    private File outputFolder;
+    private GameHandler gameHandler;
+    private LobbyHandler lobbyHandler;
 
     /*
         Misc
      */
     private Thread updaterThread;
+    private File outputFolder;
+    private Timer timer;
 
     /**
      * Returns the instance of the main class
@@ -93,7 +97,7 @@ public class Telegames {
     /**
      * Begin the startup process for Telegames
      */
-    public void startTelegames() {
+    private void startTelegames() {
         instance = this;
 
         /**
@@ -137,8 +141,9 @@ public class Telegames {
          * Load the auto updater
          */
         registerHandlers();
-        developmentMode = getConfigHandler().getBotSettings().getDevMode();
+        timer = new Timer();
 
+        developmentMode = getConfigHandler().getBotSettings().getDevMode();
         connectTelegram();
 
         if (this.getConfigHandler().getBotSettings().getAutoUpdater()) {
@@ -151,7 +156,11 @@ public class Telegames {
         }
 
         while (true) {
-            // Hello!
+            try {
+                Thread.sleep(100000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -163,6 +172,8 @@ public class Telegames {
         logHandler = new LogHandler();
         updaterAnnouncerHandler = new UpdaterAnnouncerHandler();
         commandHandler = new CommandHandler();
+        gameHandler = new GameHandler();
+        lobbyHandler = new LobbyHandler();
     }
 
     /**

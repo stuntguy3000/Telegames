@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
+import lombok.Data;
 import me.stuntguy3000.java.telegames.TelegramHook;
 import me.stuntguy3000.java.telegames.game.keyboard.Keyboard;
 import me.stuntguy3000.java.telegames.game.keyboard.KeyboardButton;
@@ -25,6 +26,7 @@ import pro.zackpollard.telegrambot.api.keyboards.InlineKeyboardMarkup.InlineKeyb
 import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardMarkup;
 import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardMarkup.ReplyKeyboardMarkupBuilder;
 
+@Data
 public class GameDisplay {
 
     private Game game;
@@ -41,10 +43,6 @@ public class GameDisplay {
         this.onMessage = (g, s) -> {};
     }
 
-    public Game getGame() {
-        return this.game;
-    }
-
     public void addChat(Chat chat) {
         this.chats.put(chat.getId(), chat);
     }
@@ -57,15 +55,6 @@ public class GameDisplay {
         this.removeChat(String.valueOf(id));
     }
 
-    public String getText() {
-        return this.text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-        this.update();
-    }
-
     public Keyboard getKeyboard() {
         return this.keyboard;
     }
@@ -73,10 +62,6 @@ public class GameDisplay {
     public void setKeyboard(Keyboard keyboard) {
         this.keyboard = keyboard;
         this.update();
-    }
-
-    public String getLastKeyboard() {
-        return this.lastKeyboard;
     }
 
     public void onMessage(BiConsumer<Game, String> listener) {
@@ -130,7 +115,7 @@ public class GameDisplay {
         if (keyboard == null) {
             return null;
         }
-        String kbid = String.format("gamekb-%s-%s", this.getGame().getID(), ConsecutiveId.next("gamekb-" + this.getGame().getID()));
+        String kbid = String.format("gamekb-%s-%s", this.getGame().getId(), ConsecutiveId.next("gamekb-" + this.getGame().getId()));
         InlineKeyboardMarkupBuilder kb = InlineKeyboardMarkup.builder();
         for (int i = 0, j = keyboard.size(); i < j; i++) {
             kb.addRow(this.toInlineRow(kbid, i, keyboard.getRow(i)));

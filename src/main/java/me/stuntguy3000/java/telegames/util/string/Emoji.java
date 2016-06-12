@@ -27,7 +27,7 @@ package me.stuntguy3000.java.telegames.util.string;
 import lombok.Getter;
 
 /**
- * Represents (some) Emojis used by Telegram
+ * Represents (some) Emoji's used by Telegram
  * <p>Needs to be updated</p>
  *
  * @author stuntguy3000
@@ -81,7 +81,8 @@ public enum Emoji {
     SAND_CLOCK("⌛️"),
     QUESTION_MARK("❓"),
     JOKER_CARD("\uD83C\uDCCF"),
-    HOUSE("\uD83C\uDFDA");
+    HOUSE("\uD83C\uDFDA"),
+    PEOPLE("\uD83D\uDC65");
 
     @Getter
     String text;

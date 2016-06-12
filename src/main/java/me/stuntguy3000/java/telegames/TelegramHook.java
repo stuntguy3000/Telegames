@@ -25,6 +25,7 @@
 package me.stuntguy3000.java.telegames;
 
 import lombok.Data;
+import me.stuntguy3000.java.telegames.command.LobbyCommand;
 import me.stuntguy3000.java.telegames.command.VersionCommand;
 import me.stuntguy3000.java.telegames.handler.CommandHandler;
 import me.stuntguy3000.java.telegames.handler.LogHandler;
@@ -87,6 +88,7 @@ public class TelegramHook {
 
         CommandHandler commandHandler = getInstance().getCommandHandler();
         commandHandler.registerCommand(new VersionCommand());
+        commandHandler.registerCommand(new LobbyCommand());
     }
 
     /**

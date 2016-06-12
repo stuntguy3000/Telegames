@@ -30,6 +30,18 @@ import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 // @author Luke Anderson | stuntguy3000
 public class Lang {
 
+    public static final String ERROR = Emoji.ALERT.getText() + " ";
+    public static final String SUCCESS = Emoji.GREEN_BOX_TICK.getText() + " ";
+    public static final String LOBBY_USER_JOIN = Emoji.PERSON.getText() + " @%s *has joined the lobby.*";
+    public static final String LOBBY_USER_LEAVE = Emoji.PERSON.getText() + " @%s *has left the lobby.*";
+    public static final String LOBBY_CANNOT_JOIN_LOCKED = ERROR + " *You cannot join a locked lobby!*";
+    public static final String LOBBY_INFO_TITLE = Emoji.SPACE_INVADER.getText() + " *Telegames Lobby (#%s)* " + Emoji.SPACE_INVADER.getText();
+    public static final String LOBBY_INFO_LOCKED = ERROR + " *This lobby is locked!*";
+    public static final String LOBBY_INFO_OWNER = Emoji.PERSON.getText() + " *Lobby Owner:* %s";
+    public static final String LOBBY_INFO_PLAYERS = Emoji.PEOPLE.getText() + " *Lobby Players:* %s";
+    public static final String LOBBY_INFO_WAITING = "*Ready to begin a game...*";
+    public static final String LOBBY_INFO_INGAME = "*Currently playing %s*";
+
     public static SendableTextMessage.SendableTextMessageBuilder build(String text, Object... variables) {
         return SendableTextMessage.builder().message(String.format(text, variables)).parseMode(ParseMode.MARKDOWN);
     }
