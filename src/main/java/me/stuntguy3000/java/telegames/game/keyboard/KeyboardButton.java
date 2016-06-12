@@ -3,11 +3,12 @@ package me.stuntguy3000.java.telegames.game.keyboard;
 import java.util.function.BiConsumer;
 
 import me.stuntguy3000.java.telegames.game.Game;
+import pro.zackpollard.telegrambot.api.user.User;
 
 public class KeyboardButton {
 
     private String text;
-    private BiConsumer<Game, GameUser> onClick;
+    private BiConsumer<Game, User> onClick;
 
     public KeyboardButton(String text) {
         this.setText(text);
@@ -22,11 +23,11 @@ public class KeyboardButton {
         this.text = String.valueOf(text);
     }
 
-    public void onClick(BiConsumer<Game, GameUser> listener) {
+    public void onClick(BiConsumer<Game, User> listener) {
         this.onClick = this.onClick.andThen(listener);
     }
 
-    public void onClick(Game game, GameUser user) {
+    public void onClick(Game game, User user) {
         this.onClick.accept(game, user);
     }
 

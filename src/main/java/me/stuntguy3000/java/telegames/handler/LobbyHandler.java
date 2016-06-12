@@ -35,7 +35,7 @@ public class LobbyHandler {
      */
     public Lobby getLobby(User user) {
         for (Lobby lobby : lobbyList.values()) {
-            for (User lobbyUser : lobby.getLobbyUsers()) {
+            for (User lobbyUser : lobby.getLobbyUsers().keySet()) {
                 if (user.getId() == lobbyUser.getId()) {
                     return lobby;
                 }
