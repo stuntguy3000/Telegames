@@ -9,6 +9,7 @@ import me.stuntguy3000.java.telegames.TelegramHook;
 import me.stuntguy3000.java.telegames.game.Game;
 import me.stuntguy3000.java.telegames.object.exception.LobbyInlineException;
 import me.stuntguy3000.java.telegames.object.exception.LobbyLockedException;
+import me.stuntguy3000.java.telegames.util.string.ConsecutiveId;
 import me.stuntguy3000.java.telegames.util.string.Lang;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.message.Message;
@@ -24,7 +25,7 @@ import pro.zackpollard.telegrambot.api.user.User;
 public class Lobby {
     private Game game;
     private HashMap<User, Message> lobbyUsers = new HashMap<>();
-    private String lobbyID;
+    private String lobbyID = ConsecutiveId.nextIdentifier();
     private User lobbyOwner;
     private Message inlineMessage;
     private boolean matchmakingLobby = false;
@@ -139,19 +140,20 @@ public class Lobby {
     public SendableTextMessage getLobbyInformation() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(String.format(Lang.LOBBY_INFO_TITLE, getLobbyID()));
-        stringBuilder.append("\n");
+        stringBuilder.append("\n\n");
 
         if (isLocked()) {
             stringBuilder.append(Lang.LOBBY_INFO_LOCKED);
-            stringBuilder.append("\n");
+            stringBuilder.append("\n\n");
         }
 
         List<String> usernames = getLobbyUsers().keySet().stream().map(User::getUsername).collect(Collectors.toList());
 
-        stringBuilder.append(String.format(Lang.LOBBY_INFO_OWNER, getLobbyOwner()));
+        stringBuilder.append(String.format(Lang.LOBBY_INFO_OWNER, getLobbyOwner().getUsername()));
+        stringBuilder.append("\n");
         stringBuilder.append(String.format(Lang.LOBBY_INFO_PLAYERS, String.join(", ", usernames)));
 
-        stringBuilder.append("\n");
+        stringBuilder.append("\n\n");
 
         if (getGame() == null) {
             stringBuilder.append(Lang.LOBBY_INFO_WAITING);
