@@ -1,6 +1,7 @@
 package me.stuntguy3000.java.telegames.game.games;
 
 import me.stuntguy3000.java.telegames.game.Game;
+import pro.zackpollard.telegrambot.api.user.User;
 
 /**
  * @author stuntguy3000
@@ -21,12 +22,17 @@ public class ExampleGame extends Game {
     }
 
     @Override
-    public void join(GameUser user) {
+    public void join(User user) {
 
     }
 
     @Override
-    public void quit(GameUser user) {
+    public void quit(User user) {
+
+    }
+
+    @Override
+    public void onSecond() {
 
     }
 }

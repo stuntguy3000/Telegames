@@ -5,6 +5,7 @@ import java.util.List;
 
 import lombok.Data;
 import me.stuntguy3000.java.telegames.util.string.ConsecutiveId;
+import pro.zackpollard.telegrambot.api.user.User;
 
 /**
  * Abstract class represents a Game
@@ -15,7 +16,7 @@ public abstract class Game {
     private String name;
     private String inlineMessageID;
     private String description;
-    private List<GameUser> users;
+    private List<User> users;
 
     public Game(String gameName, String gameDescription, String inlineMessageID) {
         this.name = gameName;
@@ -37,9 +38,9 @@ public abstract class Game {
 
     public abstract void stop();
 
-    public abstract void join(GameUser user);
+    public abstract void join(User user);
 
-    public abstract void quit(GameUser user);
+    public abstract void quit(User user);
 
     public abstract void onSecond();
 }
